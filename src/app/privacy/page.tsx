@@ -1,0 +1,50 @@
+"use client";
+
+import Link from "next/link";
+import { useLocale } from "@/lib/LocaleContext";
+import BottomNav from "@/components/BottomNav";
+
+export default function PrivacyPage() {
+  const { t } = useLocale();
+
+  return (
+    <div className="min-h-screen">
+      <div className="lg:hidden flex items-center h-11 px-4 border-b border-gray-100 sticky top-0 bg-white z-10">
+        <Link href="/" className="text-amber-800 mr-3 text-lg">←</Link>
+        <span className="font-semibold text-[15px]">{t("footer.privacy")}</span>
+      </div>
+
+      <main className="max-w-3xl mx-auto px-4 py-8 lg:py-16 pb-24">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">{t("footer.privacy")}</h1>
+
+        <div className="prose prose-sm prose-gray max-w-none space-y-4 text-gray-600 text-sm leading-relaxed">
+          <h2 className="text-lg font-semibold text-gray-800">1. Information We Collect</h2>
+          <p>We collect information you provide when creating an account (email, display name) and usage data to improve our service.</p>
+
+          <h2 className="text-lg font-semibold text-gray-800">2. How We Use Your Information</h2>
+          <p>Your information is used to provide our service, manage your account, and improve user experience. We do not sell your personal data.</p>
+
+          <h2 className="text-lg font-semibold text-gray-800">3. Data Storage</h2>
+          <p>Your data is stored securely using industry-standard encryption and hosted on trusted cloud infrastructure.</p>
+
+          <h2 className="text-lg font-semibold text-gray-800">4. Cookies</h2>
+          <p>We use essential cookies for authentication and session management. We use analytics cookies to understand usage patterns.</p>
+
+          <h2 className="text-lg font-semibold text-gray-800">5. Third-Party Services</h2>
+          <p>We use Supabase for authentication and data storage, and Vercel for hosting and analytics. These services have their own privacy policies.</p>
+
+          <h2 className="text-lg font-semibold text-gray-800">6. Your Rights</h2>
+          <p>You can request access to, correction of, or deletion of your personal data at any time by contacting us.</p>
+
+          <h2 className="text-lg font-semibold text-gray-800">7. Data Retention</h2>
+          <p>We retain your data for as long as your account is active. You can delete your account at any time.</p>
+
+          <h2 className="text-lg font-semibold text-gray-800">8. Contact</h2>
+          <p>For privacy concerns, contact us at support@trustmaster.app</p>
+        </div>
+      </main>
+
+      <BottomNav />
+    </div>
+  );
+}

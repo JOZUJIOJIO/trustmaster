@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /login
+Disallow: /profile
+Disallow: /favorites
+
+Sitemap: https://trustmaster.app/sitemap.xml

@@ -16,16 +16,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TrustMaster | Find Trusted Spiritual Masters in Thailand",
+  title: "TrustMaster | Ancient Eastern Wisdom Meets AI",
   description:
-    "A verified spiritual consultation platform with real user reviews. Find trusted astrology, tarot, feng shui, and palmistry masters in Thailand.",
-  keywords: ["spiritual masters", "astrology", "tarot", "feng shui", "palmistry", "Thailand", "Bangkok"],
+    "Discover your destiny through 5,000 years of Chinese BaZi, Feng Shui, and astrology tradition — powered by AI. Get your personalized Four Pillars of Destiny analysis.",
+  keywords: ["BaZi", "Four Pillars of Destiny", "Chinese astrology", "feng shui", "Eastern wisdom", "AI fortune", "destiny analysis", "five elements"],
   openGraph: {
-    title: "TrustMaster | Find Trusted Spiritual Masters",
-    description: "A verified spiritual consultation platform with real user reviews in Thailand",
+    title: "TrustMaster | Ancient Eastern Wisdom Meets AI",
+    description: "Discover your destiny through 5,000 years of Eastern metaphysical tradition, powered by AI",
     type: "website",
-    locale: "th_TH",
-    alternateLocale: ["en_US", "zh_CN", "vi_VN", "id_ID"],
+    locale: "zh_CN",
+    alternateLocale: ["en_US", "th_TH", "vi_VN", "id_ID"],
   },
 };
 
@@ -36,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="th"
+      lang="zh-CN"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-[#f5f1eb]">

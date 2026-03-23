@@ -101,7 +101,7 @@ export default function Home() {
             <div className="flex items-center gap-3 mb-8">
               <div className="w-12 h-px bg-amber-400/40" />
               <span className="text-amber-400/60 text-xs tracking-[0.3em] uppercase">
-                ☸ Spiritual Guidance ☸
+                ☸ Ancient Eastern Wisdom ☸
               </span>
               <div className="w-12 h-px bg-amber-400/40" />
             </div>

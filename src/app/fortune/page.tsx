@@ -156,7 +156,11 @@ export default function FortunePage() {
 
         <main className="max-w-2xl mx-auto px-4 py-12 lg:py-20 pb-24">
           <div className="text-center mb-12">
-            <div className="text-4xl mb-4">✨</div>
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="w-8 h-px bg-amber-400/30" />
+              <span className="text-amber-400/40 text-[10px] tracking-[0.3em] uppercase">Ancient Eastern Wisdom</span>
+              <div className="w-8 h-px bg-amber-400/30" />
+            </div>
             <h1 className="text-3xl lg:text-4xl font-bold text-gradient-gold">探索命运的奥秘</h1>
             <p className="text-amber-200/40 mt-3 text-sm">选择您想要的占卜方式</p>
           </div>
@@ -170,9 +174,9 @@ export default function FortunePage() {
                 <div className="text-3xl">☯</div>
                 <div className="flex-1">
                   <h2 className="text-lg font-bold text-amber-200 group-hover:text-amber-100 transition-colors">八字命理</h2>
-                  <p className="text-amber-200/40 text-sm mt-1 leading-relaxed">基于出生年月日时，精准推算四柱八字、五行分布、喜用神，结合 AI 深度解读性格与运势</p>
+                  <p className="text-amber-200/40 text-sm mt-1 leading-relaxed">源自 3000 年中国古老智慧的四柱命理系统，通过出生时刻精准推算命运蓝图，AI 深度解读</p>
                   <div className="flex items-center gap-2 mt-3 text-amber-400/30 text-xs">
-                    <span>四柱八字</span><span>·</span><span>五行分析</span><span>·</span><span>流年运势</span><span>·</span><span>AI 解读</span>
+                    <span>Four Pillars 四柱</span><span>·</span><span>Five Elements 五行</span><span>·</span><span>AI Reading</span>
                   </div>
                 </div>
                 <span className="text-amber-400/20 group-hover:text-amber-400/40 text-xl transition-colors">→</span>
@@ -189,7 +193,7 @@ export default function FortunePage() {
                   <h2 className="text-lg font-bold text-amber-200 group-hover:text-amber-100 transition-colors">星座运势</h2>
                   <p className="text-amber-200/40 text-sm mt-1 leading-relaxed">西洋占星每日运势，AI 生成个性化的爱情、事业、财运、健康分析</p>
                   <div className="flex items-center gap-2 mt-3 text-amber-400/30 text-xs">
-                    <span>12 星座</span><span>·</span><span>每日运势</span><span>·</span><span>AI 生成</span>
+                    <span>12 Zodiac Signs</span><span>·</span><span>Daily Reading</span><span>·</span><span>AI Powered</span>
                   </div>
                 </div>
                 <span className="text-amber-400/20 group-hover:text-amber-400/40 text-xl transition-colors">→</span>
@@ -473,10 +477,10 @@ export default function FortunePage() {
                       {/* Pricing */}
                       <div className="bg-amber-900/20 border border-amber-500/20 rounded-xl p-4 text-center">
                         <div className="flex items-center justify-center gap-2">
-                          <span className="text-amber-200/30 line-through text-sm">$12.99</span>
-                          <span className="text-3xl font-bold text-amber-300">$3.99</span>
+                          <span className="text-amber-200/30 line-through text-sm">$19.99</span>
+                          <span className="text-3xl font-bold text-amber-300">$9.99</span>
                         </div>
-                        <p className="text-amber-200/30 text-xs mt-1">Limited offer · One-time purchase · Instant delivery</p>
+                        <p className="text-amber-200/30 text-xs mt-1">Launch special · One-time purchase · Instant delivery</p>
                       </div>
 
                       {/* Payment Button */}
@@ -485,10 +489,10 @@ export default function FortunePage() {
                           onClick={() => { setUnlocked(true); setShowPaywall(false); handleAiReading(); }}
                           className="w-full py-3.5 rounded-xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all text-sm"
                         >
-                          💳 Pay $3.99 — Unlock Full Report
+                          💳 Pay $9.99 — Unlock Full Destiny Report
                         </button>
                         <p className="text-center text-amber-200/15 text-[10px] leading-relaxed">
-                          Secure payment via Stripe · Visa / Mastercard / Apple Pay / Google Pay
+                          Secure payment via Stripe · Visa / Mastercard / Apple Pay / Google Pay / Alipay
                         </p>
                       </div>
 

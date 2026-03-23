@@ -5,6 +5,7 @@
 
 // @ts-expect-error lunar-javascript has no type declarations
 import { Solar, Lunar } from "lunar-javascript";
+import { NAYIN_TABLE, DAY_MASTER_DESC } from "./bazi-glossary";
 
 // ===== Constants =====
 
@@ -123,6 +124,18 @@ export interface BaziChart {
   zodiacEmoji: string;      // 生肖 emoji
   westernZodiac: string;    // 西洋星座
   westernZodiacSymbol: string;
+
+  // Enhanced analysis
+  tenGods: { year: string; month: string; hour: string }; // Ten Gods for each pillar stem
+  nayin: { year: string; month: string; day: string; hour: string }; // Nayin for each pillar
+  dayMasterStrength: "strong" | "weak";
+  dayMasterScore: number; // 0-100
+  dayMasterDesc: string;
+  dayMasterDescEn: string;
+  unluckyElement: string; // 忌神
+  currentYearStem: string;
+  currentYearBranch: string;
+  currentYearNayin: string;
 
   // Metadata
   elementColors: Record<string, string>;
@@ -272,6 +285,46 @@ export function calculateBazi(
   // Birth hour name
   const hourInfo = CHINESE_HOURS.find((h) => h.branch === hourBranch);
 
+  // Ten Gods
+  const tenGods = {
+    year: getTenGod(dayStem, yearStem),
+    month: getTenGod(dayStem, monthStem),
+    hour: getTenGod(dayStem, hourStem),
+  };
+
+  // Nayin
+  const nayin = {
+    year: NAYIN_TABLE[yearStem + yearBranch] || "",
+    month: NAYIN_TABLE[monthStem + monthBranch] || "",
+    day: NAYIN_TABLE[dayStem + dayBranch] || "",
+    hour: NAYIN_TABLE[hourStem + hourBranch] || "",
+  };
+
+  // Day Master strength (simplified scoring)
+  const supportCount = fiveElements[dayMasterElement as keyof FiveElementCount];
+  // Element that generates day master
+  const generatorEl = Object.entries(ELEMENT_GENERATES).find(([, v]) => v === dayMasterElement)?.[0] || "";
+  const generatorCount = generatorEl ? fiveElements[generatorEl as keyof FiveElementCount] : 0;
+  const totalSupport = supportCount + generatorCount;
+  const total = Object.values(fiveElements).reduce((a, b) => a + b, 0);
+  const dayMasterScore = Math.min(100, Math.round((totalSupport / total) * 100 * 2));
+  const dayMasterStrength = dayMasterScore >= 50 ? "strong" as const : "weak" as const;
+
+  // Day Master personality
+  const dmDesc = DAY_MASTER_DESC[dayStem] || { trait: "", traitEn: "" };
+
+  // Unlucky element (忌神) — opposite of lucky
+  const unluckyElement = ELEMENT_CONTROLS[luckyElement] || "";
+
+  // Current year
+  const now = new Date();
+  const currentSolar = Solar.fromYmd(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  const currentLunar = currentSolar.getLunar();
+  const currentEC = currentLunar.getEightChar();
+  const currentYearStem = currentEC.getYearGan();
+  const currentYearBranch = currentEC.getYearZhi();
+  const currentYearNayin = NAYIN_TABLE[currentYearStem + currentYearBranch] || "";
+
   return {
     solarDate: `${year}年${month}月${day}日`,
     lunarDate,
@@ -295,9 +348,20 @@ export function calculateBazi(
     westernZodiac: westernZodiac.name,
     westernZodiacSymbol: westernZodiac.symbol,
 
+    tenGods,
+    nayin,
+    dayMasterStrength,
+    dayMasterScore,
+    dayMasterDesc: dmDesc.trait,
+    dayMasterDescEn: dmDesc.traitEn,
+    unluckyElement,
+    currentYearStem,
+    currentYearBranch,
+    currentYearNayin,
+
     elementColors: ELEMENT_COLORS,
     elementEmoji: ELEMENT_EMOJI,
   };
 }
 
-export { CHINESE_HOURS, ELEMENT_COLORS, ELEMENT_EMOJI, STEM_ELEMENTS, BRANCH_ELEMENTS };
+export { CHINESE_HOURS, ELEMENT_COLORS, ELEMENT_EMOJI, STEM_ELEMENTS, BRANCH_ELEMENTS, HEAVENLY_STEMS, EARTHLY_BRANCHES };

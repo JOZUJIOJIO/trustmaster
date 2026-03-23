@@ -3,7 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useLocale } from "@/lib/LocaleContext";
-import { calculateBazi, CHINESE_HOURS, type BaziChart } from "@/lib/bazi";
+import { calculateBazi, CHINESE_HOURS, type BaziChart, getTenGod, STEM_ELEMENTS } from "@/lib/bazi";
+import { ELEMENT_RECOMMENDATIONS } from "@/lib/bazi-glossary";
+import { Term } from "@/components/Tooltip";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
@@ -363,13 +365,15 @@ export default function FortunePage() {
 
         {/* ===== Step 5: Result ===== */}
         {step === "result" && chart && (
-          <div className="space-y-6">
+          <div className="space-y-5">
+            {/* Header */}
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 text-amber-400/30 text-xs mb-4">
                 <span>☸</span><span>四柱八字命盘</span><span>☸</span>
               </div>
-              <h2 className="text-xl font-bold text-amber-100">{chart.solarDate}</h2>
-              <p className="text-amber-200/50 text-sm mt-1">{chart.lunarDate} · {chart.birthHour}</p>
+              {userName && <h2 className="text-xl font-bold text-amber-100 mb-1">{userName}</h2>}
+              <p className="text-amber-200/60 text-sm">{chart.solarDate}</p>
+              <p className="text-amber-200/40 text-xs mt-1">{chart.lunarDate} · {chart.birthHour}</p>
               <div className="flex items-center justify-center gap-3 mt-2">
                 <span className="text-sm text-amber-200/40">{chart.zodiacEmoji} {chart.zodiacAnimal}</span>
                 <span className="text-amber-400/20">·</span>
@@ -377,27 +381,88 @@ export default function FortunePage() {
               </div>
             </div>
 
-            {/* Four Pillars */}
-            <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-6">
-              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-5">四 柱 八 字</h3>
-              <div className="grid grid-cols-4 gap-3">
-                <PillarCard label="年柱" pillar={chart.yearPillar} />
-                <PillarCard label="月柱" pillar={chart.monthPillar} />
-                <PillarCard label="日柱" pillar={chart.dayPillar} />
-                <PillarCard label="时柱" pillar={chart.hourPillar} />
+            {/* ① Four Pillars — Enhanced */}
+            <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
+              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">
+                <Term k="四柱">四 柱 八 字</Term>
+              </h3>
+              <div className="grid grid-cols-4 gap-2.5">
+                {[
+                  { label: "年柱", pillar: chart.yearPillar, tenGod: chart.tenGods.year, nayin: chart.nayin.year, termKey: "年柱" },
+                  { label: "月柱", pillar: chart.monthPillar, tenGod: chart.tenGods.month, nayin: chart.nayin.month, termKey: "月柱" },
+                  { label: "日柱", pillar: chart.dayPillar, tenGod: "日主", nayin: chart.nayin.day, termKey: "日柱" },
+                  { label: "时柱", pillar: chart.hourPillar, tenGod: chart.tenGods.hour, nayin: chart.nayin.hour, termKey: "时柱" },
+                ].map(({ label, pillar, tenGod, nayin, termKey }) => (
+                  <div key={label} className="text-center">
+                    <div className="text-[10px] text-amber-200/40 mb-1"><Term k={termKey}>{label}</Term></div>
+                    <div className="text-[9px] text-amber-500/50 mb-1"><Term k={tenGod === "日主" ? "日主" : tenGod}>{tenGod}</Term></div>
+                    <div className="bg-white/5 border border-amber-400/10 rounded-xl p-2.5 space-y-0.5">
+                      <div className="text-xl font-bold text-amber-300">{pillar.stem}</div>
+                      <div className="text-[10px] text-amber-200/30">{pillar.stemElement}</div>
+                      <div className="w-6 h-px bg-amber-400/15 mx-auto" />
+                      <div className="text-xl font-bold text-amber-100">{pillar.branch}</div>
+                      <div className="text-[10px] text-amber-200/30">{pillar.branchElement}</div>
+                    </div>
+                    <div className="text-[9px] text-amber-200/25 mt-1">{pillar.animal}</div>
+                    {nayin && <div className="text-[9px] text-amber-400/30 mt-0.5"><Term k="纳音">{nayin}</Term></div>}
+                  </div>
+                ))}
               </div>
-              <div className="text-center mt-4 pt-4 border-t border-white/5">
-                <span className="text-xs text-amber-200/30">日主：</span>
-                <span className="text-sm font-bold text-amber-300">{chart.dayMaster}{chart.dayMasterElement}</span>
-                <span className="text-xs text-amber-200/30 ml-3">喜用神：</span>
-                <span className="text-sm font-bold text-amber-300">{chart.luckyElement}</span>
+
+              {/* Hidden Stems Row */}
+              <div className="mt-3 pt-3 border-t border-white/5">
+                <div className="text-center text-[10px] text-amber-400/30 mb-2"><Term k="藏干">藏干</Term></div>
+                <div className="grid grid-cols-4 gap-2.5 text-center">
+                  {[chart.yearPillar, chart.monthPillar, chart.dayPillar, chart.hourPillar].map((p, i) => (
+                    <div key={i} className="text-[11px] text-amber-200/40">
+                      {p.hiddenStems.map((s, j) => (
+                        <span key={j}>
+                          {j > 0 && " "}
+                          <span className="text-amber-200/60">{s}</span>
+                          <span className="text-[9px] text-amber-200/20">{STEM_ELEMENTS[s]}</span>
+                        </span>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Five Elements */}
-            <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-6">
-              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-5">五 行 分 布</h3>
-              <div className="space-y-3">
+            {/* ② Day Master Analysis */}
+            <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
+              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">
+                <Term k="日主">日 主 分 析</Term>
+              </h3>
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-amber-300">{chart.dayMaster}</div>
+                  <div className="text-xs text-amber-200/40 mt-1">{chart.dayMasterElement}命</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold" style={{ color: chart.dayMasterStrength === "strong" ? "#22c55e" : "#f59e0b" }}>
+                    <Term k={chart.dayMasterStrength === "strong" ? "身强" : "身弱"}>
+                      {chart.dayMasterStrength === "strong" ? "身 强" : "身 弱"}
+                    </Term>
+                  </div>
+                  {/* Strength meter */}
+                  <div className="w-24 h-2 bg-white/10 rounded-full mt-2 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-1000"
+                      style={{ width: `${chart.dayMasterScore}%`, backgroundColor: chart.dayMasterStrength === "strong" ? "#22c55e" : "#f59e0b" }}
+                    />
+                  </div>
+                  <div className="text-[10px] text-amber-200/30 mt-1">{chart.dayMasterScore}/100</div>
+                </div>
+              </div>
+              <p className="text-amber-100/60 text-xs leading-relaxed text-center">{chart.dayMasterDesc}</p>
+            </div>
+
+            {/* ③ Five Elements */}
+            <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
+              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">
+                <Term k="五行相生">五 行 分 布</Term>
+              </h3>
+              <div className="space-y-2.5">
                 {(["木", "火", "土", "金", "水"] as const).map((el) => (
                   <ElementBar
                     key={el}
@@ -409,18 +474,90 @@ export default function FortunePage() {
                   />
                 ))}
               </div>
+              {/* Generation cycle visual */}
+              <div className="mt-4 pt-3 border-t border-white/5 text-center">
+                <div className="text-[10px] text-amber-200/25 mb-2">五行相生相克</div>
+                <div className="text-xs text-amber-200/40 leading-loose">
+                  🌳→🔥→⛰️→⚙️→💧→🌳 <span className="text-amber-200/20 ml-2">（相生）</span>
+                </div>
+              </div>
             </div>
 
-            {/* Free Summary */}
-            <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-6">
-              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">命 盘 概 要</h3>
-              <p className="text-amber-100/70 text-sm leading-relaxed text-center">
-                {chart.dayMaster}（{chart.dayMasterElement}）日主，
-                {chart.fiveElements[chart.dayMasterElement as keyof typeof chart.fiveElements] >= 3 ? "身旺" : "身弱"}，
-                五行{Object.entries(chart.fiveElements).filter(([,v]) => v >= 3).map(([k]) => k).join("、") || "均衡"}偏旺，
-                {Object.entries(chart.fiveElements).filter(([,v]) => v <= 1).map(([k]) => k).join("、") || "无"}偏弱。
-                喜用神为{chart.luckyElement}，宜补{chart.luckyElement}之气。
-              </p>
+            {/* ④ Key Indicators */}
+            <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
+              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">命 盘 要 素</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-white/[0.03] rounded-xl p-3 text-center border border-white/5">
+                  <div className="text-[10px] text-amber-200/30 mb-1"><Term k="喜用神">喜用神</Term></div>
+                  <div className="text-lg font-bold" style={{ color: chart.elementColors[chart.luckyElement] }}>
+                    {chart.elementEmoji[chart.luckyElement]} {chart.luckyElement}
+                  </div>
+                  <div className="text-[10px] text-amber-200/25 mt-1">宜多亲近</div>
+                </div>
+                <div className="bg-white/[0.03] rounded-xl p-3 text-center border border-white/5">
+                  <div className="text-[10px] text-amber-200/30 mb-1">忌神</div>
+                  <div className="text-lg font-bold text-red-400/70">
+                    {chart.elementEmoji[chart.unluckyElement]} {chart.unluckyElement}
+                  </div>
+                  <div className="text-[10px] text-amber-200/25 mt-1">宜少接触</div>
+                </div>
+              </div>
+            </div>
+
+            {/* ⑤ Lucky Element Recommendations */}
+            {ELEMENT_RECOMMENDATIONS[chart.luckyElement] && (
+              <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
+                <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">开 运 指 南</h3>
+                {(() => {
+                  const rec = ELEMENT_RECOMMENDATIONS[chart.luckyElement];
+                  return (
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-white/[0.02] rounded-lg p-3 border border-white/5">
+                        <div className="text-[10px] text-amber-400/40 mb-1">🎨 幸运色</div>
+                        <div className="text-xs text-amber-100/60">{rec.colors}</div>
+                      </div>
+                      <div className="bg-white/[0.02] rounded-lg p-3 border border-white/5">
+                        <div className="text-[10px] text-amber-400/40 mb-1">🧭 方位</div>
+                        <div className="text-xs text-amber-100/60">{rec.directions}</div>
+                      </div>
+                      <div className="bg-white/[0.02] rounded-lg p-3 border border-white/5">
+                        <div className="text-[10px] text-amber-400/40 mb-1">🔢 幸运数字</div>
+                        <div className="text-xs text-amber-100/60">{rec.numbers}</div>
+                      </div>
+                      <div className="bg-white/[0.02] rounded-lg p-3 border border-white/5">
+                        <div className="text-[10px] text-amber-400/40 mb-1">💼 宜从事行业</div>
+                        <div className="text-xs text-amber-100/60">{rec.industries}</div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
+            {/* ⑥ Current Year Influence */}
+            <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
+              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">
+                <Term k="流年">{new Date().getFullYear()} 流 年 简 析</Term>
+              </h3>
+              <div className="text-center space-y-2">
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-lg text-amber-300">{chart.currentYearStem}{chart.currentYearBranch}</span>
+                  {chart.currentYearNayin && <span className="text-xs text-amber-200/40"><Term k="纳音">{chart.currentYearNayin}</Term></span>}
+                </div>
+                <p className="text-xs text-amber-100/50 leading-relaxed">
+                  流年天干 <span className="text-amber-300">{chart.currentYearStem}</span>（{STEM_ELEMENTS[chart.currentYearStem]}）
+                  对日主 <span className="text-amber-300">{chart.dayMaster}</span>（{chart.dayMasterElement}）为
+                  <span className="text-amber-300 font-bold"> {getTenGod(chart.dayMaster, chart.currentYearStem)}</span>，
+                  {(() => {
+                    const god = getTenGod(chart.dayMaster, chart.currentYearStem);
+                    if (["正财", "偏财"].includes(god)) return "今年财运活跃，宜把握机会。";
+                    if (["正官", "七杀"].includes(god)) return "今年事业压力与机遇并存，宜谨慎行事。";
+                    if (["正印", "偏印"].includes(god)) return "今年有贵人相助，适合学习进修。";
+                    if (["食神", "伤官"].includes(god)) return "今年才华展现，适合创作和表达。";
+                    return "今年运势平稳，宜稳中求进。";
+                  })()}
+                </p>
+              </div>
             </div>
 
             {/* AI Deep Reading — Paywall or Content */}

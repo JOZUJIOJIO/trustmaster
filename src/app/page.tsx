@@ -67,7 +67,7 @@ export default function Home() {
         {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/hero-buddha.jpg')" }}
+          style={{ backgroundImage: "url('/hero-zen.jpg')" }}
         />
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/60" />

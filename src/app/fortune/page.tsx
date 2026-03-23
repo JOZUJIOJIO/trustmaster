@@ -8,7 +8,7 @@ import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 type Mode = "select" | "bazi" | "zodiac";
-type Step = "date" | "hour" | "gender" | "result";
+type Step = "date" | "hour" | "gender" | "name" | "result";
 
 // ===== Five Element Bar =====
 function ElementBar({ element, count, max, color, emoji }: {
@@ -70,6 +70,7 @@ export default function FortunePage() {
   const [birthDate, setBirthDate] = useState("");
   const [hourBranch, setHourBranch] = useState("");
   const [gender, setGender] = useState<"male" | "female" | "">("");
+  const [userName, setUserName] = useState("");
 
   // Results
   const [chart, setChart] = useState<BaziChart | null>(null);
@@ -113,14 +114,29 @@ export default function FortunePage() {
     setAiReading(null);
   };
 
+  const [pdfLoading, setPdfLoading] = useState(false);
+
+  const handleExportPDF = async () => {
+    if (!chart || pdfLoading) return;
+    setPdfLoading(true);
+    try {
+      const { generateBaziPDF } = await import("@/lib/generate-pdf");
+      await generateBaziPDF(chart, aiReading, userName);
+    } catch (e) {
+      console.error("PDF export failed:", e);
+    }
+    setPdfLoading(false);
+  };
+
   const goBack = () => {
     if (step === "date") reset();
     else if (step === "hour") setStep("date");
     else if (step === "gender") setStep("hour");
-    else if (step === "result") { setChart(null); setAiReading(null); setStep("gender"); }
+    else if (step === "name") setStep("gender");
+    else if (step === "result") { setChart(null); setAiReading(null); setStep("name"); }
   };
 
-  const progressIndex = ["date", "hour", "gender"].indexOf(step);
+  const progressIndex = ["date", "hour", "gender", "name"].indexOf(step);
 
   // ===== Mode Selection =====
   if (mode === "select") {
@@ -202,8 +218,8 @@ export default function FortunePage() {
         {step === "date" && (
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-10">
-              {[0, 1, 2].map((i) => (
-                <div key={i} className={`h-1 rounded-full transition-all w-8 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className={`h-1 rounded-full transition-all w-6 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
             <div className="text-5xl mb-6">📅</div>
@@ -231,8 +247,8 @@ export default function FortunePage() {
         {step === "hour" && (
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-10">
-              {[0, 1, 2].map((i) => (
-                <div key={i} className={`h-1 rounded-full transition-all w-8 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className={`h-1 rounded-full transition-all w-6 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
             <div className="text-5xl mb-6">🕐</div>
@@ -274,8 +290,8 @@ export default function FortunePage() {
         {step === "gender" && (
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-10">
-              {[0, 1, 2].map((i) => (
-                <div key={i} className={`h-1 rounded-full transition-all w-8 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className={`h-1 rounded-full transition-all w-6 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
             <div className="text-5xl mb-6">⚤</div>
@@ -298,16 +314,50 @@ export default function FortunePage() {
               ))}
             </div>
             <button
-              onClick={handleCalculate}
+              onClick={() => gender && setStep("name")}
               disabled={!gender}
               className="mt-10 w-full max-w-xs mx-auto block px-8 py-3.5 rounded-xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
+            >
+              下一步
+            </button>
+          </div>
+        )}
+
+        {/* ===== Step 4: Name ===== */}
+        {step === "name" && (
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-10">
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className={`h-1 rounded-full transition-all w-6 ${i <= 3 ? "bg-amber-500" : "bg-white/10"}`} />
+              ))}
+            </div>
+            <div className="text-5xl mb-6">📝</div>
+            <h2 className="text-2xl font-bold text-amber-100 mb-2">请输入您的姓名</h2>
+            <p className="text-amber-200/40 text-sm mb-10">姓名将显示在命理报告中（可选）</p>
+            <input
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              placeholder="请输入姓名"
+              className="w-full max-w-xs mx-auto bg-white/5 border border-amber-400/20 rounded-xl px-4 py-3.5 text-amber-100 text-center text-lg placeholder:text-amber-200/20 focus:outline-none focus:border-amber-400/40 focus:ring-1 focus:ring-amber-400/20"
+            />
+            <button
+              onClick={() => { if (!userName.trim()) setUserName("缘主"); handleCalculate(); }}
+              className="mt-4 text-amber-200/30 text-xs hover:text-amber-200/50 cursor-pointer transition-colors"
+            >
+              跳过，直接生成命盘
+            </button>
+            <button
+              onClick={handleCalculate}
+              disabled={!userName.trim()}
+              className="mt-6 w-full max-w-xs mx-auto block px-8 py-3.5 rounded-xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
             >
               生成命盘
             </button>
           </div>
         )}
 
-        {/* ===== Step 4: Result ===== */}
+        {/* ===== Step 5: Result ===== */}
         {step === "result" && chart && (
           <div className="space-y-6">
             <div className="text-center">
@@ -488,7 +538,16 @@ export default function FortunePage() {
               </div>
             ) : null}
 
-            <div className="flex gap-3 pt-4">
+            {/* PDF Export */}
+            <button
+              onClick={handleExportPDF}
+              disabled={pdfLoading}
+              className="w-full py-3.5 rounded-2xl font-semibold text-sm cursor-pointer bg-white/5 hover:bg-white/10 text-amber-200/70 border border-amber-400/15 transition-all disabled:opacity-50"
+            >
+              {pdfLoading ? "正在生成 PDF..." : "📄 导出命理报告 PDF"}
+            </button>
+
+            <div className="flex gap-3 pt-2">
               <button onClick={reset} className="flex-1 py-3 rounded-xl text-sm font-medium cursor-pointer bg-white/5 text-amber-200/60 hover:bg-white/10 transition-colors border border-white/5">
                 重新测算
               </button>

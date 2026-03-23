@@ -103,7 +103,8 @@ export default function MasterProfile({
   const specialties = getLocalizedList(locale, master.specialty_th, master.specialty);
   const description = getLocalizedText(locale, master.description_th, master.description);
   const location = getLocalizedText(locale, master.location_th, master.location);
-  const lineUrl = `https://line.me/R/ti/p/${encodeURIComponent(master.line_id)}`;
+  const hasLineId = master.line_id && master.line_id.trim() !== "";
+  const lineUrl = hasLineId ? `https://line.me/R/ti/p/${encodeURIComponent(master.line_id)}` : "#";
 
   return (
     <div className="min-h-screen">
@@ -188,16 +189,18 @@ export default function MasterProfile({
               </div>
 
               {/* Book CTA - PC */}
-              <div className="hidden lg:block px-6 pb-6">
-                <a
-                  href={lineUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full bg-amber-800 hover:bg-amber-900 text-white text-center py-3.5 rounded-xl font-semibold text-[15px] transition-colors shadow-lg shadow-amber-800/20"
-                >
-                  💬 {t("detail.bookLine")} · {t("detail.from")} ฿{master.price_min}
-                </a>
-              </div>
+              {hasLineId && (
+                <div className="hidden lg:block px-6 pb-6">
+                  <a
+                    href={lineUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full bg-amber-800 hover:bg-amber-900 text-white text-center py-3.5 rounded-xl font-semibold text-[15px] transition-colors shadow-lg shadow-amber-800/20"
+                  >
+                    💬 {t("detail.bookLine")} · {t("detail.from")} ฿{master.price_min}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 
@@ -282,6 +285,7 @@ export default function MasterProfile({
                   masterId={master.id}
                   onSubmitted={() => {
                     getReviewsByMasterId(id).then(setReviews);
+                    getMasterById(id).then((m) => { if (m) setMaster(m); });
                   }}
                 />
               </div>
@@ -291,16 +295,18 @@ export default function MasterProfile({
       </main>
 
       {/* Mobile CTA */}
-      <div className="fixed bottom-16 left-0 right-0 max-w-md mx-auto px-4 pb-2 z-10 lg:hidden">
-        <a
-          href={lineUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block w-full bg-amber-800 hover:bg-amber-900 text-white text-center py-3.5 rounded-xl font-semibold text-[15px] transition-colors shadow-lg shadow-amber-800/20"
-        >
-          💬 {t("detail.bookLine")} · {t("detail.from")} ฿{master.price_min}
-        </a>
-      </div>
+      {hasLineId && (
+        <div className="fixed bottom-16 left-0 right-0 max-w-md mx-auto px-4 pb-2 z-10 lg:hidden">
+          <a
+            href={lineUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full bg-amber-800 hover:bg-amber-900 text-white text-center py-3.5 rounded-xl font-semibold text-[15px] transition-colors shadow-lg shadow-amber-800/20"
+          >
+            💬 {t("detail.bookLine")} · {t("detail.from")} ฿{master.price_min}
+          </a>
+        </div>
+      )}
 
       <BottomNav />
     </div>

@@ -31,22 +31,29 @@ function MasterCardSkeleton() {
 export default function Home() {
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [masters, setMasters] = useState<Master[]>([]);
   const [loading, setLoading] = useState(true);
   const [showHero, setShowHero] = useState(true);
   const { t } = useLocale();
 
+  // Debounce search input by 300ms
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(timer);
+  }, [search]);
+
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    filterMasters(category, search).then((data) => {
+    filterMasters(category, debouncedSearch).then((data) => {
       if (!cancelled) {
         setMasters(data);
         setLoading(false);
       }
     });
     return () => { cancelled = true; };
-  }, [category, search]);
+  }, [category, debouncedSearch]);
 
   const totalReviews = masters.reduce((sum, m) => sum + m.review_count, 0);
   const avgSatisfaction = masters.length
@@ -112,7 +119,7 @@ export default function Home() {
             <div className="flex items-center gap-8 lg:gap-12 mt-12">
               <div className="text-center">
                 <div className="text-2xl lg:text-3xl font-bold text-amber-300 drop-shadow-lg">
-                  {masters.length || 6}
+                  {loading ? "--" : masters.length}
                 </div>
                 <div className="text-[10px] lg:text-xs text-amber-200/40 mt-1 tracking-wider uppercase">
                   {t("stats.masters")}
@@ -121,7 +128,7 @@ export default function Home() {
               <div className="w-px h-10 bg-amber-400/15" />
               <div className="text-center">
                 <div className="text-2xl lg:text-3xl font-bold text-amber-300 drop-shadow-lg">
-                  {totalReviews || 1049}
+                  {loading ? "--" : totalReviews}
                 </div>
                 <div className="text-[10px] lg:text-xs text-amber-200/40 mt-1 tracking-wider uppercase">
                   {t("stats.reviews")}
@@ -130,7 +137,7 @@ export default function Home() {
               <div className="w-px h-10 bg-amber-400/15" />
               <div className="text-center">
                 <div className="text-2xl lg:text-3xl font-bold text-amber-300 drop-shadow-lg">
-                  {avgSatisfaction || 89}%
+                  {loading ? "--" : `${avgSatisfaction}%`}
                 </div>
                 <div className="text-[10px] lg:text-xs text-amber-200/40 mt-1 tracking-wider uppercase">
                   {t("stats.satisfaction")}

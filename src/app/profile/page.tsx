@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { useLocale } from "@/lib/LocaleContext";
 import { createClient } from "@/lib/supabase/client";
-import type { Review } from "@/lib/types";
+import { getMasters } from "@/lib/db";
+import type { Review, Master } from "@/lib/types";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
@@ -15,6 +16,7 @@ export default function ProfilePage() {
   const { t } = useLocale();
   const router = useRouter();
   const [myReviews, setMyReviews] = useState<Review[]>([]);
+  const [masterNames, setMasterNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,15 +27,21 @@ export default function ProfilePage() {
     }
 
     const supabase = createClient();
-    supabase
-      .from("reviews")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .then(({ data }: { data: Review[] | null }) => {
-        setMyReviews(data ?? []);
-        setLoading(false);
-      });
+    Promise.all([
+      supabase
+        .from("reviews")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .then(({ data }: { data: Review[] | null }) => data ?? []),
+      getMasters(),
+    ]).then(([reviews, masters]: [Review[], Master[]]) => {
+      setMyReviews(reviews);
+      const names: Record<string, string> = {};
+      masters.forEach((m) => { names[m.id] = m.name_th || m.name; });
+      setMasterNames(names);
+      setLoading(false);
+    });
   }, [user, authLoading]);
 
   const handleSignOut = async () => {
@@ -115,7 +123,7 @@ export default function ProfilePage() {
                     <div key={review.id} className="bg-gray-50 rounded-xl p-3">
                       <div className="flex items-center justify-between">
                         <Link href={`/master/${review.master_id}`} className="text-sm font-medium text-amber-800">
-                          {review.master_id}
+                          {masterNames[review.master_id] || review.master_id}
                         </Link>
                         <span className="text-amber-500 text-sm">
                           {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}

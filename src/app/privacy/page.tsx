@@ -30,11 +30,22 @@ export default function PrivacyPage() {
           <h2 className="text-lg font-semibold text-gray-800">4. Cookies</h2>
           <p>We use essential cookies for authentication and session management. We use analytics cookies to understand usage patterns.</p>
 
-          <h2 className="text-lg font-semibold text-gray-800">5. Third-Party Services</h2>
-          <p>We use Supabase for authentication and data storage, and Vercel for hosting and analytics. These services have their own privacy policies.</p>
+          <h2 className="text-lg font-semibold text-gray-800">5. Payment Information</h2>
+          <p>Payment processing is handled by Stripe, Inc. We do not store your credit card numbers, CVV, or full payment details on our servers. Stripe processes your payment information in compliance with PCI DSS Level 1, the highest level of payment security certification.</p>
+          <p>We retain only transaction records (purchase date, amount, product purchased) for accounting purposes.</p>
 
-          <h2 className="text-lg font-semibold text-gray-800">6. Your Rights</h2>
-          <p>You can request access to, correction of, or deletion of your personal data at any time by contacting us.</p>
+          <h2 className="text-lg font-semibold text-gray-800">6. Third-Party Services</h2>
+          <p>We use the following third-party services:</p>
+          <ul style={{listStyleType: "disc", paddingLeft: "20px"}}>
+            <li>Supabase — authentication and data storage</li>
+            <li>Vercel — hosting and analytics</li>
+            <li>Stripe — payment processing</li>
+            <li>AI services — report generation (birth data is processed but not permanently stored by AI providers)</li>
+          </ul>
+          <p>Each service has its own privacy policy.</p>
+
+          <h2 className="text-lg font-semibold text-gray-800">7. Your Rights</h2>
+          <p>You can request access to, correction of, or deletion of your personal data at any time by contacting us. Upon account deletion, we will remove your personal data within 30 days, except where retention is required by law.</p>
 
           <h2 className="text-lg font-semibold text-gray-800">7. Data Retention</h2>
           <p>We retain your data for as long as your account is active. You can delete your account at any time.</p>

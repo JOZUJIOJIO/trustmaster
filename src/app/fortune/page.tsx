@@ -473,37 +473,37 @@ export default function FortunePage() {
                       {/* Pricing */}
                       <div className="bg-amber-900/20 border border-amber-500/20 rounded-xl p-4 text-center">
                         <div className="flex items-center justify-center gap-2">
-                          <span className="text-amber-200/30 line-through text-sm">¥99</span>
-                          <span className="text-3xl font-bold text-amber-300">¥29</span>
+                          <span className="text-amber-200/30 line-through text-sm">$12.99</span>
+                          <span className="text-3xl font-bold text-amber-300">$3.99</span>
                         </div>
-                        <p className="text-amber-200/30 text-xs mt-1">限时优惠 · 一次付费永久查看</p>
+                        <p className="text-amber-200/30 text-xs mt-1">Limited offer · One-time purchase · Instant delivery</p>
                       </div>
 
-                      {/* Payment Methods */}
+                      {/* Payment Button */}
                       <div className="space-y-2.5">
                         <button
                           onClick={() => { setUnlocked(true); setShowPaywall(false); handleAiReading(); }}
-                          className="w-full py-3.5 rounded-xl font-semibold cursor-pointer bg-[#07c160] hover:bg-[#06ad56] text-white transition-colors text-sm"
+                          className="w-full py-3.5 rounded-xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all text-sm"
                         >
-                          💬 微信支付 ¥29
+                          💳 Pay $3.99 — Unlock Full Report
                         </button>
-                        <button
-                          onClick={() => { setUnlocked(true); setShowPaywall(false); handleAiReading(); }}
-                          className="w-full py-3.5 rounded-xl font-semibold cursor-pointer bg-[#1677ff] hover:bg-[#0e5fcc] text-white transition-colors text-sm"
-                        >
-                          💙 支付宝 ¥29
-                        </button>
-                        <button
-                          onClick={() => { setUnlocked(true); setShowPaywall(false); handleAiReading(); }}
-                          className="w-full py-3.5 rounded-xl font-semibold cursor-pointer bg-white/5 hover:bg-white/10 text-amber-200/70 border border-white/10 transition-colors text-sm"
-                        >
-                          💳 PromptPay / 其他支付
-                        </button>
+                        <p className="text-center text-amber-200/15 text-[10px] leading-relaxed">
+                          Secure payment via Stripe · Visa / Mastercard / Apple Pay / Google Pay
+                        </p>
                       </div>
 
-                      <p className="text-center text-amber-200/20 text-[10px]">
-                        支付即表示您同意我们的服务条款 · 如有问题请联系 support@trustmaster.app
-                      </p>
+                      {/* Compliance notices */}
+                      <div className="space-y-1.5 pt-2 border-t border-white/5">
+                        <p className="text-amber-200/20 text-[10px] leading-relaxed text-center">
+                          Digital product · Delivered instantly · Non-refundable after delivery
+                        </p>
+                        <p className="text-amber-200/20 text-[10px] leading-relaxed text-center">
+                          By purchasing you agree to our <a href="/terms" className="underline hover:text-amber-200/40">Terms of Service</a> and <a href="/privacy" className="underline hover:text-amber-200/40">Privacy Policy</a>
+                        </p>
+                        <p className="text-amber-200/15 text-[10px] text-center">
+                          This is an AI-powered personality analysis for entertainment purposes only.
+                        </p>
+                      </div>
 
                       <button
                         onClick={() => setShowPaywall(false)}

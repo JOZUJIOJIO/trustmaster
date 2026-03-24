@@ -50,8 +50,8 @@ export async function generateBaziPDF(
       <!-- Header -->
       <div style="text-align:center;border-bottom:2px solid #b45309;padding-bottom:20px;margin-bottom:24px;">
         <div style="font-size:11px;color:#999;letter-spacing:4px;margin-bottom:6px;">☸ TRUSTMASTER ☸</div>
-        <div style="font-size:26px;font-weight:bold;color:#92400e;">八字命理报告</div>
-        <div style="font-size:12px;color:#888;margin-top:8px;">BaZi Destiny Analysis Report</div>
+        <div style="font-size:26px;font-weight:bold;color:#92400e;">个性化人生蓝图分析</div>
+        <div style="font-size:12px;color:#888;margin-top:8px;">Personalized Life Blueprint Analysis</div>
       </div>
 
       <!-- User Info -->
@@ -149,7 +149,7 @@ export async function generateBaziPDF(
       heightLeft -= pageHeight;
     }
 
-    const fileName = `八字命理报告_${userName || "TrustMaster"}_${chart.solarDate.replace(/[年月]/g, "-").replace("日", "")}.pdf`;
+    const fileName = `TrustMaster_Analysis_${userName || "Report"}_${chart.solarDate.replace(/[年月]/g, "-").replace("日", "")}.pdf`;
     pdf.save(fileName);
   } finally {
     document.body.removeChild(container);

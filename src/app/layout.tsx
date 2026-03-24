@@ -16,13 +16,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TrustMaster | Ancient Eastern Wisdom Meets AI",
+  title: "TrustMaster | AI-Powered Eastern Personality & Life Insights",
   description:
-    "Discover your destiny through 5,000 years of Chinese BaZi, Feng Shui, and astrology tradition — powered by AI. Get your personalized Four Pillars of Destiny analysis.",
-  keywords: ["BaZi", "Four Pillars of Destiny", "Chinese astrology", "feng shui", "Eastern wisdom", "AI fortune", "destiny analysis", "five elements"],
+    "Discover personalized life insights through ancient Eastern philosophical frameworks powered by AI. BaZi Four Pillars personality analysis, Five Elements balance, and cultural wellness guidance.",
+  keywords: ["BaZi", "Four Pillars analysis", "personality insights", "five elements", "Eastern philosophy", "AI life analysis", "self-discovery", "cultural wellness"],
   openGraph: {
-    title: "TrustMaster | Ancient Eastern Wisdom Meets AI",
-    description: "Discover your destiny through 5,000 years of Eastern metaphysical tradition, powered by AI",
+    title: "TrustMaster | AI-Powered Eastern Personality & Life Insights",
+    description: "Personalized life insights through ancient Eastern philosophical frameworks, powered by AI",
     type: "website",
     locale: "zh_CN",
     alternateLocale: ["en_US", "th_TH", "vi_VN", "id_ID"],

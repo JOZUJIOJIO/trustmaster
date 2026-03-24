@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useLocale } from "@/lib/LocaleContext";
 import { calculateBazi, CHINESE_HOURS, type BaziChart, getTenGod, STEM_ELEMENTS } from "@/lib/bazi";
 import { ELEMENT_RECOMMENDATIONS } from "@/lib/bazi-glossary";
@@ -64,6 +65,14 @@ function ReadingCard({ icon, title, content }: { icon: string; title: string; co
 }
 
 export default function FortunePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#12101c]" />}>
+      <FortuneContent />
+    </Suspense>
+  );
+}
+
+function FortuneContent() {
   const { t } = useLocale();
   const [mode, setMode] = useState<Mode>("select");
   const [step, setStep] = useState<Step>("date");
@@ -80,6 +89,75 @@ export default function FortunePage() {
   const [aiLoading, setAiLoading] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const searchParams = useSearchParams();
+
+  // Auto-fill from URL query parameter (from homepage quick entry)
+  useEffect(() => {
+    const dateParam = searchParams.get("date");
+    if (dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
+      setBirthDate(dateParam);
+      setMode("bazi");
+      setStep("hour");
+    }
+  }, [searchParams]);
+
+  // Restore chart from sessionStorage after Stripe redirect
+  useEffect(() => {
+    const saved = sessionStorage.getItem("trustmaster_chart");
+    const savedName = sessionStorage.getItem("trustmaster_userName");
+    if (saved && !chart) {
+      try {
+        setChart(JSON.parse(saved));
+        if (savedName) setUserName(savedName);
+        setMode("bazi");
+        setStep("result");
+      } catch { /* ignore */ }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Check if returning from Stripe payment
+  useEffect(() => {
+    const paid = searchParams.get("paid");
+    const sessionId = searchParams.get("session_id");
+    if (paid === "true" && sessionId) {
+      // Verify payment
+      fetch("/api/checkout/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.paid) {
+            setUnlocked(true);
+            setShowPaywall(false);
+            // Auto-trigger AI reading if chart exists
+            if (chart) handleAiReading();
+          }
+        });
+    }
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleStripeCheckout = async () => {
+    setCheckoutLoading(true);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chartId: chart?.solarDate || "", userName }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        // Save chart to sessionStorage so it persists after redirect
+        if (chart) sessionStorage.setItem("trustmaster_chart", JSON.stringify(chart));
+        sessionStorage.setItem("trustmaster_userName", userName);
+        window.location.href = data.url;
+      }
+    } catch {
+      setCheckoutLoading(false);
+    }
+  };
 
   const handleCalculate = () => {
     if (!birthDate || !hourBranch || !gender) return;
@@ -164,7 +242,7 @@ export default function FortunePage() {
               <div className="w-8 h-px bg-amber-400/30" />
             </div>
             <h1 className="text-3xl lg:text-4xl font-bold text-gradient-gold">探索命运的奥秘</h1>
-            <p className="text-amber-200/40 mt-3 text-sm">选择您想要的占卜方式</p>
+            <p className="text-amber-200/40 mt-3 text-sm">选择您想要的个性化分析方式</p>
           </div>
 
           <div className="space-y-4">
@@ -176,7 +254,7 @@ export default function FortunePage() {
                 <div className="text-3xl">☯</div>
                 <div className="flex-1">
                   <h2 className="text-lg font-bold text-amber-200 group-hover:text-amber-100 transition-colors">八字命理</h2>
-                  <p className="text-amber-200/40 text-sm mt-1 leading-relaxed">源自 3000 年中国古老智慧的四柱命理系统，通过出生时刻精准推算命运蓝图，AI 深度解读</p>
+                  <p className="text-amber-200/40 text-sm mt-1 leading-relaxed">源自 3000 年中国古老智慧的四柱分析系统，通过出生时刻生成个性化人生蓝图，AI 深度解读</p>
                   <div className="flex items-center gap-2 mt-3 text-amber-400/30 text-xs">
                     <span>Four Pillars 四柱</span><span>·</span><span>Five Elements 五行</span><span>·</span><span>AI Reading</span>
                   </div>
@@ -184,6 +262,23 @@ export default function FortunePage() {
                 <span className="text-amber-400/20 group-hover:text-amber-400/40 text-xl transition-colors">→</span>
               </div>
             </button>
+
+            <Link
+              href="/daily"
+              className="block w-full text-left bg-white/[0.03] hover:bg-white/[0.06] border border-amber-400/10 hover:border-amber-400/20 rounded-2xl p-6 transition-all duration-300 group"
+            >
+              <div className="flex items-start gap-4">
+                <div className="text-3xl">📅</div>
+                <div className="flex-1">
+                  <h2 className="text-lg font-bold text-amber-200 group-hover:text-amber-100 transition-colors">每日运势</h2>
+                  <p className="text-amber-200/40 text-sm mt-1 leading-relaxed">基于您的八字日主，每天个性化的四维运势评分、宜忌指南、幸运指引</p>
+                  <div className="flex items-center gap-2 mt-3 text-amber-400/30 text-xs">
+                    <span>Daily Score</span><span>·</span><span>今日宜忌</span><span>·</span><span>幸运指引</span>
+                  </div>
+                </div>
+                <span className="text-amber-400/20 group-hover:text-amber-400/40 text-xl transition-colors">→</span>
+              </div>
+            </Link>
 
             <Link
               href="/fortune/zodiac"
@@ -339,7 +434,7 @@ export default function FortunePage() {
             </div>
             <div className="text-5xl mb-6">📝</div>
             <h2 className="text-2xl font-bold text-amber-100 mb-2">请输入您的姓名</h2>
-            <p className="text-amber-200/40 text-sm mb-10">姓名将显示在命理报告中（可选）</p>
+            <p className="text-amber-200/40 text-sm mb-10">姓名将显示在个性化分析报告中（可选）</p>
             <input
               type="text"
               value={userName}
@@ -587,7 +682,7 @@ export default function FortunePage() {
                     <div className="bg-white/[0.03] border border-amber-400/15 rounded-2xl p-6 space-y-5">
                       <div className="text-center">
                         <div className="text-3xl mb-3">✨</div>
-                        <h3 className="text-xl font-bold text-amber-100">解锁完整命理报告</h3>
+                        <h3 className="text-xl font-bold text-amber-100">解锁完整个性化分析报告</h3>
                         <p className="text-amber-200/40 text-sm mt-2">
                           基于您的真实八字，AI 大师将为您深度解读 6 大维度
                         </p>
@@ -620,13 +715,14 @@ export default function FortunePage() {
                         <p className="text-amber-200/30 text-xs mt-1">Launch special · One-time purchase · Instant delivery</p>
                       </div>
 
-                      {/* Payment Button */}
+                      {/* Payment Button — Real Stripe Checkout */}
                       <div className="space-y-2.5">
                         <button
-                          onClick={() => { setUnlocked(true); setShowPaywall(false); handleAiReading(); }}
-                          className="w-full py-3.5 rounded-xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all text-sm"
+                          onClick={handleStripeCheckout}
+                          disabled={checkoutLoading}
+                          className="w-full py-3.5 rounded-xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all text-sm disabled:opacity-50"
                         >
-                          💳 Pay $9.99 — Unlock Full Destiny Report
+                          {checkoutLoading ? "Redirecting to checkout..." : "💳 Pay $9.99 — Unlock Full Personality Analysis"}
                         </button>
                         <p className="text-center text-amber-200/15 text-[10px] leading-relaxed">
                           Secure payment via Stripe · Visa / Mastercard / Apple Pay / Google Pay / Alipay
@@ -685,7 +781,7 @@ export default function FortunePage() {
               disabled={pdfLoading}
               className="w-full py-3.5 rounded-2xl font-semibold text-sm cursor-pointer bg-white/5 hover:bg-white/10 text-amber-200/70 border border-amber-400/15 transition-all disabled:opacity-50"
             >
-              {pdfLoading ? "正在生成 PDF..." : "📄 导出命理报告 PDF"}
+              {pdfLoading ? "正在生成 PDF..." : "📄 导出个性化分析报告 PDF"}
             </button>
 
             <div className="flex gap-3 pt-2">

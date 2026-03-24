@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLocale } from "@/lib/LocaleContext";
 import { filterMasters } from "@/lib/db";
 import type { Master } from "@/lib/types";
@@ -10,7 +11,8 @@ import CategoryFilter from "@/components/CategoryFilter";
 import SearchBar from "@/components/SearchBar";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { Particles, CursorLight, TypewriterText, GlowRing, AnimatedNumber, useScrollReveal } from "@/components/MysticalEffects";
+import { TypewriterText, GlowRing, AnimatedNumber, useScrollReveal } from "@/components/MysticalEffects";
+import StarfieldCanvas from "@/components/StarfieldCanvas";
 
 function MasterCardSkeleton() {
   return (
@@ -36,7 +38,16 @@ export default function Home() {
   const [masters, setMasters] = useState<Master[]>([]);
   const [loading, setLoading] = useState(true);
   const [showHero, setShowHero] = useState(true);
+  const [quickDate, setQuickDate] = useState("");
   const { t } = useLocale();
+  const router = useRouter();
+  useScrollReveal();
+
+  const handleQuickFortune = useCallback(() => {
+    if (!quickDate) return;
+    // Navigate to fortune page with pre-filled date
+    router.push(`/fortune?date=${quickDate}`);
+  }, [quickDate, router]);
 
   // Debounce search input by 300ms
   useEffect(() => {
@@ -75,19 +86,16 @@ export default function Home() {
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
 
-        {/* Floating particles */}
-        <Particles count={25} />
+        {/* Interactive starfield canvas — particles + mouse connections */}
+        <StarfieldCanvas />
 
         {/* Breathing glow around center */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[2]">
           <GlowRing size={300} color="rgba(217, 119, 6, 0.08)" />
           <GlowRing size={500} color="rgba(139, 92, 246, 0.04)" />
         </div>
 
-        {/* Cursor light (desktop only) */}
-        <CursorLight />
-
-        {/* Content */}
+        {/* Content — above canvas */}
         <div className="relative z-10 min-h-screen flex flex-col">
           {/* Top nav */}
           <nav className="flex items-center justify-between px-6 lg:px-12 py-5 animate-fadeIn" style={{ animationDuration: "1s" }}>
@@ -128,6 +136,32 @@ export default function Home() {
                style={{ animationDelay: "3s", animationDuration: "1.5s", animationFillMode: "both" }}>
               {t("hero.subtitle")}
             </p>
+
+            {/* Quick Fortune Entry — zero friction */}
+            <div className="mt-10 animate-fadeIn" style={{ animationDelay: "3.2s", animationDuration: "1s", animationFillMode: "both" }}>
+              <p className="text-amber-200/30 text-xs mb-3 tracking-wider">输入出生日期，秒出命盘</p>
+              <div className="flex items-center gap-2 max-w-sm mx-auto">
+                <input
+                  type="date"
+                  value={quickDate}
+                  onChange={(e) => setQuickDate(e.target.value)}
+                  max={new Date().toISOString().split("T")[0]}
+                  min="1940-01-01"
+                  className="flex-1 bg-white/[0.06] border border-amber-400/20 hover:border-amber-400/30 rounded-full px-5 py-3 text-amber-100 text-sm text-center focus:outline-none focus:border-amber-400/50 focus:ring-1 focus:ring-amber-400/20 transition-all placeholder:text-amber-200/20"
+                />
+                <button
+                  onClick={handleQuickFortune}
+                  disabled={!quickDate}
+                  className="px-6 py-3 rounded-full font-semibold text-sm cursor-pointer
+                             bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white
+                             border border-amber-500/30 disabled:opacity-30 disabled:cursor-not-allowed
+                             hover:shadow-[0_0_30px_rgba(217,119,6,0.25)] transition-all"
+                >
+                  开启 →
+                </button>
+              </div>
+              <p className="text-amber-200/15 text-[10px] mt-2">免费 · 无需注册 · 即时生成</p>
+            </div>
 
             {/* Stats row — animated counters */}
             <div className="flex items-center gap-8 lg:gap-12 mt-12 animate-fadeIn"
@@ -201,9 +235,6 @@ export default function Home() {
       </div>
     );
   }
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useScrollReveal();
 
   // ===== Main app view (after CTA click) =====
   return (

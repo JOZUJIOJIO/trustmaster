@@ -6,7 +6,8 @@ import { useLocale } from "@/lib/LocaleContext";
 
 const navItems = [
   { href: "/", icon: "🏠", labelKey: "nav.home" },
-  { href: "/fortune", icon: "✨", labelKey: "nav.fortune" },
+  { href: "/daily", icon: "📅", labelKey: "nav.daily" },
+  { href: "/fortune", icon: "☯", labelKey: "nav.fortune" },
   { href: "/favorites", icon: "❤️", labelKey: "nav.favorites" },
   { href: "/profile", icon: "👤", labelKey: "nav.profile" },
 ];

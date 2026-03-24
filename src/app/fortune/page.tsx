@@ -775,14 +775,16 @@ function FortuneContent() {
               </div>
             ) : null}
 
-            {/* PDF Export */}
-            <button
-              onClick={handleExportPDF}
-              disabled={pdfLoading}
-              className="w-full py-3.5 rounded-2xl font-semibold text-sm cursor-pointer bg-white/5 hover:bg-white/10 text-amber-200/70 border border-amber-400/15 transition-all disabled:opacity-50"
-            >
-              {pdfLoading ? "正在生成 PDF..." : "📄 导出个性化分析报告 PDF"}
-            </button>
+            {/* PDF Export — only after payment */}
+            {unlocked && (
+              <button
+                onClick={handleExportPDF}
+                disabled={pdfLoading}
+                className="w-full py-3.5 rounded-2xl font-semibold text-sm cursor-pointer bg-white/5 hover:bg-white/10 text-amber-200/70 border border-amber-400/15 transition-all disabled:opacity-50"
+              >
+                {pdfLoading ? "正在生成 PDF..." : "📄 导出个性化分析报告 PDF"}
+              </button>
+            )}
 
             <div className="flex gap-3 pt-2">
               <button onClick={reset} className="flex-1 py-3 rounded-xl text-sm font-medium cursor-pointer bg-white/5 text-amber-200/60 hover:bg-white/10 transition-colors border border-white/5">

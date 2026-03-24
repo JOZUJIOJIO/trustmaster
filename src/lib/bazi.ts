@@ -49,18 +49,18 @@ const HIDDEN_STEMS: Record<string, string[]> = {
 
 // Chinese hours (时辰)
 const CHINESE_HOURS = [
-  { name: "子时", branch: "子", start: "23:00", end: "01:00", label: "23:00-01:00" },
-  { name: "丑时", branch: "丑", start: "01:00", end: "03:00", label: "01:00-03:00" },
-  { name: "寅时", branch: "寅", start: "03:00", end: "05:00", label: "03:00-05:00" },
-  { name: "卯时", branch: "卯", start: "05:00", end: "07:00", label: "05:00-07:00" },
-  { name: "辰时", branch: "辰", start: "07:00", end: "09:00", label: "07:00-09:00" },
-  { name: "巳时", branch: "巳", start: "09:00", end: "11:00", label: "09:00-11:00" },
-  { name: "午时", branch: "午", start: "11:00", end: "13:00", label: "11:00-13:00" },
-  { name: "未时", branch: "未", start: "13:00", end: "15:00", label: "13:00-15:00" },
-  { name: "申时", branch: "申", start: "15:00", end: "17:00", label: "15:00-17:00" },
-  { name: "酉时", branch: "酉", start: "17:00", end: "19:00", label: "17:00-19:00" },
-  { name: "戌时", branch: "戌", start: "19:00", end: "21:00", label: "19:00-21:00" },
-  { name: "亥时", branch: "亥", start: "21:00", end: "23:00", label: "21:00-23:00" },
+  { name: "子时", nameEn: "Rat", branch: "子", start: "23:00", end: "01:00", label: "23:00-01:00" },
+  { name: "丑时", nameEn: "Ox", branch: "丑", start: "01:00", end: "03:00", label: "01:00-03:00" },
+  { name: "寅时", nameEn: "Tiger", branch: "寅", start: "03:00", end: "05:00", label: "03:00-05:00" },
+  { name: "卯时", nameEn: "Rabbit", branch: "卯", start: "05:00", end: "07:00", label: "05:00-07:00" },
+  { name: "辰时", nameEn: "Dragon", branch: "辰", start: "07:00", end: "09:00", label: "07:00-09:00" },
+  { name: "巳时", nameEn: "Snake", branch: "巳", start: "09:00", end: "11:00", label: "09:00-11:00" },
+  { name: "午时", nameEn: "Horse", branch: "午", start: "11:00", end: "13:00", label: "11:00-13:00" },
+  { name: "未时", nameEn: "Goat", branch: "未", start: "13:00", end: "15:00", label: "13:00-15:00" },
+  { name: "申时", nameEn: "Monkey", branch: "申", start: "15:00", end: "17:00", label: "15:00-17:00" },
+  { name: "酉时", nameEn: "Rooster", branch: "酉", start: "17:00", end: "19:00", label: "17:00-19:00" },
+  { name: "戌时", nameEn: "Dog", branch: "戌", start: "19:00", end: "21:00", label: "19:00-21:00" },
+  { name: "亥时", nameEn: "Pig", branch: "亥", start: "21:00", end: "23:00", label: "21:00-23:00" },
 ];
 
 // Ten Gods (十神) mapping based on Day Stem relationship
@@ -136,6 +136,9 @@ export interface BaziChart {
   currentYearStem: string;
   currentYearBranch: string;
   currentYearNayin: string;
+
+  // Major Luck Cycles (大运)
+  luckCycles: { startAge: number; stem: string; branch: string; element: string; nayin: string; tenGod: string }[];
 
   // Metadata
   elementColors: Record<string, string>;
@@ -325,6 +328,35 @@ export function calculateBazi(
   const currentYearBranch = currentEC.getYearZhi();
   const currentYearNayin = NAYIN_TABLE[currentYearStem + currentYearBranch] || "";
 
+  // Major Luck Cycles (大运) calculation
+  // Direction: Yang male or Yin female = forward; otherwise backward
+  const yearStemIndex = HEAVENLY_STEMS.indexOf(yearStem);
+  const isYangYear = yearStemIndex % 2 === 0;
+  const isForward = (isYangYear && gender === "male") || (!isYangYear && gender === "female");
+
+  const monthStemIdx = HEAVENLY_STEMS.indexOf(monthStem);
+  const monthBranchIdx = EARTHLY_BRANCHES.indexOf(monthBranch);
+  const luckCycles: BaziChart["luckCycles"] = [];
+
+  for (let i = 1; i <= 8; i++) {
+    const stemIdx = isForward
+      ? (monthStemIdx + i) % 10
+      : (monthStemIdx - i + 100) % 10;
+    const branchIdx = isForward
+      ? (monthBranchIdx + i) % 12
+      : (monthBranchIdx - i + 120) % 12;
+    const s = HEAVENLY_STEMS[stemIdx];
+    const b = EARTHLY_BRANCHES[branchIdx];
+    luckCycles.push({
+      startAge: i * 10 - 7, // Simplified: starts around age 3, then every 10 years
+      stem: s,
+      branch: b,
+      element: STEM_ELEMENTS[s],
+      nayin: NAYIN_TABLE[s + b] || "",
+      tenGod: getTenGod(dayStem, s),
+    });
+  }
+
   return {
     solarDate: `${year}年${month}月${day}日`,
     lunarDate,
@@ -358,6 +390,7 @@ export function calculateBazi(
     currentYearStem,
     currentYearBranch,
     currentYearNayin,
+    luckCycles,
 
     elementColors: ELEMENT_COLORS,
     elementEmoji: ELEMENT_EMOJI,

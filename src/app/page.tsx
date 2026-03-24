@@ -39,7 +39,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [showHero, setShowHero] = useState(true);
   const [quickDate, setQuickDate] = useState("");
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const router = useRouter();
   useScrollReveal();
 
@@ -207,6 +207,16 @@ export default function Home() {
               {t("hero.cta")} →
             </button>
 
+            {/* Secondary links */}
+            <div className="mt-8 flex items-center gap-6 animate-fadeIn" style={{ animationDelay: "4.5s", animationFillMode: "both" }}>
+              <Link href="/learn" className="text-xs text-amber-200/30 hover:text-amber-200/60 transition-colors underline underline-offset-2">
+                {locale === "zh" ? "了解八字" : "What is BaZi?"}
+              </Link>
+              <Link href="/about" className="text-xs text-amber-200/30 hover:text-amber-200/60 transition-colors underline underline-offset-2">
+                {locale === "zh" ? "关于我们" : "About Us"}
+              </Link>
+            </div>
+
             {/* Scroll hint — bounce animation */}
             <div className="mt-16 animate-bounceDown animate-fadeIn"
                  style={{ animationDelay: "5s", animationFillMode: "both" }}>
@@ -269,8 +279,65 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main id="masters" className="lg:max-w-6xl lg:mx-auto lg:px-6 lg:py-10">
+      {/* ===== Feature Cards Section ===== */}
+      <section className="lg:max-w-6xl lg:mx-auto px-4 lg:px-6 py-8 lg:py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-xl lg:text-2xl font-bold text-gray-900">
+            {locale === "zh" ? "探索东方智慧" : "Explore Eastern Wisdom"}
+          </h2>
+          <p className="text-sm text-gray-500 mt-2">
+            {locale === "zh" ? "选择适合你的分析工具" : "Choose the insight tool that fits you"}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+          {[
+            { href: "/fortune", icon: "☯", title: locale === "zh" ? "八字分析" : "BaZi Analysis", desc: locale === "zh" ? "四柱命理 · AI 解读" : "Four Pillars · AI Reading", color: "from-amber-50 to-orange-50 border-amber-200/50", textColor: "text-amber-900" },
+            { href: "/daily", icon: "📅", title: locale === "zh" ? "每日运势" : "Daily Insights", desc: locale === "zh" ? "个性化评分 · 宜忌" : "Personal Scores · Guidance", color: "from-blue-50 to-indigo-50 border-blue-200/50", textColor: "text-blue-900" },
+            { href: "/compatibility", icon: "💑", title: locale === "zh" ? "双人合盘" : "Compatibility", desc: locale === "zh" ? "五行互补 · 兼容度" : "Elements Match · Score", color: "from-purple-50 to-pink-50 border-purple-200/50", textColor: "text-purple-900" },
+            { href: "/learn", icon: "📖", title: locale === "zh" ? "了解八字" : "Learn BaZi", desc: locale === "zh" ? "3000年东方智慧" : "3,000 Years of Wisdom", color: "from-emerald-50 to-teal-50 border-emerald-200/50", textColor: "text-emerald-900" },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`bg-gradient-to-br ${item.color} rounded-2xl p-4 lg:p-5 border hover:shadow-lg hover:scale-[1.02] transition-all duration-300 group`}
+            >
+              <div className="text-2xl lg:text-3xl mb-2">{item.icon}</div>
+              <h3 className={`text-sm lg:text-base font-bold ${item.textColor} group-hover:opacity-80 transition-opacity`}>{item.title}</h3>
+              <p className="text-[10px] lg:text-xs text-gray-500 mt-1">{item.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ===== Testimonial / Trust Section ===== */}
+      <section className="lg:max-w-6xl lg:mx-auto px-4 lg:px-6 pb-8">
+        <div className="bg-gradient-to-r from-amber-50/50 via-white to-amber-50/50 rounded-2xl p-6 lg:p-8 border border-amber-100/50">
+          <div className="text-center mb-6">
+            <h3 className="text-lg font-bold text-gray-900">{locale === "zh" ? "为什么选择 TrustMaster" : "Why TrustMaster"}</h3>
+          </div>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <div className="text-2xl mb-1">⚙️</div>
+              <div className="text-xs font-semibold text-gray-800">{locale === "zh" ? "精准算法" : "Precise Engine"}</div>
+              <div className="text-[10px] text-gray-500 mt-0.5">{locale === "zh" ? "确定性计算，无随机" : "Deterministic, no randomness"}</div>
+            </div>
+            <div>
+              <div className="text-2xl mb-1">📖</div>
+              <div className="text-xs font-semibold text-gray-800">{locale === "zh" ? "经典方法论" : "Classical Methods"}</div>
+              <div className="text-[10px] text-gray-500 mt-0.5">{locale === "zh" ? "子平真诠 · 滴天髓" : "Zi Ping Zhen Quan"}</div>
+            </div>
+            <div>
+              <div className="text-2xl mb-1">🤖</div>
+              <div className="text-xs font-semibold text-gray-800">{locale === "zh" ? "AI 增强解读" : "AI-Enhanced"}</div>
+              <div className="text-[10px] text-gray-500 mt-0.5">{locale === "zh" ? "深度个性化分析" : "Deep personalized insights"}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Masters Section ===== */}
+      <main id="masters" className="lg:max-w-6xl lg:mx-auto lg:px-6 lg:pb-10">
         <div className="lg:bg-white lg:rounded-2xl lg:shadow-sm lg:border lg:border-gray-100 lg:overflow-hidden">
           <div className="lg:flex lg:items-center lg:gap-4 lg:p-6 lg:border-b lg:border-gray-100">
             <div className="lg:flex-1">

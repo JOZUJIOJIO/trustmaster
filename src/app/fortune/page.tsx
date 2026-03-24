@@ -102,26 +102,31 @@ function FortuneContent() {
     }
   }, [searchParams]);
 
-  // Restore chart from sessionStorage after Stripe redirect
+  // Restore state from sessionStorage (chart + payment status)
   useEffect(() => {
+    // Restore chart
     const saved = sessionStorage.getItem("trustmaster_chart");
     const savedName = sessionStorage.getItem("trustmaster_userName");
+    const wasPaid = sessionStorage.getItem("trustmaster_paid") === "true";
+
     if (saved && !chart) {
       try {
-        setChart(JSON.parse(saved));
+        const restoredChart = JSON.parse(saved);
+        setChart(restoredChart);
         if (savedName) setUserName(savedName);
         setMode("bazi");
         setStep("result");
+        if (wasPaid) {
+          setUnlocked(true);
+          setShowPaywall(false);
+        }
       } catch { /* ignore */ }
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Check if returning from Stripe payment
-  useEffect(() => {
+    // Check if returning from Stripe payment
     const paid = searchParams.get("paid");
     const sessionId = searchParams.get("session_id");
     if (paid === "true" && sessionId) {
-      // Verify payment
       fetch("/api/checkout/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -132,12 +137,24 @@ function FortuneContent() {
           if (data.paid) {
             setUnlocked(true);
             setShowPaywall(false);
-            // Auto-trigger AI reading if chart exists
-            if (chart) handleAiReading();
+            sessionStorage.setItem("trustmaster_paid", "true");
+            // Restore chart and trigger AI reading
+            if (saved) {
+              try {
+                const c = JSON.parse(saved);
+                setChart(c);
+                setMode("bazi");
+                setStep("result");
+                // Trigger AI reading after state settles
+                setTimeout(() => {
+                  handleAiReading();
+                }, 500);
+              } catch { /* ignore */ }
+            }
           }
         });
     }
-  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleStripeCheckout = async () => {
     setCheckoutLoading(true);

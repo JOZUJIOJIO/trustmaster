@@ -10,6 +10,7 @@ import CategoryFilter from "@/components/CategoryFilter";
 import SearchBar from "@/components/SearchBar";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { Particles, CursorLight, TypewriterText, GlowRing, AnimatedNumber, useScrollReveal } from "@/components/MysticalEffects";
 
 function MasterCardSkeleton() {
   return (
@@ -66,18 +67,30 @@ export default function Home() {
       <div className="relative min-h-screen overflow-hidden">
         {/* Background image */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/hero-zen.jpg')" }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-fadeIn"
+          style={{ backgroundImage: "url('/hero-zen.jpg')", animationDuration: "2s" }}
         />
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/60" />
-        {/* Gradient overlay for depth */}
+        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+
+        {/* Floating particles */}
+        <Particles count={25} />
+
+        {/* Breathing glow around center */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <GlowRing size={300} color="rgba(217, 119, 6, 0.08)" />
+          <GlowRing size={500} color="rgba(139, 92, 246, 0.04)" />
+        </div>
+
+        {/* Cursor light (desktop only) */}
+        <CursorLight />
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex flex-col">
           {/* Top nav */}
-          <nav className="flex items-center justify-between px-6 lg:px-12 py-5">
+          <nav className="flex items-center justify-between px-6 lg:px-12 py-5 animate-fadeIn" style={{ animationDuration: "1s" }}>
             <div className="flex items-center gap-2.5">
               <span className="text-2xl drop-shadow-lg">🔮</span>
               <span className="text-xl font-bold text-amber-100/90 tracking-widest uppercase drop-shadow-lg">
@@ -97,29 +110,31 @@ export default function Home() {
 
           {/* Main content - centered */}
           <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-            {/* Decorative line */}
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-12 h-px bg-amber-400/40" />
+            {/* Decorative line — animated reveal */}
+            <div className="flex items-center gap-3 mb-8 animate-fadeIn" style={{ animationDelay: "0.5s", animationDuration: "1.5s", animationFillMode: "both" }}>
+              <div className="w-12 h-px bg-amber-400/40 animate-reveal" style={{ animationDelay: "0.8s" }} />
               <span className="text-amber-400/60 text-xs tracking-[0.3em] uppercase">
                 ☸ Ancient Eastern Wisdom ☸
               </span>
-              <div className="w-12 h-px bg-amber-400/40" />
+              <div className="w-12 h-px bg-amber-400/40 animate-reveal" style={{ animationDelay: "0.8s" }} />
             </div>
 
-            {/* Title */}
-            <h1 className="text-gradient-gold text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight max-w-4xl leading-[1.15]">
-              {t("hero.title")}
+            {/* Title — typewriter effect */}
+            <h1 className="text-gradient-gold text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight max-w-4xl leading-[1.15] min-h-[1.2em]">
+              <TypewriterText text={t("hero.title")} delay={1000} />
             </h1>
 
-            <p className="mt-6 text-amber-100/50 text-sm sm:text-base lg:text-lg max-w-lg leading-relaxed">
+            <p className="mt-6 text-amber-100/50 text-sm sm:text-base lg:text-lg max-w-lg leading-relaxed animate-fadeIn"
+               style={{ animationDelay: "3s", animationDuration: "1.5s", animationFillMode: "both" }}>
               {t("hero.subtitle")}
             </p>
 
-            {/* Stats row */}
-            <div className="flex items-center gap-8 lg:gap-12 mt-12">
+            {/* Stats row — animated counters */}
+            <div className="flex items-center gap-8 lg:gap-12 mt-12 animate-fadeIn"
+                 style={{ animationDelay: "3.5s", animationDuration: "1s", animationFillMode: "both" }}>
               <div className="text-center">
                 <div className="text-2xl lg:text-3xl font-bold text-amber-300 drop-shadow-lg">
-                  {loading ? "--" : masters.length}
+                  {loading ? "--" : <AnimatedNumber value={masters.length} duration={2000} />}
                 </div>
                 <div className="text-[10px] lg:text-xs text-amber-200/40 mt-1 tracking-wider uppercase">
                   {t("stats.masters")}
@@ -128,7 +143,7 @@ export default function Home() {
               <div className="w-px h-10 bg-amber-400/15" />
               <div className="text-center">
                 <div className="text-2xl lg:text-3xl font-bold text-amber-300 drop-shadow-lg">
-                  {loading ? "--" : totalReviews}
+                  {loading ? "--" : <AnimatedNumber value={totalReviews} duration={2500} />}
                 </div>
                 <div className="text-[10px] lg:text-xs text-amber-200/40 mt-1 tracking-wider uppercase">
                   {t("stats.reviews")}
@@ -137,7 +152,7 @@ export default function Home() {
               <div className="w-px h-10 bg-amber-400/15" />
               <div className="text-center">
                 <div className="text-2xl lg:text-3xl font-bold text-amber-300 drop-shadow-lg">
-                  {loading ? "--" : `${avgSatisfaction}%`}
+                  {loading ? "--" : <><AnimatedNumber value={avgSatisfaction} duration={2000} />%</>}
                 </div>
                 <div className="text-[10px] lg:text-xs text-amber-200/40 mt-1 tracking-wider uppercase">
                   {t("stats.satisfaction")}
@@ -145,25 +160,29 @@ export default function Home() {
               </div>
             </div>
 
-            {/* CTA button */}
+            {/* CTA button — animated entrance + glow pulse */}
             <button
               onClick={() => setShowHero(false)}
               className="mt-14 group px-10 py-4 rounded-full font-semibold text-base lg:text-lg cursor-pointer
                          bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700
                          text-white border border-amber-500/30
                          shadow-[0_0_40px_rgba(217,119,6,0.2)] hover:shadow-[0_0_60px_rgba(217,119,6,0.35)]
-                         hover:scale-105 transition-all duration-500"
+                         hover:scale-105 transition-all duration-500 animate-glowPulse animate-fadeIn"
+              style={{ animationDelay: "4s", animationFillMode: "both" }}
             >
               {t("hero.cta")} →
             </button>
 
-            {/* Bottom decorative elements */}
-            <div className="mt-16 flex items-center gap-4 text-amber-400/20 text-lg">
-              <span>☯</span>
-              <span>✦</span>
-              <span>🪷</span>
-              <span>✦</span>
-              <span>☸</span>
+            {/* Scroll hint — bounce animation */}
+            <div className="mt-16 animate-bounceDown animate-fadeIn"
+                 style={{ animationDelay: "5s", animationFillMode: "both" }}>
+              <div className="flex items-center gap-4 text-amber-400/20 text-lg">
+                <span>☯</span>
+                <span>✦</span>
+                <span className="text-xl">↓</span>
+                <span>✦</span>
+                <span>☸</span>
+              </div>
             </div>
           </div>
 
@@ -183,9 +202,12 @@ export default function Home() {
     );
   }
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useScrollReveal();
+
   // ===== Main app view (after CTA click) =====
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen page-enter">
       {/* PC Header */}
       <header className="hidden lg:block sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">

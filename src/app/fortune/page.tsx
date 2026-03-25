@@ -15,6 +15,7 @@ import BaziReveal from "@/components/BaziReveal";
 import FiveElementsCircle from "@/components/FiveElementsCircle";
 import TenGodChart from "@/components/TenGodChart";
 import LuckCurve from "@/components/LuckCurve";
+import { EnhancedReadingCard } from "@/components/AiReadingVisual";
 
 type Mode = "select" | "bazi" | "zodiac";
 type Step = "date" | "hour" | "gender" | "name" | "reveal" | "result";
@@ -1026,13 +1027,13 @@ function FortuneContent() {
                 </div>
               ) : aiReading ? (
                 <div className="space-y-4">
-                  <div className="text-center text-xs text-amber-400/40 tracking-widest">✨ AI 深度解读</div>
-                  {aiReading.personality && <ReadingCard icon="🧠" title="性格特质" content={aiReading.personality} delay={0} />}
-                  {aiReading.career && <ReadingCard icon="💼" title="事业运势" content={aiReading.career} delay={100} />}
-                  {aiReading.wealth && <ReadingCard icon="💰" title="财运分析" content={aiReading.wealth} delay={200} />}
-                  {aiReading.love && <ReadingCard icon="❤️" title="感情运势" content={aiReading.love} delay={300} />}
-                  {aiReading.health && <ReadingCard icon="🏥" title="健康提醒" content={aiReading.health} delay={400} />}
-                  {aiReading.advice && <ReadingCard icon="🍀" title="开运指南" content={aiReading.advice} delay={500} />}
+                  <div className="text-center text-xs text-amber-400/40 tracking-widest">✨ AI 深度解读 × 数据可视化</div>
+                  {aiReading.personality && <EnhancedReadingCard icon="🧠" title="性格特质" content={aiReading.personality} chart={chart} dimension="personality" delay={0} />}
+                  {aiReading.career && <EnhancedReadingCard icon="💼" title="事业运势" content={aiReading.career} chart={chart} dimension="career" delay={100} />}
+                  {aiReading.wealth && <EnhancedReadingCard icon="💰" title="财运分析" content={aiReading.wealth} chart={chart} dimension="wealth" delay={200} />}
+                  {aiReading.love && <EnhancedReadingCard icon="❤️" title="感情运势" content={aiReading.love} chart={chart} dimension="love" delay={300} />}
+                  {aiReading.health && <EnhancedReadingCard icon="🏥" title="健康提醒" content={aiReading.health} chart={chart} dimension="health" delay={400} />}
+                  {aiReading.advice && <EnhancedReadingCard icon="🍀" title="开运指南" content={aiReading.advice} chart={chart} dimension="advice" delay={500} />}
                 </div>
               ) : null}
             </RevealSection>

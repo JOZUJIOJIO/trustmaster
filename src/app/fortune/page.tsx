@@ -218,14 +218,14 @@ function FortuneContent() {
 
   const [checkoutError, setCheckoutError] = useState("");
 
-  const handleStripeCheckout = async () => {
+  const handleStripeCheckout = async (tier: "pro" | "master" = "pro") => {
     setCheckoutLoading(true);
     setCheckoutError("");
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chartId: chart?.solarDate || "", userName }),
+        body: JSON.stringify({ chartId: chart?.solarDate || "", userName, tier }),
       });
       const data = await res.json();
       if (data.url) {
@@ -906,36 +906,43 @@ function FortuneContent() {
                           ))}
                         </div>
 
-                        <div className="bg-amber-900/20 border border-amber-500/20 rounded-xl p-4 text-center">
-                          <div className="flex items-center justify-center gap-2">
-                            <span className="text-amber-200/30 line-through text-sm">$19.99</span>
-                            <span className="text-3xl font-bold text-amber-300">$9.99</span>
+                        {/* Two-tier pricing */}
+                        <div className="grid grid-cols-2 gap-3">
+                          {/* Pro */}
+                          <div className="bg-amber-900/15 border border-amber-500/20 rounded-xl p-3.5 text-center">
+                            <div className="text-[10px] text-amber-400/50 mb-1">⭐ 专业版</div>
+                            <div className="text-2xl font-bold text-amber-300">$9.90</div>
+                            <p className="text-amber-200/25 text-[10px] mt-1 mb-3">6维AI深度解读</p>
+                            <button
+                              onClick={() => handleStripeCheckout("pro")}
+                              disabled={checkoutLoading}
+                              className="w-full py-2.5 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(217,119,6,0.2)] transition-all"
+                            >
+                              {checkoutLoading ? "..." : "选择专业版"}
+                            </button>
                           </div>
-                          <p className="text-amber-200/30 text-xs mt-1">Launch special · One-time purchase · Instant delivery</p>
+                          {/* Master */}
+                          <div className="bg-purple-900/15 border border-purple-400/25 rounded-xl p-3.5 text-center relative overflow-hidden">
+                            <div className="absolute top-0 right-0 bg-purple-500/80 text-white text-[8px] px-2 py-0.5 rounded-bl-lg font-bold">推荐</div>
+                            <div className="text-[10px] text-purple-300/60 mb-1">👑 大师版</div>
+                            <div className="text-2xl font-bold text-purple-200">$29.90</div>
+                            <p className="text-purple-200/25 text-[10px] mt-1 mb-3">宗师级全盘深度解析</p>
+                            <button
+                              onClick={() => handleStripeCheckout("master")}
+                              disabled={checkoutLoading}
+                              className="w-full py-2.5 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-purple-700 via-purple-600 to-purple-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-all"
+                            >
+                              {checkoutLoading ? "..." : "选择大师版"}
+                            </button>
+                          </div>
                         </div>
 
-                        <div className="space-y-2.5">
-                          <button
-                            onClick={handleStripeCheckout}
-                            disabled={checkoutLoading}
-                            className="w-full py-3.5 rounded-xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all text-sm disabled:opacity-50 animate-borderGlow"
-                          >
-                            {checkoutLoading ? (
-                              <span className="flex items-center justify-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse" />
-                                <span className="w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse" style={{ animationDelay: "0.2s" }} />
-                                <span className="w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse" style={{ animationDelay: "0.4s" }} />
-                                <span className="ml-1">跳转支付中</span>
-                              </span>
-                            ) : "💳 Pay $9.99 — Unlock Full Personality Analysis"}
-                          </button>
-                          {checkoutError && (
-                            <p className="text-center text-red-400/80 text-xs mt-2">{checkoutError}</p>
-                          )}
-                          <p className="text-center text-amber-200/15 text-[10px] leading-relaxed">
-                            Secure payment via Stripe · Visa / Mastercard / Apple Pay / Google Pay / Alipay
-                          </p>
-                        </div>
+                        {checkoutError && (
+                          <p className="text-center text-red-400/80 text-xs">{checkoutError}</p>
+                        )}
+                        <p className="text-center text-amber-200/15 text-[10px] leading-relaxed">
+                          Secure payment via Stripe · Card / Alipay / WeChat Pay
+                        </p>
 
                         <div className="space-y-1.5 pt-2 border-t border-white/5">
                           <p className="text-amber-200/20 text-[10px] leading-relaxed text-center">

@@ -15,9 +15,25 @@ export async function POST(request: Request) {
       );
     }
 
-    const { chartId, userName } = await request.json();
+    const { chartId, userName, tier = "pro" } = await request.json();
 
     const origin = request.headers.get("origin") || "http://localhost:3001";
+
+    // Pricing tiers
+    const tiers: Record<string, { name: string; desc: string; amount: number }> = {
+      pro: {
+        name: "AI Personality Analysis — Pro",
+        desc: "6-dimension AI personality reading based on BaZi Four Pillars framework",
+        amount: 990, // $9.90
+      },
+      master: {
+        name: "AI Personality Analysis — Master",
+        desc: "Deep master-level reading with life cycle analysis, career planning, and personalized guidance",
+        amount: 2990, // $29.90
+      },
+    };
+
+    const selected = tiers[tier] || tiers.pro;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card", "alipay", "wechat_pay"],
@@ -26,21 +42,22 @@ export async function POST(request: Request) {
           price_data: {
             currency: "usd",
             product_data: {
-              name: "AI Personality Analysis Report",
-              description: "Personalized life insights based on BaZi Four Pillars framework — powered by AI",
+              name: selected.name,
+              description: selected.desc,
             },
-            unit_amount: 999, // $9.99
+            unit_amount: selected.amount,
           },
           quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: `${origin}/fortune?paid=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/fortune?paid=true&session_id={CHECKOUT_SESSION_ID}&tier=${tier}`,
       cancel_url: `${origin}/fortune?paid=false`,
       metadata: {
         chartId: chartId || "",
         userName: userName || "",
         product: "bazi_analysis_report",
+        tier,
       },
       payment_method_options: {
         wechat_pay: {
@@ -50,6 +67,7 @@ export async function POST(request: Request) {
       payment_intent_data: {
         metadata: {
           product: "bazi_analysis_report",
+          tier,
         },
       },
     });

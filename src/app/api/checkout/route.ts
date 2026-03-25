@@ -7,6 +7,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: Request) {
   try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error("STRIPE_SECRET_KEY is not configured");
+      return NextResponse.json(
+        { error: "Payment service not configured. Please contact support." },
+        { status: 500 }
+      );
+    }
+
     const { chartId, userName } = await request.json();
 
     const origin = request.headers.get("origin") || "http://localhost:3001";
@@ -42,10 +50,11 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (error) {
-    console.error("Stripe checkout error:", error);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Stripe checkout error:", msg);
     return NextResponse.json(
-      { error: "Failed to create checkout session" },
+      { error: `Payment error: ${msg}` },
       { status: 500 }
     );
   }

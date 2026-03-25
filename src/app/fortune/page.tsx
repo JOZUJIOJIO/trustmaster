@@ -216,8 +216,11 @@ function FortuneContent() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const [checkoutError, setCheckoutError] = useState("");
+
   const handleStripeCheckout = async () => {
     setCheckoutLoading(true);
+    setCheckoutError("");
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -229,8 +232,13 @@ function FortuneContent() {
         if (chart) sessionStorage.setItem("trustmaster_chart", JSON.stringify(chart));
         sessionStorage.setItem("trustmaster_userName", userName);
         window.location.href = data.url;
+      } else {
+        setCheckoutError(data.error || "无法创建支付链接，请稍后重试");
+        setCheckoutLoading(false);
       }
-    } catch {
+    } catch (err) {
+      console.error("Checkout error:", err);
+      setCheckoutError("网络错误，请检查连接后重试");
       setCheckoutLoading(false);
     }
   };
@@ -921,6 +929,9 @@ function FortuneContent() {
                               </span>
                             ) : "💳 Pay $9.99 — Unlock Full Personality Analysis"}
                           </button>
+                          {checkoutError && (
+                            <p className="text-center text-red-400/80 text-xs mt-2">{checkoutError}</p>
+                          )}
                           <p className="text-center text-amber-200/15 text-[10px] leading-relaxed">
                             Secure payment via Stripe · Visa / Mastercard / Apple Pay / Google Pay / Alipay
                           </p>

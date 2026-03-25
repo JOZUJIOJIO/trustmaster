@@ -20,6 +20,7 @@ import ChineseHourDial from "@/components/ChineseHourDial";
 import YinYangSelector from "@/components/YinYangSelector";
 import CelestialDatePicker from "@/components/CelestialDatePicker";
 import MysticalNameInput from "@/components/MysticalNameInput";
+import { generateBlueprint } from "@/lib/bazi-interpreter";
 
 type Mode = "select" | "bazi" | "zodiac";
 type Step = "date" | "hour" | "gender" | "name" | "reveal" | "result";
@@ -776,44 +777,27 @@ function FortuneContent() {
             {/* ⑨ Personality Blueprint */}
             <RevealSection delay={900}>
               <Accordion title={isChinese ? "性 格 蓝 图" : "PERSONALITY BLUEPRINT"} icon="🧠" defaultOpen={false}>
-                <div className="space-y-3">
-                  {[
-                    {
-                      icon: "🧠", title: "核心性格",
-                      content: chart.dayMasterDesc,
-                    },
-                    {
-                      icon: "💼", title: "职场风格",
-                      content: chart.dayMasterElement === "木" ? "注重规划和成长，适合管理、教育、策划类工作。团队中常担任组织者角色，但需注意不要过于固执己见。"
-                        : chart.dayMasterElement === "火" ? "充满热情和感染力，适合销售、演讲、创意类工作。天生的领导者，但需注意控制急躁和冲动。"
-                        : chart.dayMasterElement === "土" ? "踏实可靠、耐心细致，适合行政、财务、工程类工作。是团队的稳定器，但需注意避免过于保守错失机遇。"
-                        : chart.dayMasterElement === "金" ? "果断高效、注重品质，适合法律、金融、技术类工作。执行力强，但需注意灵活变通，避免过于强势。"
-                        : "灵活变通、善于沟通，适合贸易、传媒、咨询类工作。适应力强，但需注意增强定力，避免朝三暮四。",
-                    },
-                    {
-                      icon: "❤️", title: "恋爱风格",
-                      content: chart.dayMasterElement === "木" ? "在感情中注重责任和承诺，对伴侣忠诚可靠。表达爱意可能比较含蓄，但内心深情。需要一个理解并支持自己成长的伴侣。"
-                        : chart.dayMasterElement === "火" ? "热情奔放，在感情中主动大方。追求浪漫和激情，但热度来得快去得也快。需要学习在平淡中维护关系。"
-                        : chart.dayMasterElement === "土" ? "在感情中温厚踏实，属于细水长流型。重视家庭和安全感，愿意为伴侣付出。但可能缺少浪漫情调。"
-                        : chart.dayMasterElement === "金" ? "在感情中讲求原则和界限，不轻易表露感情。一旦认定会非常专一。但可能因过于理性而忽略伴侣的情感需求。"
-                        : "在感情中温柔体贴、善解人意。容易被感动，也容易感动他人。但可能因过于敏感而产生不必要的担忧。",
-                    },
-                    {
-                      icon: "⚡", title: "潜在挑战",
-                      content: chart.dayMasterStrength === "strong"
-                        ? "身强之人精力旺盛但容易过于自信，需注意：1）倾听他人意见，避免独断；2）控制消费欲望；3）保持谦虚，警惕盲目扩张。"
-                        : "身弱之人心思细腻但容易缺乏自信，需注意：1）多与正能量的人交往；2）补充喜用神元素增强能量；3）设定小目标逐步建立信心。",
-                    },
-                  ].map((item) => (
-                    <div key={item.title} className="bg-white/[0.02] rounded-xl p-4 border border-white/5 hover:border-amber-400/10 transition-colors">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-base">{item.icon}</span>
-                        <span className="text-sm font-semibold text-amber-200/80">{item.title}</span>
-                      </div>
-                      <p className="text-xs text-amber-100/50 leading-relaxed">{item.content}</p>
+                {(() => {
+                  const bp = generateBlueprint(chart);
+                  return (
+                    <div className="space-y-3">
+                      {[
+                        { icon: "🧠", title: "核心性格", content: bp.personality },
+                        { icon: "💼", title: "事业方向", content: bp.career },
+                        { icon: "❤️", title: "感情模式", content: bp.love },
+                        { icon: "🏥", title: "健康指引", content: bp.health },
+                      ].map((item) => (
+                        <div key={item.title} className="bg-white/[0.02] rounded-xl p-4 border border-white/5 hover:border-amber-400/10 transition-colors">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-base">{item.icon}</span>
+                            <span className="text-sm font-semibold text-amber-200/80">{item.title}</span>
+                          </div>
+                          <p className="text-xs text-amber-100/50 leading-relaxed whitespace-pre-line">{item.content}</p>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  );
+                })()}
               </Accordion>
             </RevealSection>
 

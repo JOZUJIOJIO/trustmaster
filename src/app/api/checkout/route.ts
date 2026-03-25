@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     const origin = request.headers.get("origin") || "http://localhost:3001";
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      payment_method_types: ["card", "alipay", "wechat_pay"],
       line_items: [
         {
           price_data: {
@@ -41,6 +41,11 @@ export async function POST(request: Request) {
         chartId: chartId || "",
         userName: userName || "",
         product: "bazi_analysis_report",
+      },
+      payment_method_options: {
+        wechat_pay: {
+          client: "web",
+        },
       },
       payment_intent_data: {
         metadata: {

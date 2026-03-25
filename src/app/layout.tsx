@@ -4,6 +4,7 @@ import "./globals.css";
 import { LocaleProvider } from "@/lib/LocaleContext";
 import { AuthProvider } from "@/lib/supabase/auth-context";
 import { Analytics } from "@vercel/analytics/react";
+import MouseAura from "@/components/MouseAura";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,10 +40,11 @@ export default function RootLayout({
       lang="zh-CN"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-[#f5f1eb]">
+      <body className="min-h-full bg-[#0a0814] text-amber-100">
         <AuthProvider>
           <LocaleProvider>{children}</LocaleProvider>
         </AuthProvider>
+        <MouseAura />
         <Analytics />
       </body>
     </html>

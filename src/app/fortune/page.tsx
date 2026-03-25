@@ -16,6 +16,8 @@ import FiveElementsCircle from "@/components/FiveElementsCircle";
 import TenGodChart from "@/components/TenGodChart";
 import LuckCurve from "@/components/LuckCurve";
 import { EnhancedReadingCard } from "@/components/AiReadingVisual";
+import ChineseHourDial from "@/components/ChineseHourDial";
+import YinYangSelector from "@/components/YinYangSelector";
 
 type Mode = "select" | "bazi" | "zodiac";
 type Step = "date" | "hour" | "gender" | "name" | "reveal" | "result";
@@ -493,25 +495,9 @@ function FortuneContent() {
                 <div key={i} className={`h-1 rounded-full transition-all duration-500 w-6 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
-            <div className="text-5xl mb-6 animate-float-slow">🕐</div>
             <h2 className="text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectHour")}</h2>
-            <p className="text-amber-200/40 text-sm mb-8">{t("bazi.hourHint")}</p>
-            <div className="grid grid-cols-3 gap-2.5">
-              {CHINESE_HOURS.map((h) => (
-                <button
-                  key={h.branch}
-                  onClick={() => setHourBranch(h.branch)}
-                  className={`p-3 rounded-xl text-center cursor-pointer transition-all border ${
-                    hourBranch === h.branch
-                      ? "bg-amber-700/30 border-amber-500/40 text-amber-200 shadow-[0_0_15px_rgba(217,119,6,0.1)]"
-                      : "bg-white/[0.03] border-white/5 text-amber-200/50 hover:bg-white/[0.06] hover:border-white/10"
-                  }`}
-                >
-                  <div className="text-base font-bold">{isChinese ? h.name : h.nameEn}</div>
-                  <div className="text-[10px] mt-0.5 opacity-50">{h.label}</div>
-                </button>
-              ))}
-            </div>
+            <p className="text-amber-200/40 text-sm mb-4">{t("bazi.hourHint")}</p>
+            <ChineseHourDial value={hourBranch} onChange={setHourBranch} isChinese={isChinese} />
             <button
               onClick={() => { if (!hourBranch) setHourBranch("午"); setStep("gender"); }}
               className="mt-4 text-amber-200/30 text-xs hover:text-amber-200/50 cursor-pointer transition-colors"
@@ -536,27 +522,9 @@ function FortuneContent() {
                 <div key={i} className={`h-1 rounded-full transition-all duration-500 w-6 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
-            <div className="text-5xl mb-6">⚤</div>
             <h2 className="text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectGender")}</h2>
-            <p className="text-amber-200/40 text-sm mb-10">{t("bazi.genderHint")}</p>
-            <div className="flex gap-4 max-w-xs mx-auto">
-              {(["male", "female"] as const).map((g) => (
-                <button
-                  key={g}
-                  onClick={() => setGender(g)}
-                  className={`flex-1 py-6 rounded-2xl text-center cursor-pointer transition-all border ${
-                    gender === g
-                      ? "bg-amber-700/30 border-amber-500/40 shadow-[0_0_20px_rgba(217,119,6,0.1)]"
-                      : "bg-white/[0.03] border-white/5 hover:bg-white/[0.06]"
-                  }`}
-                >
-                  <div className="text-3xl mb-2">{g === "male" ? "♂" : "♀"}</div>
-                  <div className={`font-semibold ${gender === g ? "text-amber-200" : "text-amber-200/50"}`}>
-                    {g === "male" ? t("bazi.male") : t("bazi.female")}
-                  </div>
-                </button>
-              ))}
-            </div>
+            <p className="text-amber-200/40 text-sm mb-4">{t("bazi.genderHint")}</p>
+            <YinYangSelector value={gender} onChange={setGender} isChinese={isChinese} />
             <button
               onClick={() => gender && setStep("name")}
               disabled={!gender}

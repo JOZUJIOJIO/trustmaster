@@ -289,160 +289,166 @@ export default function Home() {
     );
   }
 
-  // ===== Main app view (after CTA click) =====
+  // ===== Main app view (after CTA click) — DARK THEME =====
   return (
-    <div className="min-h-screen page-enter">
+    <div className="min-h-screen page-enter bg-[#0a0814]">
+      {/* Fixed starfield background */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
+        <StarfieldCanvas />
+      </div>
+
       {/* PC Header */}
-      <header className="hidden lg:block sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+      <header className="hidden lg:block sticky top-0 z-50 bg-[#0a0814]/80 backdrop-blur-md border-b border-amber-400/10">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button onClick={() => setShowHero(true)} className="flex items-center gap-2 cursor-pointer">
               <span className="text-2xl">🔮</span>
-              <span className="text-xl font-bold text-amber-900">{t("app.name")}</span>
+              <span className="text-xl font-bold text-amber-200">{t("app.name")}</span>
             </button>
           </div>
-          <nav className="flex items-center gap-8 text-sm text-gray-600">
-            <span className="text-amber-800 font-medium cursor-default">{t("nav.home")}</span>
-            <a href="/fortune" className="hover:text-amber-700 transition-colors">✨ {t("nav.fortune")}</a>
-            <a href="/favorites" className="hover:text-amber-700 transition-colors">{t("nav.favorites")}</a>
-            <a href="/profile" className="hover:text-amber-700 transition-colors">{t("nav.profile")}</a>
+          <nav className="flex items-center gap-8 text-sm text-amber-200/40">
+            <span className="text-amber-300 font-medium cursor-default">{t("nav.home")}</span>
+            <a href="/fortune" className="hover:text-amber-200 transition-colors">✨ {t("nav.fortune")}</a>
+            <a href="/favorites" className="hover:text-amber-200 transition-colors">{t("nav.favorites")}</a>
+            <a href="/profile" className="hover:text-amber-200 transition-colors">{t("nav.profile")}</a>
           </nav>
           <LanguageSwitcher />
         </div>
       </header>
 
       {/* Mobile Header */}
-      <header className="lg:hidden bg-gradient-to-b from-amber-50 to-white px-4 pt-6 pb-2">
+      <header className="lg:hidden bg-[#0a0814]/90 backdrop-blur-md px-4 pt-6 pb-2 border-b border-amber-400/10">
         <div className="flex items-center justify-between">
           <button onClick={() => setShowHero(true)} className="cursor-pointer">
-            <h1 className="text-xl font-bold text-amber-900">{t("app.name")}</h1>
-            <p className="text-xs text-amber-700 mt-0.5">{t("app.tagline")}</p>
+            <h1 className="text-xl font-bold text-amber-200">{t("app.name")}</h1>
+            <p className="text-xs text-amber-200/40 mt-0.5">{t("app.tagline")}</p>
           </button>
           <LanguageSwitcher />
         </div>
       </header>
 
-      {/* ===== Feature Cards Section — 3D Tilt ===== */}
-      <section className="lg:max-w-6xl lg:mx-auto px-4 lg:px-6 py-8 lg:py-12">
-        <div className="text-center mb-8">
-          <h2 className="text-xl lg:text-2xl font-bold text-gray-900">
-            {locale === "zh" ? "探索东方智慧" : "Explore Eastern Wisdom"}
-          </h2>
-          <p className="text-sm text-gray-500 mt-2">
-            {locale === "zh" ? "选择适合你的分析工具" : "Choose the insight tool that fits you"}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-          {[
-            { href: "/fortune", icon: "☯", title: locale === "zh" ? "八字分析" : "BaZi Analysis", desc: locale === "zh" ? "四柱命理 · AI 解读" : "Four Pillars · AI Reading", color: "from-amber-50 to-orange-50 border-amber-200/50", textColor: "text-amber-900", glow: "rgba(217,119,6,0.08)" },
-            { href: "/daily", icon: "📅", title: locale === "zh" ? "每日运势" : "Daily Insights", desc: locale === "zh" ? "个性化评分 · 宜忌" : "Personal Scores · Guidance", color: "from-blue-50 to-indigo-50 border-blue-200/50", textColor: "text-blue-900", glow: "rgba(59,130,246,0.08)" },
-            { href: "/compatibility", icon: "💑", title: locale === "zh" ? "双人合盘" : "Compatibility", desc: locale === "zh" ? "五行互补 · 兼容度" : "Elements Match · Score", color: "from-purple-50 to-pink-50 border-purple-200/50", textColor: "text-purple-900", glow: "rgba(139,92,246,0.08)" },
-            { href: "/learn", icon: "📖", title: locale === "zh" ? "了解八字" : "Learn BaZi", desc: locale === "zh" ? "3000年东方智慧" : "3,000 Years of Wisdom", color: "from-emerald-50 to-teal-50 border-emerald-200/50", textColor: "text-emerald-900", glow: "rgba(34,197,94,0.08)" },
-          ].map((item) => (
-            <TiltCard key={item.href} glowColor={item.glow}>
-              <Link
-                href={item.href}
-                className={`block bg-gradient-to-br ${item.color} rounded-2xl p-4 lg:p-5 border group h-full`}
-              >
-                <div className="text-2xl lg:text-3xl mb-2">{item.icon}</div>
-                <h3 className={`text-sm lg:text-base font-bold ${item.textColor} group-hover:opacity-80 transition-opacity`}>{item.title}</h3>
-                <p className="text-[10px] lg:text-xs text-gray-500 mt-1">{item.desc}</p>
-              </Link>
-            </TiltCard>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== Testimonial / Trust Section ===== */}
-      <section className="lg:max-w-6xl lg:mx-auto px-4 lg:px-6 pb-8">
-        <div className="bg-gradient-to-r from-amber-50/50 via-white to-amber-50/50 rounded-2xl p-6 lg:p-8 border border-amber-100/50">
-          <div className="text-center mb-6">
-            <h3 className="text-lg font-bold text-gray-900">{locale === "zh" ? "为什么选择 TrustMaster" : "Why TrustMaster"}</h3>
+      <div className="relative z-10">
+        {/* ===== Feature Cards Section — Dark 3D Tilt ===== */}
+        <section className="lg:max-w-6xl lg:mx-auto px-4 lg:px-6 py-8 lg:py-12">
+          <div className="text-center mb-8">
+            <h2 className="text-xl lg:text-2xl font-bold text-amber-100">
+              {locale === "zh" ? "探索东方智慧" : "Explore Eastern Wisdom"}
+            </h2>
+            <p className="text-sm text-amber-200/30 mt-2">
+              {locale === "zh" ? "选择适合你的分析工具" : "Choose the insight tool that fits you"}
+            </p>
           </div>
-          <div className="grid grid-cols-3 gap-4 text-center">
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
             {[
-              { icon: "⚙️", title: locale === "zh" ? "精准算法" : "Precise Engine", desc: locale === "zh" ? "确定性计算，无随机" : "Deterministic, no randomness" },
-              { icon: "📖", title: locale === "zh" ? "经典方法论" : "Classical Methods", desc: locale === "zh" ? "子平真诠 · 滴天髓" : "Zi Ping Zhen Quan" },
-              { icon: "🤖", title: locale === "zh" ? "AI 增强解读" : "AI-Enhanced", desc: locale === "zh" ? "深度个性化分析" : "Deep personalized insights" },
+              { href: "/fortune", icon: "☯", title: locale === "zh" ? "八字分析" : "BaZi Analysis", desc: locale === "zh" ? "四柱命理 · AI 解读" : "Four Pillars · AI Reading", glow: "rgba(217,119,6,0.1)" },
+              { href: "/daily", icon: "📅", title: locale === "zh" ? "每日运势" : "Daily Insights", desc: locale === "zh" ? "个性化评分 · 宜忌" : "Personal Scores · Guidance", glow: "rgba(59,130,246,0.1)" },
+              { href: "/compatibility", icon: "💑", title: locale === "zh" ? "双人合盘" : "Compatibility", desc: locale === "zh" ? "五行互补 · 兼容度" : "Elements Match · Score", glow: "rgba(139,92,246,0.1)" },
+              { href: "/learn", icon: "📖", title: locale === "zh" ? "了解八字" : "Learn BaZi", desc: locale === "zh" ? "3000年东方智慧" : "3,000 Years of Wisdom", glow: "rgba(34,197,94,0.1)" },
             ].map((item) => (
-              <div key={item.title} className="scroll-reveal">
-                <div className="text-2xl mb-1">{item.icon}</div>
-                <div className="text-xs font-semibold text-gray-800">{item.title}</div>
-                <div className="text-[10px] text-gray-500 mt-0.5">{item.desc}</div>
-              </div>
+              <TiltCard key={item.href} glowColor={item.glow}>
+                <Link
+                  href={item.href}
+                  className="block bg-white/[0.03] border border-amber-400/10 hover:border-amber-400/20 rounded-2xl p-4 lg:p-5 group h-full transition-colors"
+                >
+                  <div className="text-2xl lg:text-3xl mb-2">{item.icon}</div>
+                  <h3 className="text-sm lg:text-base font-bold text-amber-200 group-hover:text-amber-100 transition-colors">{item.title}</h3>
+                  <p className="text-[10px] lg:text-xs text-amber-200/30 mt-1">{item.desc}</p>
+                </Link>
+              </TiltCard>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ===== Masters Section ===== */}
-      <main id="masters" className="lg:max-w-6xl lg:mx-auto lg:px-6 lg:pb-10">
-        <div className="lg:bg-white lg:rounded-2xl lg:shadow-sm lg:border lg:border-gray-100 lg:overflow-hidden">
-          <div className="lg:flex lg:items-center lg:gap-4 lg:p-6 lg:border-b lg:border-gray-100">
-            <div className="lg:flex-1">
-              <SearchBar value={search} onChange={setSearch} />
+        {/* ===== Trust Section — Dark ===== */}
+        <section className="lg:max-w-6xl lg:mx-auto px-4 lg:px-6 pb-8">
+          <div className="bg-white/[0.02] rounded-2xl p-6 lg:p-8 border border-amber-400/10">
+            <div className="text-center mb-6">
+              <h3 className="text-lg font-bold text-amber-100">{locale === "zh" ? "为什么选择 TrustMaster" : "Why TrustMaster"}</h3>
             </div>
-            <CategoryFilter selected={category} onSelect={setCategory} />
+            <div className="grid grid-cols-3 gap-4 text-center">
+              {[
+                { icon: "⚙️", title: locale === "zh" ? "精准算法" : "Precise Engine", desc: locale === "zh" ? "确定性计算，无随机" : "Deterministic, no randomness" },
+                { icon: "📖", title: locale === "zh" ? "经典方法论" : "Classical Methods", desc: locale === "zh" ? "子平真诠 · 滴天髓" : "Zi Ping Zhen Quan" },
+                { icon: "🤖", title: locale === "zh" ? "AI 增强解读" : "AI-Enhanced", desc: locale === "zh" ? "深度个性化分析" : "Deep personalized insights" },
+              ].map((item) => (
+                <div key={item.title} className="scroll-reveal">
+                  <div className="text-2xl mb-1">{item.icon}</div>
+                  <div className="text-xs font-semibold text-amber-200/80">{item.title}</div>
+                  <div className="text-[10px] text-amber-200/30 mt-0.5">{item.desc}</div>
+                </div>
+              ))}
+            </div>
           </div>
+        </section>
 
-          <div>
-            <h2 className="text-sm font-semibold text-gray-800 px-4 py-3 lg:px-6 lg:text-base">
-              {t("masters.popular")}
-            </h2>
+        {/* ===== Masters Section — Dark ===== */}
+        <main id="masters" className="lg:max-w-6xl lg:mx-auto lg:px-6 lg:pb-10">
+          <div className="lg:bg-white/[0.02] lg:rounded-2xl lg:border lg:border-amber-400/10 lg:overflow-hidden">
+            <div className="lg:flex lg:items-center lg:gap-4 lg:p-6 lg:border-b lg:border-amber-400/10">
+              <div className="lg:flex-1">
+                <SearchBar value={search} onChange={setSearch} />
+              </div>
+              <CategoryFilter selected={category} onSelect={setCategory} />
+            </div>
 
-            {loading ? (
-              <div className="lg:grid lg:grid-cols-2 xl:grid-cols-3">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <MasterCardSkeleton key={i} />
-                ))}
-              </div>
-            ) : masters.length > 0 ? (
-              <div className="lg:grid lg:grid-cols-2 xl:grid-cols-3">
-                {masters.map((master) => (
-                  <MasterCard key={master.id} master={master} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12 text-gray-400 text-sm">
-                {t("masters.notFound")}
-              </div>
-            )}
-          </div>
-        </div>
-      </main>
-
-      {/* PC Footer */}
-      <footer className="hidden lg:block bg-gray-900 text-gray-400 mt-16">
-        <div className="max-w-6xl mx-auto px-6 py-12">
-          <div className="grid grid-cols-3 gap-8">
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-2xl">🔮</span>
-                <span className="text-lg font-bold text-white">{t("app.name")}</span>
-              </div>
-              <p className="text-sm leading-relaxed">{t("footer.desc")}</p>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-3">{t("footer.links")}</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="/terms" className="hover:text-white transition-colors">{t("footer.terms")}</a></li>
-                <li><a href="/privacy" className="hover:text-white transition-colors">{t("footer.privacy")}</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-3">{t("footer.contact")}</h4>
-              <p className="text-sm">support@trustmaster.app</p>
-              <p className="text-sm mt-1">Bangkok, Thailand</p>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-6 text-center text-xs">
-            © 2026 TrustMaster. {t("footer.copyright")}.
-          </div>
-        </div>
-      </footer>
+              <h2 className="text-sm font-semibold text-amber-200/70 px-4 py-3 lg:px-6 lg:text-base">
+                {t("masters.popular")}
+              </h2>
 
-      <div className="pb-20 lg:pb-0">
+              {loading ? (
+                <div className="lg:grid lg:grid-cols-2 xl:grid-cols-3">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <MasterCardSkeleton key={i} />
+                  ))}
+                </div>
+              ) : masters.length > 0 ? (
+                <div className="lg:grid lg:grid-cols-2 xl:grid-cols-3">
+                  {masters.map((master) => (
+                    <MasterCard key={master.id} master={master} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 text-amber-200/30 text-sm">
+                  {t("masters.notFound")}
+                </div>
+              )}
+            </div>
+          </div>
+        </main>
+
+        {/* Footer — Dark */}
+        <footer className="hidden lg:block border-t border-amber-400/10 mt-16">
+          <div className="max-w-6xl mx-auto px-6 py-12">
+            <div className="grid grid-cols-3 gap-8">
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-2xl">🔮</span>
+                  <span className="text-lg font-bold text-amber-200">{t("app.name")}</span>
+                </div>
+                <p className="text-sm text-amber-200/30 leading-relaxed">{t("footer.desc")}</p>
+              </div>
+              <div>
+                <h4 className="text-amber-200 font-semibold text-sm mb-3">{t("footer.links")}</h4>
+                <ul className="space-y-2 text-sm text-amber-200/30">
+                  <li><a href="/terms" className="hover:text-amber-200/60 transition-colors">{t("footer.terms")}</a></li>
+                  <li><a href="/privacy" className="hover:text-amber-200/60 transition-colors">{t("footer.privacy")}</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-amber-200 font-semibold text-sm mb-3">{t("footer.contact")}</h4>
+                <p className="text-sm text-amber-200/30">support@trustmaster.app</p>
+              </div>
+            </div>
+            <div className="border-t border-amber-400/10 mt-8 pt-6 text-center text-xs text-amber-200/20">
+              © 2026 TrustMaster. {t("footer.copyright")}.
+            </div>
+          </div>
+        </footer>
+      </div>
+
+      <div className="pb-20 lg:pb-0 relative z-10">
         <BottomNav />
       </div>
     </div>

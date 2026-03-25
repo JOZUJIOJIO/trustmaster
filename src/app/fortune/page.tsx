@@ -18,6 +18,8 @@ import LuckCurve from "@/components/LuckCurve";
 import { EnhancedReadingCard } from "@/components/AiReadingVisual";
 import ChineseHourDial from "@/components/ChineseHourDial";
 import YinYangSelector from "@/components/YinYangSelector";
+import CelestialDatePicker from "@/components/CelestialDatePicker";
+import MysticalNameInput from "@/components/MysticalNameInput";
 
 type Mode = "select" | "bazi" | "zodiac";
 type Step = "date" | "hour" | "gender" | "name" | "reveal" | "result";
@@ -466,17 +468,9 @@ function FortuneContent() {
                 <div key={i} className={`h-1 rounded-full transition-all duration-500 w-6 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
-            <div className="text-5xl mb-6 animate-float-slow">📅</div>
             <h2 className="text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectDate")}</h2>
-            <p className="text-amber-200/40 text-sm mb-10">{t("bazi.dateHint")}</p>
-            <input
-              type="date"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              max={new Date().toISOString().split("T")[0]}
-              min="1940-01-01"
-              className="w-full max-w-xs mx-auto bg-white/5 border border-amber-400/20 rounded-xl px-4 py-3.5 text-amber-100 text-center text-lg focus:outline-none focus:border-amber-400/40 focus:ring-1 focus:ring-amber-400/20 transition-all"
-            />
+            <p className="text-amber-200/40 text-sm mb-6">{t("bazi.dateHint")}</p>
+            <CelestialDatePicker value={birthDate} onChange={setBirthDate} />
             <button
               onClick={() => birthDate && setStep("hour")}
               disabled={!birthDate}
@@ -543,16 +537,9 @@ function FortuneContent() {
                 <div key={i} className={`h-1 rounded-full transition-all duration-500 w-6 ${i <= 3 ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
-            <div className="text-5xl mb-6">📝</div>
             <h2 className="text-2xl font-bold text-amber-100 mb-2">{t("bazi.enterName")}</h2>
-            <p className="text-amber-200/40 text-sm mb-10">{t("bazi.nameHint")}</p>
-            <input
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder={t("bazi.namePlaceholder")}
-              className="w-full max-w-xs mx-auto bg-white/5 border border-amber-400/20 rounded-xl px-4 py-3.5 text-amber-100 text-center text-lg placeholder:text-amber-200/20 focus:outline-none focus:border-amber-400/40 focus:ring-1 focus:ring-amber-400/20"
-            />
+            <p className="text-amber-200/40 text-sm mb-8">{t("bazi.nameHint")}</p>
+            <MysticalNameInput value={userName} onChange={setUserName} placeholder={t("bazi.namePlaceholder")} />
             <button
               onClick={() => { if (!userName.trim()) setUserName("缘主"); handleCalculate(); }}
               className="mt-4 text-amber-200/30 text-xs hover:text-amber-200/50 cursor-pointer transition-colors"

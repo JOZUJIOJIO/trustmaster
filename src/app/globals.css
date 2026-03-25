@@ -294,6 +294,13 @@ body {
   animation: shimmer 2s linear infinite, skeletonBreath 2s ease-in-out infinite;
 }
 
+/* Particle convergence for name input */
+@keyframes particleConverge {
+  0% { transform: translate(var(--px), var(--py)) scale(1); opacity: 0.8; }
+  80% { opacity: 0.6; }
+  100% { transform: translate(0, 0) scale(0); opacity: 0; }
+}
+
 /* Ripple click effect */
 @keyframes ripple {
   0% { transform: scale(0); opacity: 0.3; }

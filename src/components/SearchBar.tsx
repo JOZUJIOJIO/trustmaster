@@ -13,7 +13,7 @@ export default function SearchBar({ value, onChange }: SearchBarProps) {
   return (
     <div className="px-4 pt-3">
       <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-200/30 text-sm">
           🔍
         </span>
         <input
@@ -21,7 +21,7 @@ export default function SearchBar({ value, onChange }: SearchBarProps) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={t("search.placeholder")}
-          className="w-full pl-9 pr-4 py-2.5 bg-gray-100 rounded-full text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:bg-white transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 bg-white/[0.05] rounded-full text-sm text-amber-100 placeholder:text-amber-200/20 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:bg-white/[0.08] transition-colors border border-amber-400/10"
         />
       </div>
     </div>

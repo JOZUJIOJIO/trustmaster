@@ -27,9 +27,9 @@ export default function MasterCard({ master }: { master: Master }) {
   return (
     <Link
       href={`/master/${master.id}`}
-      className="flex items-start gap-3 p-4 border-b border-gray-100 hover:bg-amber-50/30 transition-colors"
+      className="flex items-start gap-3 p-4 border-b border-amber-400/10 hover:bg-white/[0.03] transition-colors"
     >
-      <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center text-2xl flex-shrink-0 border border-amber-100 overflow-hidden">
+      <div className="w-14 h-14 rounded-full bg-amber-900/20 flex items-center justify-center text-2xl flex-shrink-0 border border-amber-400/20 overflow-hidden">
         {master.avatar_url ? (
           <Image
             src={master.avatar_url}
@@ -44,32 +44,32 @@ export default function MasterCard({ master }: { master: Master }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-gray-900 text-[15px]">{name}</h3>
+          <h3 className="font-semibold text-amber-100 text-[15px]">{name}</h3>
           {master.verified && (
-            <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
+            <span className="text-[10px] bg-green-900/20 text-green-400/80 px-1.5 py-0.5 rounded-full border border-green-500/20">
               ✓ {t("masters.verified")}
             </span>
           )}
         </div>
-        <p className="text-xs text-amber-700 mt-0.5">
+        <p className="text-xs text-amber-200/70 mt-0.5">
           {specialties.join(" · ")}
         </p>
         <div className="flex items-center gap-1.5 mt-1">
           <Stars rating={master.rating} />
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-amber-200/40">
             {master.rating} ({master.review_count} {t("masters.reviews")})
           </span>
         </div>
-        <p className="text-[11px] text-gray-400 mt-0.5">
+        <p className="text-[11px] text-amber-200/30 mt-0.5">
           {master.experience} {t("masters.experience")}
         </p>
       </div>
       <div className="text-right flex-shrink-0 flex flex-col items-end gap-1">
         <FavoriteButton masterId={master.id} />
-        <div className="text-sm font-semibold text-amber-800">
+        <div className="text-sm font-semibold text-amber-300">
           ฿{master.price_min}
         </div>
-        <div className="text-[11px] text-gray-400">{t("masters.startFrom")}</div>
+        <div className="text-[11px] text-amber-200/30">{t("masters.startFrom")}</div>
       </div>
     </Link>
   );

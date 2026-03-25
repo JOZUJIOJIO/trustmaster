@@ -22,11 +22,11 @@ export default function ReviewForm({
 
   if (!user) {
     return (
-      <div className="bg-amber-50/50 rounded-xl p-4 border border-amber-100 text-center">
-        <p className="text-sm text-gray-600 mb-2">{t("review.loginRequired")}</p>
+      <div className="bg-amber-900/10 rounded-xl p-4 border border-amber-400/10 text-center">
+        <p className="text-sm text-amber-200/60 mb-2">{t("review.loginRequired")}</p>
         <Link
           href="/login"
-          className="inline-block px-4 py-2 bg-amber-800 text-white rounded-lg text-sm font-semibold"
+          className="inline-block px-4 py-2 bg-gradient-to-r from-amber-700 to-amber-600 text-white rounded-lg text-sm font-semibold"
         >
           {t("auth.login")}
         </Link>
@@ -63,8 +63,8 @@ export default function ReviewForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-amber-50/50 rounded-xl p-4 border border-amber-100">
-      <h3 className="text-sm font-semibold text-gray-800 mb-3">{t("review.writeReview")}</h3>
+    <form onSubmit={handleSubmit} className="bg-amber-900/10 rounded-xl p-4 border border-amber-400/10">
+      <h3 className="text-sm font-semibold text-amber-200/80 mb-3">{t("review.writeReview")}</h3>
 
       {/* Star Rating */}
       <div className="flex gap-1 mb-3">
@@ -74,7 +74,7 @@ export default function ReviewForm({
             type="button"
             onClick={() => setRating(star)}
             className={`text-2xl transition-colors ${
-              star <= rating ? "text-amber-500" : "text-gray-300"
+              star <= rating ? "text-amber-500" : "text-amber-200/20"
             }`}
           >
             ★
@@ -88,18 +88,18 @@ export default function ReviewForm({
         onChange={(e) => setComment(e.target.value)}
         placeholder={t("review.placeholder")}
         rows={3}
-        className="w-full px-3 py-2 rounded-lg border border-amber-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 resize-none bg-white"
+        className="w-full px-3 py-2 rounded-lg border border-amber-400/20 text-sm text-amber-100 placeholder:text-amber-200/20 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400/40 resize-none bg-white/[0.05]"
         required
       />
 
       {error && (
-        <p className="text-xs text-red-600 mt-1">{error}</p>
+        <p className="text-xs text-red-400 mt-1">{error}</p>
       )}
 
       <button
         type="submit"
         disabled={loading || !comment.trim()}
-        className="mt-3 w-full py-2.5 bg-amber-800 hover:bg-amber-900 disabled:bg-amber-600 text-white rounded-lg font-semibold text-sm transition-colors"
+        className="mt-3 w-full py-2.5 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 disabled:opacity-40 text-white rounded-lg font-semibold text-sm transition-colors"
       >
         {loading ? t("review.submitting") : t("review.submit")}
       </button>

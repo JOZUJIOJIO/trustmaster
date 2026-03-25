@@ -36,22 +36,22 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-b from-amber-50 to-white">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-[#0a0814]">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
             <span className="text-4xl">🔮</span>
-            <h1 className="text-2xl font-bold text-amber-900 mt-2">{t("app.name")}</h1>
+            <h1 className="text-2xl font-bold text-amber-200 mt-2">{t("app.name")}</h1>
           </Link>
-          <p className="text-sm text-gray-500 mt-1">{t("app.tagline")}</p>
+          <p className="text-sm text-amber-200/40 mt-1">{t("app.tagline")}</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-          <div className="flex mb-6 bg-gray-100 rounded-xl p-1">
+        <div className="bg-white/[0.03] rounded-2xl border border-amber-400/10 p-6">
+          <div className="flex mb-6 bg-white/[0.05] rounded-xl p-1">
             <button
               onClick={() => { setIsSignUp(false); setError(""); }}
               className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                !isSignUp ? "bg-white text-amber-900 shadow-sm" : "text-gray-500"
+                !isSignUp ? "bg-white/[0.08] text-amber-200" : "text-amber-200/40"
               }`}
             >
               {t("auth.login")}
@@ -59,7 +59,7 @@ export default function LoginPage() {
             <button
               onClick={() => { setIsSignUp(true); setError(""); }}
               className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                isSignUp ? "bg-white text-amber-900 shadow-sm" : "text-gray-500"
+                isSignUp ? "bg-white/[0.08] text-amber-200" : "text-amber-200/40"
               }`}
             >
               {t("auth.signup")}
@@ -69,52 +69,52 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {isSignUp && (
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
+                <label className="block text-xs font-medium text-amber-200/60 mb-1">
                   {t("auth.displayName")}
                 </label>
                 <input
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                  className="w-full px-3 py-2.5 rounded-xl border border-amber-400/20 bg-white/[0.05] text-amber-100 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400/40"
                   required
                 />
               </div>
             )}
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
+              <label className="block text-xs font-medium text-amber-200/60 mb-1">
                 {t("auth.email")}
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                className="w-full px-3 py-2.5 rounded-xl border border-amber-400/20 bg-white/[0.05] text-amber-100 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400/40"
                 required
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
+              <label className="block text-xs font-medium text-amber-200/60 mb-1">
                 {t("auth.password")}
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                className="w-full px-3 py-2.5 rounded-xl border border-amber-400/20 bg-white/[0.05] text-amber-100 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400/40"
                 required
                 minLength={6}
               />
             </div>
 
             {error && (
-              <p className="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+              <p className="text-xs text-red-400 bg-red-900/20 px-3 py-2 rounded-lg">{error}</p>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-amber-800 hover:bg-amber-900 disabled:bg-amber-600 text-white rounded-xl font-semibold text-sm transition-colors"
+              className="w-full py-3 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 hover:from-amber-600 hover:to-amber-600 disabled:opacity-40 text-white rounded-xl font-semibold text-sm transition-colors"
             >
               {loading
                 ? t("auth.loading")
@@ -125,7 +125,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
+        <p className="text-center text-xs text-amber-200/30 mt-6">
           {t("auth.disclaimer")}
         </p>
       </div>

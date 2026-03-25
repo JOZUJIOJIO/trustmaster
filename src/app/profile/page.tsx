@@ -51,17 +51,17 @@ export default function ProfilePage() {
 
   if (!authLoading && !user) {
     return (
-      <div className="min-h-screen">
-        <div className="lg:hidden flex items-center h-11 px-4 border-b border-gray-100 sticky top-0 bg-white z-10">
-          <Link href="/" className="text-amber-800 mr-3 text-lg">←</Link>
-          <span className="font-semibold text-[15px]">{t("nav.profile")}</span>
+      <div className="min-h-screen bg-[#0a0814]">
+        <div className="lg:hidden flex items-center h-11 px-4 border-b border-amber-400/10 sticky top-0 bg-[#0a0814] z-10">
+          <Link href="/" className="text-amber-200/60 hover:text-amber-200 mr-3 text-lg">←</Link>
+          <span className="font-semibold text-[15px] text-amber-100">{t("nav.profile")}</span>
         </div>
         <div className="text-center py-20">
           <div className="text-4xl mb-4">👤</div>
-          <p className="text-gray-500 text-sm mb-4">{t("profile.loginRequired")}</p>
+          <p className="text-amber-200/40 text-sm mb-4">{t("profile.loginRequired")}</p>
           <Link
             href="/login"
-            className="inline-block px-6 py-2.5 bg-amber-800 text-white rounded-xl text-sm font-semibold"
+            className="inline-block px-6 py-2.5 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white rounded-xl text-sm font-semibold"
           >
             {t("auth.login")}
           </Link>
@@ -72,26 +72,26 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#0a0814]">
       {/* Header */}
-      <header className="hidden lg:block sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+      <header className="hidden lg:block sticky top-0 z-50 bg-[#0a0814]/80 backdrop-blur-md border-b border-amber-400/10">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
               <span className="text-2xl">🔮</span>
-              <span className="text-xl font-bold text-amber-900">{t("app.name")}</span>
+              <span className="text-xl font-bold text-amber-200">{t("app.name")}</span>
             </Link>
-            <span className="text-gray-300">/</span>
-            <span className="text-sm text-gray-500">{t("nav.profile")}</span>
+            <span className="text-amber-200/20">/</span>
+            <span className="text-sm text-amber-200/40">{t("nav.profile")}</span>
           </div>
           <LanguageSwitcher />
         </div>
       </header>
 
-      <div className="lg:hidden flex items-center justify-between h-11 px-4 border-b border-gray-100 sticky top-0 bg-white z-10">
+      <div className="lg:hidden flex items-center justify-between h-11 px-4 border-b border-amber-400/10 sticky top-0 bg-[#0a0814] z-10">
         <div className="flex items-center">
-          <Link href="/" className="text-amber-800 mr-3 text-lg">←</Link>
-          <span className="font-semibold text-[15px]">{t("nav.profile")}</span>
+          <Link href="/" className="text-amber-200/60 hover:text-amber-200 mr-3 text-lg">←</Link>
+          <span className="font-semibold text-[15px] text-amber-100">{t("nav.profile")}</span>
         </div>
         <LanguageSwitcher />
       </div>
@@ -104,44 +104,44 @@ export default function ProfilePage() {
         ) : (
           <div className="space-y-4 p-4 lg:p-0">
             {/* User Info */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center">
-              <div className="w-16 h-16 rounded-full bg-amber-50 border-2 border-amber-100 mx-auto flex items-center justify-center text-2xl">
+            <div className="bg-white/[0.03] rounded-2xl border border-amber-400/10 p-6 text-center">
+              <div className="w-16 h-16 rounded-full bg-amber-900/20 border-2 border-amber-400/20 mx-auto flex items-center justify-center text-2xl">
                 👤
               </div>
-              <h2 className="text-lg font-bold mt-3">
+              <h2 className="text-lg font-bold mt-3 text-amber-100">
                 {user?.user_metadata?.display_name || user?.email?.split("@")[0]}
               </h2>
-              <p className="text-sm text-gray-500">{user?.email}</p>
+              <p className="text-sm text-amber-200/40">{user?.email}</p>
             </div>
 
             {/* My Reviews */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h3 className="font-semibold text-gray-800 mb-3">{t("profile.myReviews")}</h3>
+            <div className="bg-white/[0.03] rounded-2xl border border-amber-400/10 p-6">
+              <h3 className="font-semibold text-amber-200/80 mb-3">{t("profile.myReviews")}</h3>
               {myReviews.length > 0 ? (
                 <div className="space-y-3">
                   {myReviews.map((review) => (
-                    <div key={review.id} className="bg-gray-50 rounded-xl p-3">
+                    <div key={review.id} className="bg-white/[0.03] rounded-xl p-3 border border-white/5">
                       <div className="flex items-center justify-between">
-                        <Link href={`/master/${review.master_id}`} className="text-sm font-medium text-amber-800">
+                        <Link href={`/master/${review.master_id}`} className="text-sm font-medium text-amber-300">
                           {masterNames[review.master_id] || review.master_id}
                         </Link>
                         <span className="text-amber-500 text-sm">
                           {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
                         </span>
                       </div>
-                      <p className="text-[13px] text-gray-600 mt-1">{review.comment}</p>
+                      <p className="text-[13px] text-amber-200/60 mt-1">{review.comment}</p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-gray-400">{t("profile.noReviews")}</p>
+                <p className="text-sm text-amber-200/30">{t("profile.noReviews")}</p>
               )}
             </div>
 
             {/* Sign Out */}
             <button
               onClick={handleSignOut}
-              className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-semibold text-sm transition-colors"
+              className="w-full py-3 bg-white/[0.05] hover:bg-white/[0.08] text-amber-200/70 rounded-xl font-semibold text-sm transition-colors border border-white/5"
             >
               {t("auth.logout")}
             </button>

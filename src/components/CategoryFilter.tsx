@@ -23,8 +23,8 @@ export default function CategoryFilter({
           onClick={() => onSelect(key)}
           className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
             selected === key
-              ? "bg-amber-800 text-white"
-              : "bg-white text-gray-600 border border-gray-200 hover:border-amber-300"
+              ? "bg-gradient-to-r from-amber-700 to-amber-600 text-white"
+              : "bg-white/[0.05] text-amber-200/60 border border-amber-400/10 hover:border-amber-400/30"
           }`}
         >
           {t(`cat.${key}`)}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/lib/LocaleContext";
@@ -13,19 +13,21 @@ import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { TypewriterText, GlowRing, AnimatedNumber, useScrollReveal } from "@/components/MysticalEffects";
 import StarfieldCanvas from "@/components/StarfieldCanvas";
+import TaijiSvg from "@/components/TaijiSvg";
+import TiltCard from "@/components/TiltCard";
 
 function MasterCardSkeleton() {
   return (
-    <div className="flex items-start gap-3 p-4 border-b border-gray-100 animate-pulse">
-      <div className="w-14 h-14 rounded-full bg-gray-200 flex-shrink-0" />
+    <div className="flex items-start gap-3 p-4 border-b border-gray-100">
+      <div className="w-14 h-14 rounded-full skeleton-breath flex-shrink-0" />
       <div className="flex-1 space-y-2">
-        <div className="h-4 bg-gray-200 rounded w-32" />
-        <div className="h-3 bg-gray-200 rounded w-24" />
-        <div className="h-3 bg-gray-200 rounded w-40" />
+        <div className="h-4 skeleton-breath rounded w-32" />
+        <div className="h-3 skeleton-breath rounded w-24" />
+        <div className="h-3 skeleton-breath rounded w-40" />
       </div>
       <div className="space-y-1">
-        <div className="h-4 bg-gray-200 rounded w-12" />
-        <div className="h-3 bg-gray-200 rounded w-8" />
+        <div className="h-4 skeleton-breath rounded w-12" />
+        <div className="h-3 skeleton-breath rounded w-8" />
       </div>
     </div>
   );
@@ -39,17 +41,24 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [showHero, setShowHero] = useState(true);
   const [quickDate, setQuickDate] = useState("");
+  const [scrollY, setScrollY] = useState(0);
   const { locale, t } = useLocale();
   const router = useRouter();
   useScrollReveal();
 
+  // Scroll parallax for Hero
+  useEffect(() => {
+    if (!showHero) return;
+    const handle = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handle, { passive: true });
+    return () => window.removeEventListener("scroll", handle);
+  }, [showHero]);
+
   const handleQuickFortune = useCallback(() => {
     if (!quickDate) return;
-    // Navigate to fortune page with pre-filled date
     router.push(`/fortune?date=${quickDate}`);
   }, [quickDate, router]);
 
-  // Debounce search input by 300ms
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search), 300);
     return () => clearTimeout(timer);
@@ -74,29 +83,71 @@ export default function Home() {
 
   // ===== Full-screen Hero Landing =====
   if (showHero) {
+    const parallaxScale = Math.max(0.85, 1 - scrollY / 2000);
+    const parallaxOpacity = Math.max(0, 1 - scrollY / 600);
+
     return (
       <div className="relative min-h-screen overflow-hidden">
-        {/* Background image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-fadeIn"
-          style={{ backgroundImage: "url('/hero-zen.jpg')", animationDuration: "2s" }}
-        />
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/60" />
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
-
-        {/* Interactive starfield canvas — particles + mouse connections */}
-        <StarfieldCanvas />
-
-        {/* Breathing glow around center */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[2]">
-          <GlowRing size={300} color="rgba(217, 119, 6, 0.08)" />
-          <GlowRing size={500} color="rgba(139, 92, 246, 0.04)" />
+        {/* === Pure CSS Nebula Background === */}
+        <div className="absolute inset-0">
+          {/* Base dark */}
+          <div className="absolute inset-0 bg-[#0a0814]" />
+          {/* Nebula layer 1 — purple */}
+          <div
+            className="absolute inset-0 animate-drift"
+            style={{
+              background: "radial-gradient(ellipse 80% 60% at 25% 30%, rgba(88,28,135,0.2) 0%, transparent 70%)",
+              animationDuration: "25s",
+            }}
+          />
+          {/* Nebula layer 2 — amber/gold */}
+          <div
+            className="absolute inset-0 animate-drift"
+            style={{
+              background: "radial-gradient(ellipse 70% 50% at 70% 60%, rgba(120,70,20,0.15) 0%, transparent 70%)",
+              animationDuration: "30s",
+              animationDirection: "reverse",
+            }}
+          />
+          {/* Nebula layer 3 — blue */}
+          <div
+            className="absolute inset-0 animate-drift"
+            style={{
+              background: "radial-gradient(ellipse 60% 40% at 50% 80%, rgba(30,58,138,0.1) 0%, transparent 60%)",
+              animationDuration: "20s",
+              animationDelay: "-8s",
+            }}
+          />
+          {/* Noise texture overlay */}
+          <div className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+              backgroundSize: "200px 200px",
+            }}
+          />
+          {/* Vignette */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.5)_100%)]" />
         </div>
 
-        {/* Content — above canvas */}
-        <div className="relative z-10 min-h-screen flex flex-col">
+        {/* Interactive starfield canvas */}
+        <StarfieldCanvas />
+
+        {/* Breathing glow rings */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[2]"
+          style={{ transform: `scale(${parallaxScale})`, opacity: parallaxOpacity }}>
+          <GlowRing size={300} color="rgba(217, 119, 6, 0.06)" />
+          <GlowRing size={500} color="rgba(139, 92, 246, 0.03)" />
+        </div>
+
+        {/* Content — with scroll parallax */}
+        <div
+          className="relative z-10 min-h-screen flex flex-col"
+          style={{
+            transform: `scale(${parallaxScale}) translateY(${-scrollY * 0.15}px)`,
+            opacity: parallaxOpacity,
+            transition: "transform 0.05s linear",
+          }}
+        >
           {/* Top nav */}
           <nav className="flex items-center justify-between px-6 lg:px-12 py-5 animate-fadeIn" style={{ animationDuration: "1s" }}>
             <div className="flex items-center gap-2.5">
@@ -116,20 +167,25 @@ export default function Home() {
             </div>
           </nav>
 
-          {/* Main content - centered */}
+          {/* Main content */}
           <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-            {/* Decorative line — animated reveal */}
-            <div className="flex items-center gap-3 mb-8 animate-fadeIn" style={{ animationDelay: "0.5s", animationDuration: "1.5s", animationFillMode: "both" }}>
-              <div className="w-12 h-px bg-amber-400/40 animate-reveal" style={{ animationDelay: "0.8s" }} />
-              <span className="text-amber-400/60 text-xs tracking-[0.3em] uppercase">
-                ☸ Ancient Eastern Wisdom ☸
-              </span>
-              <div className="w-12 h-px bg-amber-400/40 animate-reveal" style={{ animationDelay: "0.8s" }} />
+            {/* Taiji SVG — centerpiece with mouse parallax */}
+            <div className="mb-8 animate-fadeIn" style={{ animationDelay: "0.3s", animationDuration: "2s", animationFillMode: "both" }}>
+              <TaijiSvg size={160} />
             </div>
 
-            {/* Title — typewriter effect */}
+            {/* Decorative line */}
+            <div className="flex items-center gap-3 mb-6 animate-fadeIn" style={{ animationDelay: "0.8s", animationDuration: "1.5s", animationFillMode: "both" }}>
+              <div className="w-12 h-px bg-amber-400/40 animate-reveal" style={{ animationDelay: "1s" }} />
+              <span className="text-amber-400/50 text-[10px] tracking-[0.4em] uppercase">
+                Ancient Eastern Wisdom × AI
+              </span>
+              <div className="w-12 h-px bg-amber-400/40 animate-reveal" style={{ animationDelay: "1s" }} />
+            </div>
+
+            {/* Title — typewriter */}
             <h1 className="text-gradient-gold text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight max-w-4xl leading-[1.15] min-h-[1.2em]">
-              <TypewriterText text={t("hero.title")} delay={1000} />
+              <TypewriterText text={t("hero.title")} delay={1200} />
             </h1>
 
             <p className="mt-6 text-amber-100/50 text-sm sm:text-base lg:text-lg max-w-lg leading-relaxed animate-fadeIn"
@@ -137,7 +193,7 @@ export default function Home() {
               {t("hero.subtitle")}
             </p>
 
-            {/* Quick Fortune Entry — zero friction */}
+            {/* Quick Fortune Entry */}
             <div className="mt-10 animate-fadeIn" style={{ animationDelay: "3.2s", animationDuration: "1s", animationFillMode: "both" }}>
               <p className="text-amber-200/30 text-xs mb-3 tracking-wider">输入出生日期，秒出命盘</p>
               <div className="flex items-center gap-2 max-w-sm mx-auto">
@@ -147,7 +203,7 @@ export default function Home() {
                   onChange={(e) => setQuickDate(e.target.value)}
                   max={new Date().toISOString().split("T")[0]}
                   min="1940-01-01"
-                  className="flex-1 bg-white/[0.06] border border-amber-400/20 hover:border-amber-400/30 rounded-full px-5 py-3 text-amber-100 text-sm text-center focus:outline-none focus:border-amber-400/50 focus:ring-1 focus:ring-amber-400/20 transition-all placeholder:text-amber-200/20"
+                  className="flex-1 bg-white/[0.06] border border-amber-400/20 hover:border-amber-400/30 rounded-full px-5 py-3 text-amber-100 text-sm text-center focus:outline-none focus:border-amber-400/50 focus:ring-1 focus:ring-amber-400/20 transition-all"
                 />
                 <button
                   onClick={handleQuickFortune}
@@ -163,45 +219,36 @@ export default function Home() {
               <p className="text-amber-200/15 text-[10px] mt-2">免费 · 无需注册 · 即时生成</p>
             </div>
 
-            {/* Stats row — animated counters */}
+            {/* Stats row */}
             <div className="flex items-center gap-8 lg:gap-12 mt-12 animate-fadeIn"
                  style={{ animationDelay: "3.5s", animationDuration: "1s", animationFillMode: "both" }}>
-              <div className="text-center">
-                <div className="text-2xl lg:text-3xl font-bold text-amber-300 drop-shadow-lg">
-                  {loading ? "--" : <AnimatedNumber value={masters.length} duration={2000} />}
+              {[
+                { value: loading ? 0 : masters.length, label: t("stats.masters"), dur: 2000 },
+                { value: loading ? 0 : totalReviews, label: t("stats.reviews"), dur: 2500 },
+                { value: loading ? 0 : avgSatisfaction, label: t("stats.satisfaction"), dur: 2000, suffix: "%" },
+              ].map((stat, i) => (
+                <div key={i} className="text-center flex items-center gap-8 lg:gap-12">
+                  {i > 0 && <div className="w-px h-10 bg-amber-400/15 -ml-8 lg:-ml-12" />}
+                  <div>
+                    <div className="text-2xl lg:text-3xl font-bold text-amber-300 drop-shadow-lg">
+                      {loading ? "--" : <><AnimatedNumber value={stat.value} duration={stat.dur} />{stat.suffix || ""}</>}
+                    </div>
+                    <div className="text-[10px] lg:text-xs text-amber-200/40 mt-1 tracking-wider uppercase">
+                      {stat.label}
+                    </div>
+                  </div>
                 </div>
-                <div className="text-[10px] lg:text-xs text-amber-200/40 mt-1 tracking-wider uppercase">
-                  {t("stats.masters")}
-                </div>
-              </div>
-              <div className="w-px h-10 bg-amber-400/15" />
-              <div className="text-center">
-                <div className="text-2xl lg:text-3xl font-bold text-amber-300 drop-shadow-lg">
-                  {loading ? "--" : <AnimatedNumber value={totalReviews} duration={2500} />}
-                </div>
-                <div className="text-[10px] lg:text-xs text-amber-200/40 mt-1 tracking-wider uppercase">
-                  {t("stats.reviews")}
-                </div>
-              </div>
-              <div className="w-px h-10 bg-amber-400/15" />
-              <div className="text-center">
-                <div className="text-2xl lg:text-3xl font-bold text-amber-300 drop-shadow-lg">
-                  {loading ? "--" : <><AnimatedNumber value={avgSatisfaction} duration={2000} />%</>}
-                </div>
-                <div className="text-[10px] lg:text-xs text-amber-200/40 mt-1 tracking-wider uppercase">
-                  {t("stats.satisfaction")}
-                </div>
-              </div>
+              ))}
             </div>
 
-            {/* CTA button — animated entrance + glow pulse */}
+            {/* CTA button */}
             <button
               onClick={() => setShowHero(false)}
               className="mt-14 group px-10 py-4 rounded-full font-semibold text-base lg:text-lg cursor-pointer
                          bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700
                          text-white border border-amber-500/30
                          shadow-[0_0_40px_rgba(217,119,6,0.2)] hover:shadow-[0_0_60px_rgba(217,119,6,0.35)]
-                         hover:scale-105 transition-all duration-500 animate-glowPulse animate-fadeIn"
+                         hover:scale-105 transition-all duration-500 animate-glowPulse animate-fadeIn border-flow"
               style={{ animationDelay: "4s", animationFillMode: "both" }}
             >
               {t("hero.cta")} →
@@ -217,15 +264,11 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Scroll hint — bounce animation */}
+            {/* Scroll hint */}
             <div className="mt-16 animate-bounceDown animate-fadeIn"
                  style={{ animationDelay: "5s", animationFillMode: "both" }}>
               <div className="flex items-center gap-4 text-amber-400/20 text-lg">
-                <span>☯</span>
-                <span>✦</span>
-                <span className="text-xl">↓</span>
-                <span>✦</span>
-                <span>☸</span>
+                <span>☯</span><span>✦</span><span className="text-xl">↓</span><span>✦</span><span>☸</span>
               </div>
             </div>
           </div>
@@ -279,7 +322,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ===== Feature Cards Section ===== */}
+      {/* ===== Feature Cards Section — 3D Tilt ===== */}
       <section className="lg:max-w-6xl lg:mx-auto px-4 lg:px-6 py-8 lg:py-12">
         <div className="text-center mb-8">
           <h2 className="text-xl lg:text-2xl font-bold text-gray-900">
@@ -292,20 +335,21 @@ export default function Home() {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           {[
-            { href: "/fortune", icon: "☯", title: locale === "zh" ? "八字分析" : "BaZi Analysis", desc: locale === "zh" ? "四柱命理 · AI 解读" : "Four Pillars · AI Reading", color: "from-amber-50 to-orange-50 border-amber-200/50", textColor: "text-amber-900" },
-            { href: "/daily", icon: "📅", title: locale === "zh" ? "每日运势" : "Daily Insights", desc: locale === "zh" ? "个性化评分 · 宜忌" : "Personal Scores · Guidance", color: "from-blue-50 to-indigo-50 border-blue-200/50", textColor: "text-blue-900" },
-            { href: "/compatibility", icon: "💑", title: locale === "zh" ? "双人合盘" : "Compatibility", desc: locale === "zh" ? "五行互补 · 兼容度" : "Elements Match · Score", color: "from-purple-50 to-pink-50 border-purple-200/50", textColor: "text-purple-900" },
-            { href: "/learn", icon: "📖", title: locale === "zh" ? "了解八字" : "Learn BaZi", desc: locale === "zh" ? "3000年东方智慧" : "3,000 Years of Wisdom", color: "from-emerald-50 to-teal-50 border-emerald-200/50", textColor: "text-emerald-900" },
+            { href: "/fortune", icon: "☯", title: locale === "zh" ? "八字分析" : "BaZi Analysis", desc: locale === "zh" ? "四柱命理 · AI 解读" : "Four Pillars · AI Reading", color: "from-amber-50 to-orange-50 border-amber-200/50", textColor: "text-amber-900", glow: "rgba(217,119,6,0.08)" },
+            { href: "/daily", icon: "📅", title: locale === "zh" ? "每日运势" : "Daily Insights", desc: locale === "zh" ? "个性化评分 · 宜忌" : "Personal Scores · Guidance", color: "from-blue-50 to-indigo-50 border-blue-200/50", textColor: "text-blue-900", glow: "rgba(59,130,246,0.08)" },
+            { href: "/compatibility", icon: "💑", title: locale === "zh" ? "双人合盘" : "Compatibility", desc: locale === "zh" ? "五行互补 · 兼容度" : "Elements Match · Score", color: "from-purple-50 to-pink-50 border-purple-200/50", textColor: "text-purple-900", glow: "rgba(139,92,246,0.08)" },
+            { href: "/learn", icon: "📖", title: locale === "zh" ? "了解八字" : "Learn BaZi", desc: locale === "zh" ? "3000年东方智慧" : "3,000 Years of Wisdom", color: "from-emerald-50 to-teal-50 border-emerald-200/50", textColor: "text-emerald-900", glow: "rgba(34,197,94,0.08)" },
           ].map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`bg-gradient-to-br ${item.color} rounded-2xl p-4 lg:p-5 border hover:shadow-lg hover:scale-[1.02] transition-all duration-300 group`}
-            >
-              <div className="text-2xl lg:text-3xl mb-2">{item.icon}</div>
-              <h3 className={`text-sm lg:text-base font-bold ${item.textColor} group-hover:opacity-80 transition-opacity`}>{item.title}</h3>
-              <p className="text-[10px] lg:text-xs text-gray-500 mt-1">{item.desc}</p>
-            </Link>
+            <TiltCard key={item.href} glowColor={item.glow}>
+              <Link
+                href={item.href}
+                className={`block bg-gradient-to-br ${item.color} rounded-2xl p-4 lg:p-5 border group h-full`}
+              >
+                <div className="text-2xl lg:text-3xl mb-2">{item.icon}</div>
+                <h3 className={`text-sm lg:text-base font-bold ${item.textColor} group-hover:opacity-80 transition-opacity`}>{item.title}</h3>
+                <p className="text-[10px] lg:text-xs text-gray-500 mt-1">{item.desc}</p>
+              </Link>
+            </TiltCard>
           ))}
         </div>
       </section>
@@ -317,21 +361,17 @@ export default function Home() {
             <h3 className="text-lg font-bold text-gray-900">{locale === "zh" ? "为什么选择 TrustMaster" : "Why TrustMaster"}</h3>
           </div>
           <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-2xl mb-1">⚙️</div>
-              <div className="text-xs font-semibold text-gray-800">{locale === "zh" ? "精准算法" : "Precise Engine"}</div>
-              <div className="text-[10px] text-gray-500 mt-0.5">{locale === "zh" ? "确定性计算，无随机" : "Deterministic, no randomness"}</div>
-            </div>
-            <div>
-              <div className="text-2xl mb-1">📖</div>
-              <div className="text-xs font-semibold text-gray-800">{locale === "zh" ? "经典方法论" : "Classical Methods"}</div>
-              <div className="text-[10px] text-gray-500 mt-0.5">{locale === "zh" ? "子平真诠 · 滴天髓" : "Zi Ping Zhen Quan"}</div>
-            </div>
-            <div>
-              <div className="text-2xl mb-1">🤖</div>
-              <div className="text-xs font-semibold text-gray-800">{locale === "zh" ? "AI 增强解读" : "AI-Enhanced"}</div>
-              <div className="text-[10px] text-gray-500 mt-0.5">{locale === "zh" ? "深度个性化分析" : "Deep personalized insights"}</div>
-            </div>
+            {[
+              { icon: "⚙️", title: locale === "zh" ? "精准算法" : "Precise Engine", desc: locale === "zh" ? "确定性计算，无随机" : "Deterministic, no randomness" },
+              { icon: "📖", title: locale === "zh" ? "经典方法论" : "Classical Methods", desc: locale === "zh" ? "子平真诠 · 滴天髓" : "Zi Ping Zhen Quan" },
+              { icon: "🤖", title: locale === "zh" ? "AI 增强解读" : "AI-Enhanced", desc: locale === "zh" ? "深度个性化分析" : "Deep personalized insights" },
+            ].map((item) => (
+              <div key={item.title} className="scroll-reveal">
+                <div className="text-2xl mb-1">{item.icon}</div>
+                <div className="text-xs font-semibold text-gray-800">{item.title}</div>
+                <div className="text-[10px] text-gray-500 mt-0.5">{item.desc}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

@@ -164,13 +164,13 @@ function FortuneContent() {
     if (!user) { setIsSubscriber(false); return; }
 
     // Track referral if this is a new user with a ref code
-    const refCode = localStorage.getItem("trustmaster_ref");
+    const refCode = localStorage.getItem("kairos_ref");
     if (refCode) {
       fetch("/api/referral", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ referralCode: refCode, newUserId: user.id }),
-      }).then(() => localStorage.removeItem("trustmaster_ref")).catch(() => {});
+      }).then(() => localStorage.removeItem("kairos_ref")).catch(() => {});
     }
 
     // Check subscription
@@ -226,19 +226,19 @@ function FortuneContent() {
     // Store referral code from URL
     const ref = searchParams.get("ref");
     if (ref) {
-      localStorage.setItem("trustmaster_ref", ref);
+      localStorage.setItem("kairos_ref", ref);
     }
   }, [searchParams]);
 
   // Restore state from storage (chart + payment status)
   useEffect(() => {
     // Try sessionStorage first, then localStorage for persistence across tabs
-    const saved = sessionStorage.getItem("trustmaster_chart")
-      || localStorage.getItem("trustmaster_chart");
-    const savedName = sessionStorage.getItem("trustmaster_userName")
-      || localStorage.getItem("trustmaster_userName");
-    const wasPaid = sessionStorage.getItem("trustmaster_paid") === "true"
-      || localStorage.getItem("trustmaster_paid") === "true";
+    const saved = sessionStorage.getItem("kairos_chart")
+      || localStorage.getItem("kairos_chart");
+    const savedName = sessionStorage.getItem("kairos_userName")
+      || localStorage.getItem("kairos_userName");
+    const wasPaid = sessionStorage.getItem("kairos_paid") === "true"
+      || localStorage.getItem("kairos_paid") === "true";
 
     if (saved && !chart) {
       try {
@@ -270,9 +270,9 @@ function FortuneContent() {
             setShowPaywall(false);
             toast(isChinese ? "支付成功！AI 大师正在为您解读..." : "Payment successful! AI reading starting...", "success");
             // Persist payment status to both storages
-            sessionStorage.setItem("trustmaster_paid", "true");
-            localStorage.setItem("trustmaster_paid", "true");
-            localStorage.setItem("trustmaster_order_session", sessionId);
+            sessionStorage.setItem("kairos_paid", "true");
+            localStorage.setItem("kairos_paid", "true");
+            localStorage.setItem("kairos_order_session", sessionId);
             // Convert referral if this user was referred
             if (user) {
               fetch("/api/referral", {
@@ -312,8 +312,8 @@ function FortuneContent() {
       if (data.url) {
         if (chart) {
           const chartJson = JSON.stringify(chart);
-          sessionStorage.setItem("trustmaster_chart", chartJson);
-          localStorage.setItem("trustmaster_chart", chartJson);
+          sessionStorage.setItem("kairos_chart", chartJson);
+          localStorage.setItem("kairos_chart", chartJson);
         }
         window.location.href = data.url;
       }
@@ -342,11 +342,11 @@ function FortuneContent() {
         // Persist to both storages before redirecting to Stripe
         if (chart) {
           const chartJson = JSON.stringify(chart);
-          sessionStorage.setItem("trustmaster_chart", chartJson);
-          localStorage.setItem("trustmaster_chart", chartJson);
+          sessionStorage.setItem("kairos_chart", chartJson);
+          localStorage.setItem("kairos_chart", chartJson);
         }
-        sessionStorage.setItem("trustmaster_userName", userName);
-        localStorage.setItem("trustmaster_userName", userName);
+        sessionStorage.setItem("kairos_userName", userName);
+        localStorage.setItem("kairos_userName", userName);
         window.location.href = data.url;
       } else {
         const errMsg = data.error || (isChinese ? "无法创建支付链接，请稍后重试" : "Failed to create payment link. Please try again.");
@@ -371,12 +371,12 @@ function FortuneContent() {
     setStep("reveal"); // Go to reveal animation instead of result
     try {
       const chartJson = JSON.stringify(result);
-      sessionStorage.setItem("trustmaster_chart", chartJson);
-      sessionStorage.setItem("trustmaster_userName", userName);
+      sessionStorage.setItem("kairos_chart", chartJson);
+      sessionStorage.setItem("kairos_userName", userName);
       // Also persist to localStorage for cross-session durability
-      localStorage.setItem("trustmaster_chart", chartJson);
-      localStorage.setItem("trustmaster_userName", userName);
-      localStorage.setItem("trustmaster_saved_chart", JSON.stringify({ chart: result, userName, date: new Date().toISOString() }));
+      localStorage.setItem("kairos_chart", chartJson);
+      localStorage.setItem("kairos_userName", userName);
+      localStorage.setItem("kairos_saved_chart", JSON.stringify({ chart: result, userName, date: new Date().toISOString() }));
     } catch { /* ignore */ }
   };
 
@@ -466,7 +466,7 @@ function FortuneContent() {
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
               <span className="text-xl">🔮</span>
-              <span className="text-lg font-bold text-amber-200/80">TrustMaster</span>
+              <span className="text-lg font-bold text-amber-200/80">Kairós</span>
             </Link>
             <span className="text-white/10">/</span>
             <span className="text-sm text-amber-200/40">{t("horoscope.title")}</span>
@@ -489,7 +489,7 @@ function FortuneContent() {
             {/* Saved chart — welcome back */}
             {(() => {
               try {
-                const saved = typeof window !== "undefined" ? localStorage.getItem("trustmaster_saved_chart") : null;
+                const saved = typeof window !== "undefined" ? localStorage.getItem("kairos_saved_chart") : null;
                 if (saved) {
                   const { chart: savedChart, userName: savedName } = JSON.parse(saved);
                   if (savedChart?.dayMaster) {

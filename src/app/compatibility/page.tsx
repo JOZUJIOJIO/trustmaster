@@ -387,11 +387,11 @@ function CompatibilityContent() {
             <button
               onClick={() => {
                 const text = isChinese
-                  ? `我和${nameB || "TA"}的合盘兼容度是 ${overall}% 🔮 来 TrustMaster 测测你们的缘分吧！`
-                  : `Our compatibility score is ${overall}%! 🔮 Check yours on TrustMaster!`;
+                  ? `我和${nameB || "TA"}的合盘兼容度是 ${overall}% 🔮 来 Kairós 测测你们的缘分吧！`
+                  : `Our compatibility score is ${overall}%! 🔮 Check yours on Kairós!`;
                 const shareUrl = `${window.location.origin}/compatibility`;
                 if (navigator.share) {
-                  navigator.share({ title: "TrustMaster Compatibility", text, url: shareUrl });
+                  navigator.share({ title: "Kairós Compatibility", text, url: shareUrl });
                 } else {
                   navigator.clipboard.writeText(`${text}\n${shareUrl}`).then(() => {
                     setShareCopied(true);

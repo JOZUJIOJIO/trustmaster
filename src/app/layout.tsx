@@ -37,27 +37,27 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "TrustMaster | AI-Powered BaZi & Eastern Personality Analysis",
-    template: "%s | TrustMaster",
+    default: "Kairós | AI-Powered BaZi & Eastern Personality Analysis",
+    template: "%s | Kairós",
   },
   description:
     "Discover personalized life insights through ancient Eastern philosophical frameworks powered by AI. BaZi Four Pillars personality analysis, Five Elements balance, and cultural wellness guidance.",
   keywords: ["BaZi", "Four Pillars analysis", "personality insights", "five elements", "Eastern philosophy", "AI life analysis", "self-discovery", "cultural wellness", "八字", "命理", "四柱", "五行"],
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://trustmaster.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://kairos.app"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "TrustMaster | AI-Powered BaZi & Eastern Personality Analysis",
+    title: "Kairós | AI-Powered BaZi & Eastern Personality Analysis",
     description: "Personalized life insights through ancient Eastern philosophical frameworks, powered by AI",
     type: "website",
     locale: "zh_CN",
     alternateLocale: ["en_US", "th_TH", "vi_VN", "id_ID"],
-    siteName: "TrustMaster",
+    siteName: "Kairós",
   },
   twitter: {
     card: "summary_large_image",
-    title: "TrustMaster | AI-Powered Eastern Personality Analysis",
+    title: "Kairós | AI-Powered Eastern Personality Analysis",
     description: "BaZi Four Pillars + AI: Discover your destiny through 3,000 years of Eastern wisdom",
   },
   robots: {
@@ -70,8 +70,8 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "TrustMaster",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://trustmaster.app",
+  name: "Kairós",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://kairos.app",
   description: "AI-powered BaZi Four Pillars personality analysis platform combining 3,000 years of Eastern wisdom with modern AI.",
   applicationCategory: "LifestyleApplication",
   operatingSystem: "Web",

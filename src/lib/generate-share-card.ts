@@ -138,9 +138,9 @@ export async function generateShareCard(chart: BaziChart, userName: string) {
 
       <!-- Footer -->
       <div style="text-align:center;border-top:1px solid rgba(217,175,120,0.08);padding-top:16px;">
-        <div style="font-size:10px;color:rgba(217,175,120,0.25);letter-spacing:2px;">TrustMaster · Ancient Eastern Wisdom × AI</div>
-        <div style="font-size:9px;color:rgba(217,175,120,0.15);margin-top:4px;">探索你的命运蓝图 trustmaster.app/fortune</div>
-        <div style="font-size:9px;color:rgba(139,92,246,0.25);margin-top:2px;">${(() => { try { const ref = localStorage.getItem("trustmaster_ref_code"); return ref ? `邀请码 ${ref}` : ""; } catch { return ""; } })()}</div>
+        <div style="font-size:10px;color:rgba(217,175,120,0.25);letter-spacing:2px;">Kairós · Ancient Eastern Wisdom × AI</div>
+        <div style="font-size:9px;color:rgba(217,175,120,0.15);margin-top:4px;">探索你的命运蓝图 kairos.app/fortune</div>
+        <div style="font-size:9px;color:rgba(139,92,246,0.25);margin-top:2px;">${(() => { try { const ref = localStorage.getItem("kairos_ref_code"); return ref ? `邀请码 ${ref}` : ""; } catch { return ""; } })()}</div>
       </div>
     </div>
   `;
@@ -163,7 +163,7 @@ export async function generateShareCard(chart: BaziChart, userName: string) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `TrustMaster_${userName || "Share"}_${chart.dayMaster}${chart.dayMasterElement}.png`;
+      a.download = `Kairós_${userName || "Share"}_${chart.dayMaster}${chart.dayMasterElement}.png`;
       a.click();
       URL.revokeObjectURL(url);
     }, "image/png");

@@ -112,7 +112,7 @@ export async function generateBaziPDF(
 
       <!-- Footer -->
       <div style="text-align:center;border-top:1px solid #eee;padding-top:16px;margin-top:24px;">
-        <div style="font-size:10px;color:#bbb;">本报告由 TrustMaster 八字命理引擎生成</div>
+        <div style="font-size:10px;color:#bbb;">本报告由 Kairós 八字命理引擎生成</div>
         <div style="font-size:9px;color:#ddd;margin-top:4px;">仅供参考，不作为重要决策依据 · ${new Date().toLocaleDateString("zh-CN")}</div>
       </div>
     </div>
@@ -149,7 +149,7 @@ export async function generateBaziPDF(
       heightLeft -= pageHeight;
     }
 
-    const fileName = `TrustMaster_Analysis_${userName || "Report"}_${chart.solarDate.replace(/[年月]/g, "-").replace("日", "")}.pdf`;
+    const fileName = `Kairós_Analysis_${userName || "Report"}_${chart.solarDate.replace(/[年月]/g, "-").replace("日", "")}.pdf`;
     pdf.save(fileName);
   } finally {
     document.body.removeChild(container);

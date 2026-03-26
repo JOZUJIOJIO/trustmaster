@@ -10,7 +10,7 @@ export const locales: { code: Locale; label: string; flag: string }[] = [
 
 const translations: Record<Locale, Record<string, string>> = {
   th: {
-    "app.name": "TrustMaster",
+    "app.name": "Kairós",
     "app.tagline": "สัมผัสพลังแห่งตะวันออก",
     "app.description": "ผสมผสานภูมิปัญญาตะวันออก 5,000 ปี กับเทคโนโลยี AI",
     "search.placeholder": "ค้นหาอาจารย์ ความเชี่ยวชาญ...",
@@ -101,7 +101,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "disclaimer.text": "บริการนี้มีวัตถุประสงค์เพื่อความบันเทิงเท่านั้น ผลลัพธ์ไม่ควรใช้เป็นพื้นฐานสำหรับการตัดสินใจสำคัญ",
   },
   en: {
-    "app.name": "TrustMaster",
+    "app.name": "Kairós",
     "app.tagline": "Ancient Eastern Wisdom Meets AI",
     "app.description": "Discover your destiny through 5,000 years of Eastern metaphysical tradition, powered by AI",
     "search.placeholder": "Search masters, specialties...",
@@ -224,7 +224,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "disclaimer.text": "This service is for entertainment purposes only. Results should not be used as a basis for important decisions.",
   },
   zh: {
-    "app.name": "TrustMaster",
+    "app.name": "Kairós",
     "app.tagline": "探索神秘的东方力量",
     "app.description": "融合五千年东方智慧与 AI 的命理分析平台",
     "search.placeholder": "搜索大师、专长...",
@@ -347,7 +347,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "disclaimer.text": "本服务仅供娱乐目的。结果不应作为重要决策的依据。",
   },
   vi: {
-    "app.name": "TrustMaster",
+    "app.name": "Kairós",
     "app.tagline": "Tìm Thầy Đáng Tin Cậy",
     "app.description": "Nền tảng tư vấn tâm linh đã xác minh với đánh giá thực từ người dùng",
     "search.placeholder": "Tìm thầy, chuyên môn...",
@@ -437,7 +437,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "disclaimer.text": "Dịch vụ này chỉ mang tính giải trí. Kết quả không nên được sử dụng làm cơ sở cho các quyết định quan trọng.",
   },
   id: {
-    "app.name": "TrustMaster",
+    "app.name": "Kairós",
     "app.tagline": "Temukan Master Terpercaya",
     "app.description": "Platform konsultasi spiritual terverifikasi dengan ulasan pengguna nyata",
     "search.placeholder": "Cari master, keahlian...",

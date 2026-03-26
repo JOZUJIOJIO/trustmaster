@@ -51,7 +51,7 @@ export default function PrivacyPage() {
           <p>We retain your data for as long as your account is active. You can delete your account at any time.</p>
 
           <h2 className="text-lg font-semibold text-amber-200/80">8. Contact</h2>
-          <p>For privacy concerns, contact us at support@trustmaster.app</p>
+          <p>For privacy concerns, contact us at hello@kairos.app</p>
         </div>
       </main>
 

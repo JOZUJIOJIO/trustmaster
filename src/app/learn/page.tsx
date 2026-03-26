@@ -45,8 +45,8 @@ const sections = [
     icon: "🤖",
     title: "How AI Enhances Traditional Analysis",
     titleZh: "AI 如何增强传统分析？",
-    content: "TrustMaster combines precise traditional calculations with AI interpretation. Our engine computes your Four Pillars, Five Elements, Ten Gods, and Luck Cycles using deterministic algorithms — no randomness, 100% reproducible. Then AI synthesizes these data points into personalized, easy-to-understand insights, bridging the gap between ancient wisdom and modern comprehension.",
-    contentZh: "TrustMaster 将精准的传统计算与 AI 解读相结合。我们的引擎使用确定性算法计算四柱、五行、十神和大运——没有随机性，100% 可复现。然后 AI 将这些数据综合成个性化的、通俗易懂的洞察，架起古老智慧与现代理解之间的桥梁。",
+    content: "Kairós combines precise traditional calculations with AI interpretation. Our engine computes your Four Pillars, Five Elements, Ten Gods, and Luck Cycles using deterministic algorithms — no randomness, 100% reproducible. Then AI synthesizes these data points into personalized, easy-to-understand insights, bridging the gap between ancient wisdom and modern comprehension.",
+    contentZh: "Kairós 将精准的传统计算与 AI 解读相结合。我们的引擎使用确定性算法计算四柱、五行、十神和大运——没有随机性，100% 可复现。然后 AI 将这些数据综合成个性化的、通俗易懂的洞察，架起古老智慧与现代理解之间的桥梁。",
   },
 ];
 

@@ -22,7 +22,7 @@ export default function AboutPage() {
       <main className="max-w-2xl mx-auto px-4 py-10 pb-24">
         <div className="text-center mb-12">
           <div className="text-4xl mb-4">🔮</div>
-          <h1 className="text-3xl font-bold text-gradient-gold">TrustMaster</h1>
+          <h1 className="text-3xl font-bold text-gradient-gold">Kairós</h1>
           <p className="text-amber-200/40 text-sm mt-3">
             {isChinese ? "古老智慧，现代科技" : "Ancient Wisdom, Modern Technology"}
           </p>
@@ -36,8 +36,8 @@ export default function AboutPage() {
             </h2>
             <p className="text-sm text-amber-100/50 leading-relaxed">
               {isChinese
-                ? "TrustMaster 致力于将五千年东方智慧带给全世界。我们相信，古老的四柱命理系统蕴含着深刻的人生洞察——我们的使命是通过现代技术让这些智慧变得人人可及、通俗易懂。"
-                : "TrustMaster is dedicated to bringing 5,000 years of Eastern wisdom to the world. We believe the ancient Four Pillars system contains profound life insights — our mission is to make this wisdom accessible and understandable through modern technology."}
+                ? "Kairós 致力于将五千年东方智慧带给全世界。我们相信，古老的四柱命理系统蕴含着深刻的人生洞察——我们的使命是通过现代技术让这些智慧变得人人可及、通俗易懂。"
+                : "Kairós is dedicated to bringing 5,000 years of Eastern wisdom to the world. We believe the ancient Four Pillars system contains profound life insights — our mission is to make this wisdom accessible and understandable through modern technology."}
             </p>
           </div>
 
@@ -97,8 +97,8 @@ export default function AboutPage() {
             </h2>
             <p className="text-sm text-amber-100/50 leading-relaxed">
               {isChinese
-                ? "TrustMaster 提供的所有分析和洞察均由 AI 生成，仅供娱乐、自我反思和个人发展参考。我们不提供医疗、法律或财务建议。请勿仅凭本平台的分析做出重大人生决策。"
-                : "All analysis and insights provided by TrustMaster are AI-generated for entertainment, self-reflection, and personal development purposes only. We do not provide medical, legal, or financial advice. Please do not make major life decisions based solely on our analysis."}
+                ? "Kairós 提供的所有分析和洞察均由 AI 生成，仅供娱乐、自我反思和个人发展参考。我们不提供医疗、法律或财务建议。请勿仅凭本平台的分析做出重大人生决策。"
+                : "All analysis and insights provided by Kairós are AI-generated for entertainment, self-reflection, and personal development purposes only. We do not provide medical, legal, or financial advice. Please do not make major life decisions based solely on our analysis."}
             </p>
           </div>
 
@@ -107,7 +107,7 @@ export default function AboutPage() {
             <h2 className="text-lg font-bold text-amber-200 mb-2">
               {isChinese ? "联系我们" : "Contact Us"}
             </h2>
-            <p className="text-sm text-amber-100/50">support@trustmaster.app</p>
+            <p className="text-sm text-amber-100/50">hello@kairos.app</p>
             <div className="flex justify-center gap-4 mt-4">
               <Link href="/terms" className="text-xs text-amber-200/30 hover:text-amber-200/50 transition-colors underline">
                 {isChinese ? "服务条款" : "Terms"}

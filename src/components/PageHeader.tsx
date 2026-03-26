@@ -18,7 +18,7 @@ export default function PageHeader({ title, href = "/fortune", showLogo = false 
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
               <span className="text-2xl">🔮</span>
-              <span className="text-xl font-bold text-amber-200">TrustMaster</span>
+              <span className="text-xl font-bold text-amber-200">Kairós</span>
             </Link>
             <span className="text-amber-200/20">/</span>
             <span className="text-sm text-amber-200/40">{title}</span>

@@ -22,13 +22,13 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("zh");
 
   useEffect(() => {
-    const saved = localStorage.getItem("trustmaster-locale") as Locale | null;
+    const saved = localStorage.getItem("kairos-locale") as Locale | null;
     if (saved) setLocaleState(saved);
   }, []);
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
-    localStorage.setItem("trustmaster-locale", newLocale);
+    localStorage.setItem("kairos-locale", newLocale);
     document.documentElement.lang = newLocale === "zh" ? "zh-CN" : newLocale;
   };
 

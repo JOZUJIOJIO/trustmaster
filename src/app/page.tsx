@@ -101,7 +101,7 @@ export default function Home() {
             <div className="flex items-center gap-2.5">
               <span className="text-2xl drop-shadow-lg">🔮</span>
               <span className="text-xl font-bold text-amber-100/90 tracking-widest uppercase drop-shadow-lg">
-                TrustMaster
+                Kairós
               </span>
             </div>
             <div className="flex items-center gap-5">
@@ -309,7 +309,7 @@ export default function Home() {
         <section className="lg:max-w-6xl lg:mx-auto px-4 lg:px-6 pb-8">
           <div className="bg-white/[0.02] rounded-2xl p-6 lg:p-8 border border-amber-400/10">
             <div className="text-center mb-6">
-              <h3 className="text-lg font-bold text-amber-100">{locale === "zh" ? "为什么选择 TrustMaster" : "Why TrustMaster"}</h3>
+              <h3 className="text-lg font-bold text-amber-100">{locale === "zh" ? "为什么选择 Kairós" : "Why Kairós"}</h3>
             </div>
             <div className="grid grid-cols-3 gap-4 text-center">
               {[
@@ -383,11 +383,11 @@ export default function Home() {
               </div>
               <div>
                 <h4 className="text-amber-200 font-semibold text-sm mb-3">{t("footer.contact")}</h4>
-                <p className="text-sm text-amber-200/30">support@trustmaster.app</p>
+                <p className="text-sm text-amber-200/30">hello@kairos.app</p>
               </div>
             </div>
             <div className="border-t border-amber-400/10 mt-8 pt-6 text-center text-xs text-amber-200/20">
-              © 2026 TrustMaster. {t("footer.copyright")}.
+              © 2026 Kairós. {t("footer.copyright")}.
             </div>
           </div>
         </footer>

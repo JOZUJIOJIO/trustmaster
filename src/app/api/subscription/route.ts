@@ -20,12 +20,12 @@ export async function POST(request: Request) {
 
     const plans: Record<string, { name: string; amount: number; interval: "month" | "year" }> = {
       monthly: {
-        name: "TrustMaster Pro — Monthly",
+        name: "Kairós Pro — Monthly",
         amount: 499, // $4.99/month
         interval: "month",
       },
       yearly: {
-        name: "TrustMaster Pro — Yearly",
+        name: "Kairós Pro — Yearly",
         amount: 3990, // $39.90/year (save 33%)
         interval: "year",
       },
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       metadata: {
         userId: userId || "",
         plan,
-        product: "trustmaster_pro_subscription",
+        product: "kairos_pro_subscription",
       },
       subscription_data: {
         metadata: {

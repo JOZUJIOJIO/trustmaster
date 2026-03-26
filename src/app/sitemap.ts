@@ -7,7 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createClient();
   const { data: masters } = await supabase.from("masters").select("id");
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://trustmaster.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://kairos.app";
 
   const masterPages = (masters ?? []).map((master: { id: string }) => ({
     url: `${baseUrl}/master/${master.id}`,

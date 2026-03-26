@@ -63,7 +63,7 @@ export default function ProfilePage() {
       setSubscription(sub);
       setReferral(ref);
       if (ref.referralCode) {
-        try { localStorage.setItem("trustmaster_ref_code", ref.referralCode); } catch {}
+        try { localStorage.setItem("kairos_ref_code", ref.referralCode); } catch {}
       }
       setLoading(false);
     });
@@ -207,7 +207,7 @@ export default function ProfilePage() {
                 {/* Referral link */}
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex-1 bg-white/5 border border-amber-400/15 rounded-lg px-3 py-2 text-xs text-amber-200/60 truncate">
-                    {typeof window !== "undefined" ? `${window.location.origin}/fortune?ref=${referral.referralCode}` : `trustmaster.app/fortune?ref=${referral.referralCode}`}
+                    {typeof window !== "undefined" ? `${window.location.origin}/fortune?ref=${referral.referralCode}` : `kairos.app/fortune?ref=${referral.referralCode}`}
                   </div>
                   <button
                     onClick={() => {

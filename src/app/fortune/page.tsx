@@ -21,6 +21,19 @@ import YinYangSelector from "@/components/YinYangSelector";
 import CelestialDatePicker from "@/components/CelestialDatePicker";
 import MysticalNameInput from "@/components/MysticalNameInput";
 import { generateBlueprint } from "@/lib/bazi-interpreter";
+import { useAuth } from "@/lib/supabase/auth-context";
+import { useToast } from "@/components/Toast";
+
+// Generate a stable hash for a chart to use as cache/order key
+function getChartHash(chart: BaziChart): string {
+  return [
+    chart.yearPillar.stem, chart.yearPillar.branch,
+    chart.monthPillar.stem, chart.monthPillar.branch,
+    chart.dayPillar.stem, chart.dayPillar.branch,
+    chart.hourPillar.stem, chart.hourPillar.branch,
+    chart.gender,
+  ].join("-");
+}
 
 type Mode = "select" | "bazi" | "zodiac";
 type Step = "date" | "hour" | "gender" | "name" | "reveal" | "result";
@@ -135,10 +148,57 @@ export default function FortunePage() {
 }
 
 function FortuneContent() {
-  const { locale, t } = useLocale();
-  const isChinese = locale === "zh" || locale === "th";
+  const { locale, isChinese, t } = useLocale();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [mode, setMode] = useState<Mode>("select");
   const [step, setStep] = useState<Step>("date");
+  const [isSubscriber, setIsSubscriber] = useState(false);
+  const [showLoginGate, setShowLoginGate] = useState(false);
+  const [subLoading, setSubLoading] = useState(false);
+
+  const [freeReadings, setFreeReadings] = useState(0);
+
+  // Check subscription status + free readings when user logs in
+  useEffect(() => {
+    if (!user) { setIsSubscriber(false); return; }
+
+    // Track referral if this is a new user with a ref code
+    const refCode = localStorage.getItem("trustmaster_ref");
+    if (refCode) {
+      fetch("/api/referral", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ referralCode: refCode, newUserId: user.id }),
+      }).then(() => localStorage.removeItem("trustmaster_ref")).catch(() => {});
+    }
+
+    // Check subscription
+    fetch("/api/subscription/status", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: user.id }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.subscribed) {
+          setIsSubscriber(true);
+          setUnlocked(true);
+          setShowPaywall(false);
+        }
+      })
+      .catch(() => {});
+
+    // Check free readings from referrals
+    fetch(`/api/referral?userId=${user.id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.freeReadings > 0) {
+          setFreeReadings(data.freeReadings);
+        }
+      })
+      .catch(() => {});
+  }, [user]);
 
   // BaZi inputs
   const [birthDate, setBirthDate] = useState("");
@@ -163,13 +223,22 @@ function FortuneContent() {
       setMode("bazi");
       setStep("hour");
     }
+    // Store referral code from URL
+    const ref = searchParams.get("ref");
+    if (ref) {
+      localStorage.setItem("trustmaster_ref", ref);
+    }
   }, [searchParams]);
 
-  // Restore state from sessionStorage (chart + payment status)
+  // Restore state from storage (chart + payment status)
   useEffect(() => {
-    const saved = sessionStorage.getItem("trustmaster_chart");
-    const savedName = sessionStorage.getItem("trustmaster_userName");
-    const wasPaid = sessionStorage.getItem("trustmaster_paid") === "true";
+    // Try sessionStorage first, then localStorage for persistence across tabs
+    const saved = sessionStorage.getItem("trustmaster_chart")
+      || localStorage.getItem("trustmaster_chart");
+    const savedName = sessionStorage.getItem("trustmaster_userName")
+      || localStorage.getItem("trustmaster_userName");
+    const wasPaid = sessionStorage.getItem("trustmaster_paid") === "true"
+      || localStorage.getItem("trustmaster_paid") === "true";
 
     if (saved && !chart) {
       try {
@@ -199,7 +268,19 @@ function FortuneContent() {
           if (data.paid) {
             setUnlocked(true);
             setShowPaywall(false);
+            toast(isChinese ? "支付成功！AI 大师正在为您解读..." : "Payment successful! AI reading starting...", "success");
+            // Persist payment status to both storages
             sessionStorage.setItem("trustmaster_paid", "true");
+            localStorage.setItem("trustmaster_paid", "true");
+            localStorage.setItem("trustmaster_order_session", sessionId);
+            // Convert referral if this user was referred
+            if (user) {
+              fetch("/api/referral", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ referredUserId: user.id }),
+              }).catch(() => {});
+            }
             if (saved) {
               try {
                 const c = JSON.parse(saved);
@@ -218,27 +299,66 @@ function FortuneContent() {
 
   const [checkoutError, setCheckoutError] = useState("");
 
+  const handleSubscribe = async (plan: "monthly" | "yearly" = "monthly") => {
+    if (!user) { setShowLoginGate(true); return; }
+    setSubLoading(true);
+    try {
+      const res = await fetch("/api/subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, email: user.email, plan }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        if (chart) {
+          const chartJson = JSON.stringify(chart);
+          sessionStorage.setItem("trustmaster_chart", chartJson);
+          localStorage.setItem("trustmaster_chart", chartJson);
+        }
+        window.location.href = data.url;
+      }
+    } catch { /* ignore */ }
+    setSubLoading(false);
+  };
+
   const handleStripeCheckout = async (tier: "pro" | "master" = "pro") => {
+    if (!user) { setShowLoginGate(true); return; }
     setCheckoutLoading(true);
     setCheckoutError("");
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chartId: chart?.solarDate || "", userName, tier }),
+        body: JSON.stringify({
+          chartId: chart?.solarDate || "",
+          chartHash: chart ? getChartHash(chart) : "",
+          userName,
+          userId: user.id,
+          tier,
+        }),
       });
       const data = await res.json();
       if (data.url) {
-        if (chart) sessionStorage.setItem("trustmaster_chart", JSON.stringify(chart));
+        // Persist to both storages before redirecting to Stripe
+        if (chart) {
+          const chartJson = JSON.stringify(chart);
+          sessionStorage.setItem("trustmaster_chart", chartJson);
+          localStorage.setItem("trustmaster_chart", chartJson);
+        }
         sessionStorage.setItem("trustmaster_userName", userName);
+        localStorage.setItem("trustmaster_userName", userName);
         window.location.href = data.url;
       } else {
-        setCheckoutError(data.error || "无法创建支付链接，请稍后重试");
+        const errMsg = data.error || (isChinese ? "无法创建支付链接，请稍后重试" : "Failed to create payment link. Please try again.");
+        setCheckoutError(errMsg);
+        toast(errMsg, "error");
         setCheckoutLoading(false);
       }
     } catch (err) {
       console.error("Checkout error:", err);
-      setCheckoutError("网络错误，请检查连接后重试");
+      const errMsg = isChinese ? "网络错误，请检查连接后重试" : "Network error. Please check your connection.";
+      setCheckoutError(errMsg);
+      toast(errMsg, "error");
       setCheckoutLoading(false);
     }
   };
@@ -250,8 +370,12 @@ function FortuneContent() {
     setChart(result);
     setStep("reveal"); // Go to reveal animation instead of result
     try {
-      sessionStorage.setItem("trustmaster_chart", JSON.stringify(result));
+      const chartJson = JSON.stringify(result);
+      sessionStorage.setItem("trustmaster_chart", chartJson);
       sessionStorage.setItem("trustmaster_userName", userName);
+      // Also persist to localStorage for cross-session durability
+      localStorage.setItem("trustmaster_chart", chartJson);
+      localStorage.setItem("trustmaster_userName", userName);
       localStorage.setItem("trustmaster_saved_chart", JSON.stringify({ chart: result, userName, date: new Date().toISOString() }));
     } catch { /* ignore */ }
   };
@@ -357,7 +481,7 @@ function FortuneContent() {
               <span className="text-amber-400/40 text-[10px] tracking-[0.3em] uppercase">Ancient Eastern Wisdom</span>
               <div className="w-8 h-px bg-amber-400/30" />
             </div>
-            <h1 className="text-3xl lg:text-4xl font-bold text-gradient-gold">{t("bazi.exploreTitle")}</h1>
+            <h1 className="font-display text-3xl lg:text-4xl font-bold text-gradient-gold">{t("bazi.exploreTitle")}</h1>
             <p className="text-amber-200/40 mt-3 text-sm">{t("bazi.selectMethod")}</p>
           </div>
 
@@ -477,7 +601,7 @@ function FortuneContent() {
                 <div key={i} className={`h-1 rounded-full transition-all duration-500 w-6 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
-            <h2 className="text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectDate")}</h2>
+            <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectDate")}</h2>
             <p className="text-amber-200/40 text-sm mb-6">{t("bazi.dateHint")}</p>
             <CelestialDatePicker value={birthDate} onChange={setBirthDate} />
             <button
@@ -498,7 +622,7 @@ function FortuneContent() {
                 <div key={i} className={`h-1 rounded-full transition-all duration-500 w-6 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
-            <h2 className="text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectHour")}</h2>
+            <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectHour")}</h2>
             <p className="text-amber-200/40 text-sm mb-4">{t("bazi.hourHint")}</p>
             <ChineseHourDial value={hourBranch} onChange={setHourBranch} isChinese={isChinese} />
             <button
@@ -525,7 +649,7 @@ function FortuneContent() {
                 <div key={i} className={`h-1 rounded-full transition-all duration-500 w-6 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
-            <h2 className="text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectGender")}</h2>
+            <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectGender")}</h2>
             <p className="text-amber-200/40 text-sm mb-4">{t("bazi.genderHint")}</p>
             <YinYangSelector value={gender} onChange={setGender} isChinese={isChinese} />
             <button
@@ -546,7 +670,7 @@ function FortuneContent() {
                 <div key={i} className={`h-1 rounded-full transition-all duration-500 w-6 ${i <= 3 ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
-            <h2 className="text-2xl font-bold text-amber-100 mb-2">{t("bazi.enterName")}</h2>
+            <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">{t("bazi.enterName")}</h2>
             <p className="text-amber-200/40 text-sm mb-8">{t("bazi.nameHint")}</p>
             <MysticalNameInput value={userName} onChange={setUserName} placeholder={t("bazi.namePlaceholder")} />
             <button
@@ -602,10 +726,10 @@ function FortuneContent() {
                       <div className="text-[10px] text-amber-200/40 mb-1"><Term k={termKey}>{label}</Term></div>
                       <div className="text-[9px] text-amber-500/50 mb-1"><Term k={tenGod === "日主" ? "日主" : tenGod}>{tenGod}</Term></div>
                       <div className="bg-white/5 border border-amber-400/10 rounded-xl p-2.5 space-y-0.5 hover:border-amber-400/20 transition-colors">
-                        <div className="text-xl font-bold text-amber-300">{pillar.stem}</div>
+                        <div className="font-chinese text-xl font-bold text-amber-300">{pillar.stem}</div>
                         <div className="text-[10px] text-amber-200/30">{pillar.stemElement}</div>
                         <div className="w-6 h-px bg-amber-400/15 mx-auto" />
-                        <div className="text-xl font-bold text-amber-100">{pillar.branch}</div>
+                        <div className="font-chinese text-xl font-bold text-amber-100">{pillar.branch}</div>
                         <div className="text-[10px] text-amber-200/30">{pillar.branchElement}</div>
                       </div>
                       <div className="text-[9px] text-amber-200/25 mt-1">{pillar.animal}</div>
@@ -642,7 +766,7 @@ function FortuneContent() {
                 </h3>
                 <div className="flex items-center justify-center gap-8">
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-amber-300">{chart.dayMaster}</div>
+                    <div className="font-chinese text-4xl font-bold text-amber-300">{chart.dayMaster}</div>
                     <div className="text-sm text-amber-200/40 mt-1">{chart.dayMasterElement}命</div>
                   </div>
                   <div className="relative">
@@ -871,6 +995,33 @@ function FortuneContent() {
 
                   {/* Unlock CTA */}
                   <div className="relative -mt-20 pt-12">
+                    {/* Login Gate Modal */}
+                    {showLoginGate && !user && (
+                      <div className="bg-white/[0.03] border border-amber-400/15 rounded-2xl p-6 space-y-4 animate-slideUp mb-4" style={{ animationDuration: "0.4s" }}>
+                        <div className="text-center">
+                          <div className="text-3xl mb-2">👤</div>
+                          <h3 className="text-lg font-bold text-amber-100">
+                            {isChinese ? "请先登录" : "Sign in to continue"}
+                          </h3>
+                          <p className="text-amber-200/40 text-sm mt-1">
+                            {isChinese ? "登录后解锁购买，并永久保存您的解读报告" : "Sign in to purchase and permanently save your reading"}
+                          </p>
+                        </div>
+                        <a
+                          href={`/login?redirect=${encodeURIComponent("/fortune?paid=pending")}`}
+                          className="block w-full py-3 rounded-xl font-semibold text-sm text-center bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
+                        >
+                          {isChinese ? "登录 / 注册" : "Log In / Sign Up"}
+                        </a>
+                        <button
+                          onClick={() => setShowLoginGate(false)}
+                          className="w-full text-center text-amber-200/20 text-xs hover:text-amber-200/40 cursor-pointer transition-colors"
+                        >
+                          {isChinese ? "暂不登录" : "Skip for now"}
+                        </button>
+                      </div>
+                    )}
+
                     {!showPaywall ? (
                       <button
                         onClick={() => setShowPaywall(true)}
@@ -880,23 +1031,23 @@ function FortuneContent() {
                       </button>
                     ) : (
                       /* Paywall Modal */
-                      <div className="bg-white/[0.03] border border-amber-400/15 rounded-2xl p-6 space-y-5 animate-slideUp" style={{ animationDuration: "0.4s" }}>
+                      <div className="bg-white/[0.03] border border-amber-400/15 rounded-2xl p-5 space-y-4 animate-slideUp max-h-[calc(100vh-160px)] overflow-y-auto" style={{ animationDuration: "0.4s" }}>
                         <div className="text-center">
-                          <div className="text-3xl mb-3">✨</div>
+                          <div className="text-2xl mb-2">✨</div>
                           <h3 className="text-xl font-bold text-amber-100">{t("bazi.unlockTitle")}</h3>
                           <p className="text-amber-200/40 text-sm mt-2">
-                            基于您的真实八字，AI 大师将为您深度解读 6 大维度
+                            {isChinese ? "基于您的真实八字，AI 大师将为您深度解读 6 大维度" : "AI will deeply analyze 6 dimensions based on your real birth chart"}
                           </p>
                         </div>
 
                         <div className="space-y-2">
                           {[
-                            { icon: "🧠", text: "性格特质深度分析" },
-                            { icon: "💼", text: "事业运势与发展方向" },
-                            { icon: "💰", text: "财运分析与投资建议" },
-                            { icon: "❤️", text: "感情运势与桃花分析" },
-                            { icon: "🏥", text: "健康提醒与养生建议" },
-                            { icon: "🍀", text: "开运指南（颜色/方位/行业）" },
+                            { icon: "🧠", text: isChinese ? "性格特质深度分析" : "Deep personality analysis" },
+                            { icon: "💼", text: isChinese ? "事业运势与发展方向" : "Career & development" },
+                            { icon: "💰", text: isChinese ? "财运分析与投资建议" : "Wealth & investment" },
+                            { icon: "❤️", text: isChinese ? "感情运势与桃花分析" : "Love & relationships" },
+                            { icon: "🏥", text: isChinese ? "健康提醒与养生建议" : "Health guidance" },
+                            { icon: "🍀", text: isChinese ? "开运指南（颜色/方位/行业）" : "Lucky guidance" },
                           ].map((item) => (
                             <div key={item.text} className="flex items-center gap-2.5 text-sm text-amber-200/60">
                               <span>{item.icon}</span>
@@ -906,33 +1057,87 @@ function FortuneContent() {
                           ))}
                         </div>
 
-                        {/* Two-tier pricing */}
+                        {/* Free reading from referral rewards */}
+                        {user && freeReadings > 0 && (
+                          <button
+                            onClick={() => {
+                              setUnlocked(true);
+                              setShowPaywall(false);
+                              setFreeReadings((prev) => prev - 1);
+                              // Deduct on server
+                              fetch("/api/referral?userId=" + user.id).catch(() => {});
+                              handleAiReading();
+                            }}
+                            className="w-full py-3.5 rounded-xl font-semibold text-sm cursor-pointer bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.3)] transition-all"
+                          >
+                            🎁 {isChinese ? `使用免费解读（剩余 ${freeReadings} 次）` : `Use free reading (${freeReadings} left)`}
+                          </button>
+                        )}
+
+                        {/* Subscription Option — Best Value */}
+                        <div className="bg-emerald-900/15 border border-emerald-400/25 rounded-xl p-4 text-center relative overflow-hidden">
+                          <div className="absolute top-0 right-0 bg-emerald-500/80 text-white text-[8px] px-2 py-0.5 rounded-bl-lg font-bold">
+                            {isChinese ? "最划算" : "BEST VALUE"}
+                          </div>
+                          <div className="text-[10px] text-emerald-300/60 mb-1">♾️ {isChinese ? "Pro 会员" : "Pro Membership"}</div>
+                          <div className="flex items-baseline justify-center gap-1">
+                            <span className="text-2xl font-bold text-emerald-200">$4.99</span>
+                            <span className="text-emerald-200/40 text-xs">/{isChinese ? "月" : "mo"}</span>
+                          </div>
+                          <p className="text-emerald-200/25 text-[10px] mt-1 mb-3">
+                            {isChinese ? "无限 AI 解读 · 每日深度运势 · 优先支持" : "Unlimited readings · Daily insights · Priority support"}
+                          </p>
+                          <div className="grid grid-cols-2 gap-2">
+                            <button
+                              onClick={() => handleSubscribe("monthly")}
+                              disabled={subLoading}
+                              className="py-3 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-all"
+                            >
+                              {subLoading ? "..." : (isChinese ? "$4.99/月" : "$4.99/mo")}
+                            </button>
+                            <button
+                              onClick={() => handleSubscribe("yearly")}
+                              disabled={subLoading}
+                              className="py-3 rounded-lg font-semibold cursor-pointer bg-emerald-800/50 text-emerald-200 text-xs border border-emerald-500/20 disabled:opacity-50 hover:bg-emerald-700/50 transition-all"
+                            >
+                              {subLoading ? "..." : (isChinese ? "$39.90/年 省33%" : "$39.90/yr save 33%")}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="flex-1 h-px bg-white/5" />
+                          <span className="text-amber-200/20 text-[10px]">{isChinese ? "或单次购买" : "or one-time purchase"}</span>
+                          <div className="flex-1 h-px bg-white/5" />
+                        </div>
+
+                        {/* Two-tier one-time pricing */}
                         <div className="grid grid-cols-2 gap-3">
                           {/* Pro */}
                           <div className="bg-amber-900/15 border border-amber-500/20 rounded-xl p-3.5 text-center">
-                            <div className="text-[10px] text-amber-400/50 mb-1">⭐ 专业版</div>
+                            <div className="text-[10px] text-amber-400/50 mb-1">⭐ {isChinese ? "专业版" : "Pro"}</div>
                             <div className="text-2xl font-bold text-amber-300">$9.90</div>
-                            <p className="text-amber-200/25 text-[10px] mt-1 mb-3">6维AI深度解读</p>
+                            <p className="text-amber-200/25 text-[10px] mt-1 mb-3">{isChinese ? "6维AI深度解读" : "6-dimension AI reading"}</p>
                             <button
                               onClick={() => handleStripeCheckout("pro")}
                               disabled={checkoutLoading}
-                              className="w-full py-2.5 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(217,119,6,0.2)] transition-all"
+                              className="w-full py-3 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(217,119,6,0.2)] transition-all"
                             >
-                              {checkoutLoading ? "..." : "选择专业版"}
+                              {checkoutLoading ? "..." : (isChinese ? "选择专业版" : "Choose Pro")}
                             </button>
                           </div>
                           {/* Master */}
                           <div className="bg-purple-900/15 border border-purple-400/25 rounded-xl p-3.5 text-center relative overflow-hidden">
-                            <div className="absolute top-0 right-0 bg-purple-500/80 text-white text-[8px] px-2 py-0.5 rounded-bl-lg font-bold">推荐</div>
-                            <div className="text-[10px] text-purple-300/60 mb-1">👑 大师版</div>
+                            <div className="absolute top-0 right-0 bg-purple-500/80 text-white text-[8px] px-2 py-0.5 rounded-bl-lg font-bold">{isChinese ? "推荐" : "BEST"}</div>
+                            <div className="text-[10px] text-purple-300/60 mb-1">👑 {isChinese ? "大师版" : "Master"}</div>
                             <div className="text-2xl font-bold text-purple-200">$29.90</div>
-                            <p className="text-purple-200/25 text-[10px] mt-1 mb-3">宗师级全盘深度解析</p>
+                            <p className="text-purple-200/25 text-[10px] mt-1 mb-3">{isChinese ? "宗师级全盘深度解析" : "Master-level deep reading"}</p>
                             <button
                               onClick={() => handleStripeCheckout("master")}
                               disabled={checkoutLoading}
-                              className="w-full py-2.5 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-purple-700 via-purple-600 to-purple-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-all"
+                              className="w-full py-3 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-purple-700 via-purple-600 to-purple-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-all"
                             >
-                              {checkoutLoading ? "..." : "选择大师版"}
+                              {checkoutLoading ? "..." : (isChinese ? "选择大师版" : "Choose Master")}
                             </button>
                           </div>
                         </div>
@@ -960,7 +1165,7 @@ function FortuneContent() {
                           onClick={() => setShowPaywall(false)}
                           className="w-full text-center text-amber-200/20 text-xs hover:text-amber-200/40 cursor-pointer transition-colors"
                         >
-                          暂不需要
+                          {isChinese ? "暂不需要" : "Not now"}
                         </button>
                       </div>
                     )}

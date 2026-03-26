@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useLocale } from "@/lib/LocaleContext";
 import { calculateBazi, CHINESE_HOURS, STEM_ELEMENTS, type BaziChart } from "@/lib/bazi";
 import { ELEMENT_RECOMMENDATIONS } from "@/lib/bazi-glossary";
 import RadarChart from "@/components/RadarChart";
 import BottomNav from "@/components/BottomNav";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import PageHeader from "@/components/PageHeader";
+import { useToast } from "@/components/Toast";
 
 type Step = "input" | "result";
 
@@ -113,8 +115,20 @@ function DimensionBar({ label, score, icon }: { label: string; score: number; ic
 }
 
 export default function CompatibilityPage() {
-  const { t } = useLocale();
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#12101c]" />}>
+      <CompatibilityContent />
+    </Suspense>
+  );
+}
+
+function CompatibilityContent() {
+  const { isChinese, t } = useLocale();
+  const { toast } = useToast();
+  const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>("input");
+  const [inviteCopied, setInviteCopied] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
 
   // Person A
   const [dateA, setDateA] = useState("");
@@ -122,6 +136,14 @@ export default function CompatibilityPage() {
   // Person B
   const [dateB, setDateB] = useState("");
   const [nameB, setNameB] = useState("");
+
+  // Pre-fill from invite link: ?from=name&date=1990-01-15
+  useEffect(() => {
+    const fromName = searchParams.get("from");
+    const fromDate = searchParams.get("date");
+    if (fromName) setNameA(decodeURIComponent(fromName));
+    if (fromDate && /^\d{4}-\d{2}-\d{2}$/.test(fromDate)) setDateA(fromDate);
+  }, [searchParams]);
 
   const [chartA, setChartA] = useState<BaziChart | null>(null);
   const [chartB, setChartB] = useState<BaziChart | null>(null);
@@ -140,13 +162,7 @@ export default function CompatibilityPage() {
 
   return (
     <div className="min-h-screen bg-[#12101c]">
-      <header className="flex items-center justify-between px-4 lg:px-12 py-4 border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <Link href="/fortune" className="text-amber-200/60 hover:text-amber-200 text-lg">←</Link>
-          <span className="text-sm text-amber-200/60">双人合盘</span>
-        </div>
-        <LanguageSwitcher />
-      </header>
+      <PageHeader title={isChinese ? "双人合盘" : "Compatibility"} />
 
       <main className="max-w-lg mx-auto px-4 py-8 pb-24">
         {step === "input" ? (
@@ -155,21 +171,21 @@ export default function CompatibilityPage() {
               <div className="flex items-center justify-center gap-2 text-amber-400/30 text-xs mb-3">
                 <span>☸</span><span>Compatibility Analysis</span><span>☸</span>
               </div>
-              <h1 className="text-2xl font-bold text-gradient-gold">双人合盘分析</h1>
-              <p className="text-amber-200/40 text-sm mt-2">输入两人出生日期，分析五行互补与性格兼容</p>
+              <h1 className="font-display text-2xl font-bold text-gradient-gold">{isChinese ? "双人合盘分析" : "Compatibility Analysis"}</h1>
+              <p className="text-amber-200/40 text-sm mt-2">{isChinese ? "输入两人出生日期，分析五行互补与性格兼容" : "Enter two birth dates to analyze Five Elements compatibility"}</p>
             </div>
 
             {/* Person A */}
             <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5 space-y-3">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-lg">👤</span>
-                <span className="text-sm font-semibold text-amber-200/70">第一个人</span>
+                <span className="text-sm font-semibold text-amber-200/70">{isChinese ? "第一个人" : "Person 1"}</span>
               </div>
               <input
                 type="text"
                 value={nameA}
                 onChange={(e) => setNameA(e.target.value)}
-                placeholder="姓名（可选）"
+                placeholder={isChinese ? "姓名（可选）" : "Name (optional)"}
                 className="w-full bg-white/5 border border-amber-400/15 rounded-xl px-4 py-2.5 text-amber-100 text-sm placeholder:text-amber-200/20 focus:outline-none focus:border-amber-400/30"
               />
               <input
@@ -193,13 +209,13 @@ export default function CompatibilityPage() {
             <div className="bg-white/[0.03] border border-purple-400/10 rounded-2xl p-5 space-y-3">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-lg">👤</span>
-                <span className="text-sm font-semibold text-purple-200/70">第二个人</span>
+                <span className="text-sm font-semibold text-purple-200/70">{isChinese ? "第二个人" : "Person 2"}</span>
               </div>
               <input
                 type="text"
                 value={nameB}
                 onChange={(e) => setNameB(e.target.value)}
-                placeholder="姓名（可选）"
+                placeholder={isChinese ? "姓名（可选）" : "Name (optional)"}
                 className="w-full bg-white/5 border border-purple-400/15 rounded-xl px-4 py-2.5 text-purple-100 text-sm placeholder:text-purple-200/20 focus:outline-none focus:border-purple-400/30"
               />
               <input
@@ -217,8 +233,31 @@ export default function CompatibilityPage() {
               disabled={!dateA || !dateB}
               className="w-full py-4 rounded-2xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
             >
-              开始分析兼容度
+              {isChinese ? "开始分析兼容度" : "Analyze Compatibility"}
             </button>
+
+            {/* Invite link — share your info so the other person can fill in theirs */}
+            {dateA && (
+              <button
+                onClick={() => {
+                  const baseUrl = window.location.origin;
+                  const params = new URLSearchParams();
+                  params.set("from", nameA || (isChinese ? "好友" : "Friend"));
+                  params.set("date", dateA);
+                  const link = `${baseUrl}/compatibility?${params.toString()}`;
+                  navigator.clipboard.writeText(link).then(() => {
+                    setInviteCopied(true);
+                    toast(isChinese ? "邀请链接已复制！" : "Invite link copied!", "success");
+                    setTimeout(() => setInviteCopied(false), 2000);
+                  });
+                }}
+                className="w-full py-3 rounded-xl text-sm font-medium cursor-pointer bg-purple-800/30 hover:bg-purple-700/30 text-purple-200/70 border border-purple-400/15 transition-all"
+              >
+                {inviteCopied
+                  ? (isChinese ? "✓ 链接已复制" : "✓ Link copied")
+                  : (isChinese ? "💌 邀请 TA 来合盘" : "💌 Invite them to match")}
+              </button>
+            )}
           </div>
         ) : chartA && chartB && dimensions ? (
           <div className="space-y-5">
@@ -276,11 +315,11 @@ export default function CompatibilityPage() {
             {/* Five Elements comparison */}
             <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
               <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-3">五 行 对 比</h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-2">
                 <div>
                   <div className="text-center text-[10px] text-amber-200/40 mb-1">{nameA || "A"}</div>
                   <RadarChart
-                    size={160}
+                    size={140}
                     maxValue={Math.max(...Object.values(chartA.fiveElements), 3)}
                     data={[
                       { label: "木", value: chartA.fiveElements.木, color: "#22c55e", emoji: "🌳" },
@@ -294,7 +333,7 @@ export default function CompatibilityPage() {
                 <div>
                   <div className="text-center text-[10px] text-purple-200/40 mb-1">{nameB || "B"}</div>
                   <RadarChart
-                    size={160}
+                    size={140}
                     maxValue={Math.max(...Object.values(chartB.fiveElements), 3)}
                     data={[
                       { label: "木", value: chartB.fiveElements.木, color: "#22c55e", emoji: "🌳" },
@@ -344,13 +383,34 @@ export default function CompatibilityPage() {
               </div>
             </div>
 
+            {/* Share result */}
+            <button
+              onClick={() => {
+                const text = isChinese
+                  ? `我和${nameB || "TA"}的合盘兼容度是 ${overall}% 🔮 来 TrustMaster 测测你们的缘分吧！`
+                  : `Our compatibility score is ${overall}%! 🔮 Check yours on TrustMaster!`;
+                const shareUrl = `${window.location.origin}/compatibility`;
+                if (navigator.share) {
+                  navigator.share({ title: "TrustMaster Compatibility", text, url: shareUrl });
+                } else {
+                  navigator.clipboard.writeText(`${text}\n${shareUrl}`).then(() => {
+                    setShareCopied(true);
+                    setTimeout(() => setShareCopied(false), 2000);
+                  });
+                }
+              }}
+              className="w-full py-3.5 rounded-2xl font-semibold text-sm cursor-pointer bg-gradient-to-r from-purple-800/50 via-purple-700/50 to-purple-800/50 hover:from-purple-700/50 hover:via-purple-600/50 hover:to-purple-700/50 text-purple-200/80 border border-purple-400/15 transition-all"
+            >
+              {shareCopied ? (isChinese ? "✓ 已复制" : "✓ Copied") : (isChinese ? "📤 分享结果" : "📤 Share Result")}
+            </button>
+
             {/* Actions */}
             <div className="flex gap-3">
               <button onClick={() => { setStep("input"); setChartA(null); setChartB(null); }} className="flex-1 py-3 rounded-xl text-sm font-medium cursor-pointer bg-white/5 text-amber-200/60 hover:bg-white/10 transition-colors border border-white/5">
-                重新分析
+                {isChinese ? "重新分析" : "Start Over"}
               </button>
               <Link href="/fortune" className="flex-1 py-3 rounded-xl text-sm font-medium text-center bg-white/5 text-amber-200/60 hover:bg-white/10 transition-colors border border-white/5">
-                个人分析
+                {isChinese ? "个人分析" : "My Analysis"}
               </Link>
             </div>
           </div>

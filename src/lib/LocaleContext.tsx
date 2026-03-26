@@ -6,12 +6,14 @@ import { t as translate } from "./i18n";
 
 interface LocaleContextType {
   locale: Locale;
+  isChinese: boolean;
   setLocale: (locale: Locale) => void;
   t: (key: string) => string;
 }
 
 const LocaleContext = createContext<LocaleContextType>({
   locale: "th",
+  isChinese: true,
   setLocale: () => {},
   t: (key: string) => key,
 });
@@ -31,9 +33,10 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   };
 
   const t = (key: string) => translate(locale, key);
+  const isChinese = locale === "zh" || locale === "th";
 
   return (
-    <LocaleContext.Provider value={{ locale, setLocale, t }}>
+    <LocaleContext.Provider value={{ locale, isChinese, setLocale, t }}>
       {children}
     </LocaleContext.Provider>
   );

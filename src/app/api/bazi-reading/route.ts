@@ -1,10 +1,34 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import { createClient } from "@supabase/supabase-js";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   baseURL: process.env.OPENAI_BASE_URL || "https://api.openai.com/v1",
 });
+
+function getSupabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceKey) return null;
+  return createClient(url, serviceKey);
+}
+
+// Generate a stable hash for a chart to use as cache key
+function getChartHash(chart: Record<string, unknown>): string {
+  const key = [
+    chart.yearPillar && (chart.yearPillar as Record<string, string>).stem,
+    chart.yearPillar && (chart.yearPillar as Record<string, string>).branch,
+    chart.monthPillar && (chart.monthPillar as Record<string, string>).stem,
+    chart.monthPillar && (chart.monthPillar as Record<string, string>).branch,
+    chart.dayPillar && (chart.dayPillar as Record<string, string>).stem,
+    chart.dayPillar && (chart.dayPillar as Record<string, string>).branch,
+    chart.hourPillar && (chart.hourPillar as Record<string, string>).stem,
+    chart.hourPillar && (chart.hourPillar as Record<string, string>).branch,
+    chart.gender,
+  ].join("-");
+  return key;
+}
 
 // Day Master nature descriptions for prompt context
 const STEM_NATURE: Record<string, string> = {
@@ -50,6 +74,24 @@ export async function POST(request: Request) {
     if (!chart) {
       return NextResponse.json({ error: "Missing chart data" }, { status: 400 });
     }
+
+    // === Cache lookup ===
+    const chartHash = getChartHash(chart);
+    const supabase = getSupabaseAdmin();
+
+    if (supabase) {
+      const { data: cached } = await supabase
+        .from("readings_cache")
+        .select("reading")
+        .eq("chart_hash", chartHash)
+        .single();
+
+      if (cached?.reading) {
+        return NextResponse.json(cached.reading);
+      }
+    }
+
+    // === Generate AI reading ===
 
     // Build rich context from chart data
     const dayMasterNature = STEM_NATURE[chart.dayMaster] || "";
@@ -171,6 +213,29 @@ ${currentLuckCycle ? `当前大运：${currentLuckCycle.stem}${currentLuckCycle.
       parsed = JSON.parse(jsonMatch ? jsonMatch[0] : content);
     } catch {
       parsed = { error: "AI 返回格式异常，请重试" };
+    }
+
+    // === Save to cache (non-blocking) ===
+    if (supabase && !parsed.error) {
+      supabase
+        .from("readings_cache")
+        .upsert(
+          {
+            chart_hash: chartHash,
+            chart_summary: {
+              dayMaster: chart.dayMaster,
+              dayMasterElement: chart.dayMasterElement,
+              gender: chart.gender,
+              solarDate: chart.solarDate,
+            },
+            reading: parsed,
+            tier: "pro",
+          },
+          { onConflict: "chart_hash" }
+        )
+        .then(({ error }) => {
+          if (error) console.error("Failed to cache reading:", error);
+        });
     }
 
     return NextResponse.json(parsed);

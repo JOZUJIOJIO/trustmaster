@@ -23,7 +23,7 @@ export default function YinYangSelector({
 
   return (
     <div className="flex flex-col items-center">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
+      <svg viewBox={`0 0 ${size} ${size}`} className="overflow-visible w-full max-w-[240px]">
         <defs>
           <filter id="yinGlow">
             <feGaussianBlur stdDeviation="6" result="blur" />

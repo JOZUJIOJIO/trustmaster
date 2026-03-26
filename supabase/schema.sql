@@ -149,3 +149,139 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE TRIGGER on_review_change
   AFTER INSERT OR UPDATE OR DELETE ON reviews
   FOR EACH ROW EXECUTE FUNCTION public.update_master_review_stats();
+
+-- ============================================
+-- Orders table (Stripe payment records)
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  stripe_session_id TEXT UNIQUE NOT NULL,
+  stripe_payment_intent TEXT,
+  customer_email TEXT,
+  chart_id TEXT NOT NULL DEFAULT '',
+  user_name TEXT NOT NULL DEFAULT '',
+  tier TEXT NOT NULL DEFAULT 'pro',
+  amount INTEGER NOT NULL DEFAULT 0,
+  currency TEXT NOT NULL DEFAULT 'usd',
+  status TEXT NOT NULL DEFAULT 'pending',
+  reading_data JSONB,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  paid_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_orders_stripe_session ON orders(stripe_session_id);
+CREATE INDEX IF NOT EXISTS idx_orders_chart_id ON orders(chart_id);
+
+-- Orders: service role can write, anyone can read their own by session_id
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Orders are queryable by stripe session id"
+  ON orders FOR SELECT
+  USING (true);
+
+-- ============================================
+-- AI Reading Cache table
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS readings_cache (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  chart_hash TEXT UNIQUE NOT NULL,
+  chart_summary JSONB NOT NULL,
+  reading JSONB NOT NULL,
+  tier TEXT NOT NULL DEFAULT 'pro',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_readings_cache_hash ON readings_cache(chart_hash);
+
+ALTER TABLE readings_cache ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Readings cache is readable by everyone"
+  ON readings_cache FOR SELECT
+  USING (true);
+
+-- ============================================
+-- Subscriptions table (Stripe recurring)
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS subscriptions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  stripe_customer_id TEXT NOT NULL,
+  stripe_subscription_id TEXT UNIQUE NOT NULL,
+  plan TEXT NOT NULL DEFAULT 'monthly',
+  status TEXT NOT NULL DEFAULT 'active',
+  current_period_start TIMESTAMPTZ,
+  current_period_end TIMESTAMPTZ,
+  cancel_at_period_end BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_subscriptions_user ON subscriptions(user_id);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_stripe ON subscriptions(stripe_subscription_id);
+
+ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own subscriptions"
+  ON subscriptions FOR SELECT
+  USING (auth.uid() = user_id);
+
+-- Add user_id to orders for linking purchases to accounts
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL;
+
+-- ============================================
+-- Referral system
+-- ============================================
+
+-- Add referral_code to profiles
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS referral_code TEXT UNIQUE;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS referred_by UUID REFERENCES auth.users(id) ON DELETE SET NULL;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS free_readings INTEGER NOT NULL DEFAULT 0;
+
+-- Referrals tracking table
+CREATE TABLE IF NOT EXISTS referrals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  referrer_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  referred_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  status TEXT NOT NULL DEFAULT 'signed_up',
+  reward_given BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  converted_at TIMESTAMPTZ,
+  UNIQUE(referrer_id, referred_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_referrals_referrer ON referrals(referrer_id);
+
+ALTER TABLE referrals ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own referrals"
+  ON referrals FOR SELECT
+  USING (auth.uid() = referrer_id);
+
+-- Auto-generate referral code on profile creation
+CREATE OR REPLACE FUNCTION public.generate_referral_code()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.referral_code IS NULL THEN
+    NEW.referral_code := LOWER(SUBSTR(MD5(NEW.id::text || NOW()::text), 1, 8));
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER on_profile_insert_generate_code
+  BEFORE INSERT ON profiles
+  FOR EACH ROW EXECUTE FUNCTION public.generate_referral_code();
+
+-- Backfill existing profiles without codes
+UPDATE profiles SET referral_code = LOWER(SUBSTR(MD5(id::text || NOW()::text), 1, 8)) WHERE referral_code IS NULL;
+
+-- RPC: Increment free readings for a user (called on referral conversion)
+CREATE OR REPLACE FUNCTION public.increment_free_readings(user_id UUID)
+RETURNS VOID AS $$
+BEGIN
+  UPDATE profiles SET free_readings = free_readings + 1 WHERE id = user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

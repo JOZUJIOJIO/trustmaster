@@ -87,7 +87,7 @@ export default function FiveElementsCircle({ fiveElements, dayMasterElement, luc
   return (
     <div className="space-y-4">
       <div className="relative flex justify-center">
-        <svg width="320" height="320" viewBox="0 0 320 320" className="overflow-visible">
+        <svg viewBox="0 0 320 320" className="overflow-visible w-full max-w-[300px]">
           {/* Background glow */}
           <defs>
             <radialGradient id="centerGlow">

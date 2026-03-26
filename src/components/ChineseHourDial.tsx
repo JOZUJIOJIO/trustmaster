@@ -27,7 +27,7 @@ export default function ChineseHourDial({
 
   return (
     <div className="flex flex-col items-center">
-      <svg width="320" height="320" viewBox="0 0 320 320" className="overflow-visible">
+      <svg viewBox="0 0 320 320" className="overflow-visible w-full max-w-[280px]">
         <defs>
           <filter id="hourGlow">
             <feGaussianBlur stdDeviation="4" result="blur" />

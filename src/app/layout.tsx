@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono, Playfair_Display, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
 import { LocaleProvider } from "@/lib/LocaleContext";
 import { AuthProvider } from "@/lib/supabase/auth-context";
 import { Analytics } from "@vercel/analytics/react";
 import MouseAura from "@/components/MouseAura";
+import { ToastProvider } from "@/components/Toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,18 +17,80 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const displayFont = Playfair_Display({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["600", "700"],
+});
+
+const chineseSerif = Noto_Serif_SC({
+  variable: "--font-chinese",
+  weight: ["400", "600", "700"],
+  preload: false,
+});
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
-  title: "TrustMaster | AI-Powered Eastern Personality & Life Insights",
+  title: {
+    default: "TrustMaster | AI-Powered BaZi & Eastern Personality Analysis",
+    template: "%s | TrustMaster",
+  },
   description:
     "Discover personalized life insights through ancient Eastern philosophical frameworks powered by AI. BaZi Four Pillars personality analysis, Five Elements balance, and cultural wellness guidance.",
-  keywords: ["BaZi", "Four Pillars analysis", "personality insights", "five elements", "Eastern philosophy", "AI life analysis", "self-discovery", "cultural wellness"],
+  keywords: ["BaZi", "Four Pillars analysis", "personality insights", "five elements", "Eastern philosophy", "AI life analysis", "self-discovery", "cultural wellness", "八字", "命理", "四柱", "五行"],
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://trustmaster.app"),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "TrustMaster | AI-Powered Eastern Personality & Life Insights",
+    title: "TrustMaster | AI-Powered BaZi & Eastern Personality Analysis",
     description: "Personalized life insights through ancient Eastern philosophical frameworks, powered by AI",
     type: "website",
     locale: "zh_CN",
     alternateLocale: ["en_US", "th_TH", "vi_VN", "id_ID"],
+    siteName: "TrustMaster",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "TrustMaster | AI-Powered Eastern Personality Analysis",
+    description: "BaZi Four Pillars + AI: Discover your destiny through 3,000 years of Eastern wisdom",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+// JSON-LD structured data
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "TrustMaster",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://trustmaster.app",
+  description: "AI-powered BaZi Four Pillars personality analysis platform combining 3,000 years of Eastern wisdom with modern AI.",
+  applicationCategory: "LifestyleApplication",
+  operatingSystem: "Web",
+  offers: [
+    {
+      "@type": "Offer",
+      name: "Pro Analysis",
+      price: "9.90",
+      priceCurrency: "USD",
+    },
+    {
+      "@type": "Offer",
+      name: "Pro Membership",
+      price: "4.99",
+      priceCurrency: "USD",
+      billingPeriod: "month",
+    },
+  ],
+  inLanguage: ["zh", "en", "th", "vi", "id"],
 };
 
 export default function RootLayout({
@@ -38,11 +101,17 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${displayFont.variable} ${chineseSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-[#0a0814] text-amber-100">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <AuthProvider>
-          <LocaleProvider>{children}</LocaleProvider>
+          <LocaleProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </LocaleProvider>
         </AuthProvider>
         <MouseAura />
         <Analytics />

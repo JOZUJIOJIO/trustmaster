@@ -71,7 +71,7 @@ export default function RadarChart({ data, size = 240, maxValue = 5 }: RadarChar
   });
 
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="mx-auto">
+    <svg viewBox={`0 0 ${size} ${size}`} className="mx-auto w-full" style={{ maxWidth: size }}>
       {/* Grid */}
       {gridPaths.map((path, i) => (
         <path

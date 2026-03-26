@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { chartId, userName, tier = "pro" } = await request.json();
+    const { chartId, chartHash, userName, userId, tier = "pro" } = await request.json();
 
     const origin = request.headers.get("origin") || "http://localhost:3001";
 
@@ -55,7 +55,9 @@ export async function POST(request: Request) {
       cancel_url: `${origin}/fortune?paid=false`,
       metadata: {
         chartId: chartId || "",
+        chartHash: chartHash || "",
         userName: userName || "",
+        userId: userId || "",
         product: "bazi_analysis_report",
         tier,
       },

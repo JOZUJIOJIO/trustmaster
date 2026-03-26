@@ -11,7 +11,7 @@ import CategoryFilter from "@/components/CategoryFilter";
 import SearchBar from "@/components/SearchBar";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { TypewriterText, GlowRing, AnimatedNumber, useScrollReveal } from "@/components/MysticalEffects";
+import { TypewriterText, AnimatedNumber, useScrollReveal } from "@/components/MysticalEffects";
 import StarfieldCanvas from "@/components/StarfieldCanvas";
 import TaijiSvg from "@/components/TaijiSvg";
 import TiltCard from "@/components/TiltCard";
@@ -41,18 +41,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [showHero, setShowHero] = useState(true);
   const [quickDate, setQuickDate] = useState("");
-  const [scrollY, setScrollY] = useState(0);
   const { locale, t } = useLocale();
   const router = useRouter();
   useScrollReveal();
-
-  // Scroll parallax for Hero
-  useEffect(() => {
-    if (!showHero) return;
-    const handle = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handle, { passive: true });
-    return () => window.removeEventListener("scroll", handle);
-  }, [showHero]);
 
   const handleQuickFortune = useCallback(() => {
     if (!quickDate) return;
@@ -83,71 +74,28 @@ export default function Home() {
 
   // ===== Full-screen Hero Landing =====
   if (showHero) {
-    const parallaxScale = Math.max(0.85, 1 - scrollY / 2000);
-    const parallaxOpacity = Math.max(0, 1 - scrollY / 600);
-
     return (
       <div className="relative min-h-screen overflow-hidden">
-        {/* === Pure CSS Nebula Background === */}
+        {/* === Background — minimal: dark base + single subtle nebula + vignette === */}
         <div className="absolute inset-0">
-          {/* Base dark */}
           <div className="absolute inset-0 bg-[#0a0814]" />
-          {/* Nebula layer 1 — purple */}
+          {/* Single slow nebula — purple/gold blend */}
           <div
             className="absolute inset-0 animate-drift"
             style={{
-              background: "radial-gradient(ellipse 80% 60% at 25% 30%, rgba(88,28,135,0.2) 0%, transparent 70%)",
-              animationDuration: "25s",
-            }}
-          />
-          {/* Nebula layer 2 — amber/gold */}
-          <div
-            className="absolute inset-0 animate-drift"
-            style={{
-              background: "radial-gradient(ellipse 70% 50% at 70% 60%, rgba(120,70,20,0.15) 0%, transparent 70%)",
+              background: "radial-gradient(ellipse 80% 60% at 30% 40%, rgba(88,28,135,0.12) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 70% 60%, rgba(120,70,20,0.08) 0%, transparent 60%)",
               animationDuration: "30s",
-              animationDirection: "reverse",
-            }}
-          />
-          {/* Nebula layer 3 — blue */}
-          <div
-            className="absolute inset-0 animate-drift"
-            style={{
-              background: "radial-gradient(ellipse 60% 40% at 50% 80%, rgba(30,58,138,0.1) 0%, transparent 60%)",
-              animationDuration: "20s",
-              animationDelay: "-8s",
-            }}
-          />
-          {/* Noise texture overlay */}
-          <div className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-              backgroundSize: "200px 200px",
             }}
           />
           {/* Vignette */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.5)_100%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.6)_100%)]" />
         </div>
 
         {/* Interactive starfield canvas */}
         <StarfieldCanvas />
 
-        {/* Breathing glow rings */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[2]"
-          style={{ transform: `scale(${parallaxScale})`, opacity: parallaxOpacity }}>
-          <GlowRing size={300} color="rgba(217, 119, 6, 0.06)" />
-          <GlowRing size={500} color="rgba(139, 92, 246, 0.03)" />
-        </div>
-
-        {/* Content — with scroll parallax */}
-        <div
-          className="relative z-10 min-h-screen flex flex-col"
-          style={{
-            transform: `scale(${parallaxScale}) translateY(${-scrollY * 0.15}px)`,
-            opacity: parallaxOpacity,
-            transition: "transform 0.05s linear",
-          }}
-        >
+        {/* Content */}
+        <div className="relative z-10 min-h-screen flex flex-col">
           {/* Top nav */}
           <nav className="flex items-center justify-between px-6 lg:px-12 py-5 animate-fadeIn" style={{ animationDuration: "1s" }}>
             <div className="flex items-center gap-2.5">
@@ -184,7 +132,7 @@ export default function Home() {
             </div>
 
             {/* Title — typewriter */}
-            <h1 className="text-gradient-gold text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight max-w-4xl leading-[1.15] min-h-[1.2em]">
+            <h1 className="font-display text-gradient-gold text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight max-w-4xl leading-[1.15] min-h-[1.2em]">
               <TypewriterText text={t("hero.title")} delay={1200} />
             </h1>
 
@@ -195,8 +143,8 @@ export default function Home() {
 
             {/* Quick Fortune Entry */}
             <div className="mt-10 animate-fadeIn" style={{ animationDelay: "3.2s", animationDuration: "1s", animationFillMode: "both" }}>
-              <p className="text-amber-200/30 text-xs mb-3 tracking-wider">输入出生日期，秒出命盘</p>
-              <div className="flex items-center gap-2 max-w-sm mx-auto">
+              <p className="text-amber-200/30 text-xs mb-3 tracking-wider">{locale === "zh" ? "输入出生日期，秒出命盘" : "Enter birth date for instant chart"}</p>
+              <div className="flex flex-col sm:flex-row items-center gap-2 max-w-sm mx-auto">
                 <input
                   type="date"
                   value={quickDate}
@@ -208,15 +156,15 @@ export default function Home() {
                 <button
                   onClick={handleQuickFortune}
                   disabled={!quickDate}
-                  className="px-6 py-3 rounded-full font-semibold text-sm cursor-pointer
+                  className="w-full sm:w-auto px-6 py-3 rounded-full font-semibold text-sm cursor-pointer
                              bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white
                              border border-amber-500/30 disabled:opacity-30 disabled:cursor-not-allowed
                              hover:shadow-[0_0_30px_rgba(217,119,6,0.25)] transition-all"
                 >
-                  开启 →
+                  {locale === "zh" ? "开启" : "Go"} →
                 </button>
               </div>
-              <p className="text-amber-200/15 text-[10px] mt-2">免费 · 无需注册 · 即时生成</p>
+              <p className="text-amber-200/15 text-[10px] mt-2">{locale === "zh" ? "免费 · 无需注册 · 即时生成" : "Free · No signup · Instant"}</p>
             </div>
 
             {/* Stats row */}
@@ -264,12 +212,9 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Scroll hint */}
-            <div className="mt-16 animate-bounceDown animate-fadeIn"
-                 style={{ animationDelay: "5s", animationFillMode: "both" }}>
-              <div className="flex items-center gap-4 text-amber-400/20 text-lg">
-                <span>☯</span><span>✦</span><span className="text-xl">↓</span><span>✦</span><span>☸</span>
-              </div>
+            {/* Scroll hint — minimal */}
+            <div className="mt-16 animate-fadeIn" style={{ animationDelay: "4s", animationFillMode: "both" }}>
+              <div className="text-amber-400/15 text-sm tracking-[0.3em]">↓</div>
             </div>
           </div>
 
@@ -331,7 +276,7 @@ export default function Home() {
         {/* ===== Feature Cards Section — Dark 3D Tilt ===== */}
         <section className="lg:max-w-6xl lg:mx-auto px-4 lg:px-6 py-8 lg:py-12">
           <div className="text-center mb-8">
-            <h2 className="text-xl lg:text-2xl font-bold text-amber-100">
+            <h2 className="font-display text-xl lg:text-2xl font-bold text-amber-100">
               {locale === "zh" ? "探索东方智慧" : "Explore Eastern Wisdom"}
             </h2>
             <p className="text-sm text-amber-200/30 mt-2">

@@ -173,7 +173,7 @@ export default function CelestialDatePicker({
       </div>
 
       {/* Three columns */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         {/* Year */}
         <WheelColumn
           items={YEARS}

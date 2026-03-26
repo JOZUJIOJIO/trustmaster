@@ -4,10 +4,11 @@ import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useLocale } from "@/lib/LocaleContext";
+import { useAuth } from "@/lib/supabase/auth-context";
 import { calculateBazi, STEM_ELEMENTS, getTenGod, type BaziChart } from "@/lib/bazi";
 import { ELEMENT_RECOMMENDATIONS, DAY_MASTER_DESC } from "@/lib/bazi-glossary";
 import BottomNav from "@/components/BottomNav";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import PageHeader from "@/components/PageHeader";
 
 // @ts-expect-error lunar-javascript has no type declarations
 import { Solar } from "lunar-javascript";
@@ -112,10 +113,25 @@ function ScoreBar({ label, score, icon, color }: { label: string; score: number;
 }
 
 function DailyContent() {
-  const { t } = useLocale();
+  const { isChinese, t } = useLocale();
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const [chart, setChart] = useState<BaziChart | null>(null);
   const [birthDate, setBirthDate] = useState("");
+  const [isSubscriber, setIsSubscriber] = useState(false);
+
+  // Check subscription
+  useEffect(() => {
+    if (!user) return;
+    fetch("/api/subscription/status", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: user.id }),
+    })
+      .then((r) => r.json())
+      .then((data) => { if (data.subscribed) setIsSubscriber(true); })
+      .catch(() => {});
+  }, [user]);
 
   // Check URL for pre-filled date
   useEffect(() => {
@@ -134,7 +150,9 @@ function DailyContent() {
   };
 
   const today = new Date();
-  const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+  const dateStr = isChinese
+    ? `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`
+    : today.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
   // Calculate scores if chart exists
   const scores = chart ? calcDailyScores(chart) : null;
@@ -144,13 +162,7 @@ function DailyContent() {
 
   return (
     <div className="min-h-screen bg-[#12101c]">
-      <header className="flex items-center justify-between px-4 lg:px-12 py-4 border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <Link href="/fortune" className="text-amber-200/60 hover:text-amber-200 text-lg">←</Link>
-          <span className="text-sm text-amber-200/60">每日运势</span>
-        </div>
-        <LanguageSwitcher />
-      </header>
+      <PageHeader title={isChinese ? "每日运势" : "Daily Insights"} />
 
       <main className="max-w-lg mx-auto px-4 py-8 pb-24">
         {/* Date header */}
@@ -158,14 +170,14 @@ function DailyContent() {
           <div className="flex items-center justify-center gap-2 text-amber-400/30 text-xs mb-3">
             <span>☸</span><span>Daily Fortune · 每日运势</span><span>☸</span>
           </div>
-          <h1 className="text-2xl font-bold text-amber-100">{dateStr}</h1>
+          <h1 className="font-display text-2xl font-bold text-amber-100">{dateStr}</h1>
         </div>
 
         {!chart ? (
           /* Input state */
           <div className="text-center space-y-6">
             <div className="text-5xl mb-4 animate-float">☯</div>
-            <p className="text-amber-200/50 text-sm">输入出生日期，获取专属每日运势</p>
+            <p className="text-amber-200/50 text-sm">{isChinese ? "输入出生日期，获取专属每日运势" : "Enter your birth date for personalized daily insights"}</p>
             <input
               type="date"
               value={birthDate}
@@ -179,7 +191,7 @@ function DailyContent() {
               disabled={!birthDate}
               className="w-full max-w-xs mx-auto block py-3.5 rounded-xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white disabled:opacity-30 transition-all"
             >
-              查看今日运势
+              {isChinese ? "查看今日运势" : "View Today's Fortune"}
             </button>
           </div>
         ) : scores && guidance && rec ? (
@@ -200,7 +212,7 @@ function DailyContent() {
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <div className="text-3xl font-bold text-amber-300">{scores.overall}</div>
-                  <div className="text-[10px] text-amber-200/30">综合运势</div>
+                  <div className="text-[10px] text-amber-200/30">{isChinese ? "综合运势" : "Overall"}</div>
                 </div>
               </div>
             </div>
@@ -216,17 +228,17 @@ function DailyContent() {
 
             {/* Four dimension scores */}
             <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5 space-y-4">
-              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-1">四 维 运 势</h3>
-              <ScoreBar label="事业" score={scores.career} icon="💼" color="#3b82f6" />
-              <ScoreBar label="财运" score={scores.wealth} icon="💰" color="#f59e0b" />
-              <ScoreBar label="感情" score={scores.love} icon="❤️" color="#ef4444" />
-              <ScoreBar label="健康" score={scores.health} icon="🏥" color="#22c55e" />
+              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-1">{isChinese ? "四 维 运 势" : "FOUR DIMENSIONS"}</h3>
+              <ScoreBar label={isChinese ? "事业" : "Career"} score={scores.career} icon="💼" color="#3b82f6" />
+              <ScoreBar label={isChinese ? "财运" : "Wealth"} score={scores.wealth} icon="💰" color="#f59e0b" />
+              <ScoreBar label={isChinese ? "感情" : "Love"} score={scores.love} icon="❤️" color="#ef4444" />
+              <ScoreBar label={isChinese ? "健康" : "Health"} score={scores.health} icon="🏥" color="#22c55e" />
             </div>
 
             {/* Today's Auspicious / Inauspicious */}
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-white/[0.03] border border-green-500/10 rounded-2xl p-4">
-                <h4 className="text-xs text-green-400/60 font-semibold mb-3 text-center">✅ 今日宜</h4>
+                <h4 className="text-xs text-green-400/60 font-semibold mb-3 text-center">✅ {isChinese ? "今日宜" : "Do"}</h4>
                 <div className="space-y-2">
                   {guidance.auspicious.map((item, i) => (
                     <div key={i} className="text-xs text-amber-100/60 flex items-center gap-1.5">
@@ -236,7 +248,7 @@ function DailyContent() {
                 </div>
               </div>
               <div className="bg-white/[0.03] border border-red-500/10 rounded-2xl p-4">
-                <h4 className="text-xs text-red-400/60 font-semibold mb-3 text-center">❌ 今日忌</h4>
+                <h4 className="text-xs text-red-400/60 font-semibold mb-3 text-center">❌ {isChinese ? "今日忌" : "Don't"}</h4>
                 <div className="space-y-2">
                   {guidance.inauspicious.map((item, i) => (
                     <div key={i} className="text-xs text-amber-100/60 flex items-center gap-1.5">
@@ -249,18 +261,18 @@ function DailyContent() {
 
             {/* Lucky guidance */}
             <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
-              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">今 日 幸 运 指 引</h3>
-              <div className="grid grid-cols-3 gap-3 text-center">
+              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">{isChinese ? "今 日 幸 运 指 引" : "LUCKY GUIDANCE"}</h3>
+              <div className="grid grid-cols-3 gap-2 text-center">
                 <div>
-                  <div className="text-[10px] text-amber-200/30 mb-1">🎨 幸运色</div>
+                  <div className="text-[10px] text-amber-200/30 mb-1">🎨 {isChinese ? "幸运色" : "Color"}</div>
                   <div className="text-xs text-amber-100/60">{rec.colors.split("、")[0]}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-amber-200/30 mb-1">🧭 方位</div>
+                  <div className="text-[10px] text-amber-200/30 mb-1">🧭 {isChinese ? "方位" : "Direction"}</div>
                   <div className="text-xs text-amber-100/60">{rec.directions.split("、")[0]}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-amber-200/30 mb-1">🔢 数字</div>
+                  <div className="text-[10px] text-amber-200/30 mb-1">🔢 {isChinese ? "数字" : "Number"}</div>
                   <div className="text-xs text-amber-100/60">{rec.numbers}</div>
                 </div>
               </div>
@@ -268,7 +280,7 @@ function DailyContent() {
 
             {/* Daily advice based on ten god */}
             <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
-              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-3">今 日 箴 言</h3>
+              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-3">{isChinese ? "今 日 箴 言" : "DAILY WISDOM"}</h3>
               <p className="text-amber-100/60 text-sm leading-relaxed text-center">
                 {scores.tenGod === "正财" || scores.tenGod === "偏财"
                   ? "财星当令，今日适合处理与钱财相关的事务。把握机遇，但勿贪心。"
@@ -282,16 +294,73 @@ function DailyContent() {
               </p>
             </div>
 
+            {/* Pro Deep Insights — subscriber only */}
+            {isSubscriber ? (
+              <div className="bg-white/[0.03] border border-emerald-400/15 rounded-2xl p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xs bg-emerald-900/40 text-emerald-300 px-2 py-0.5 rounded-full font-semibold">PRO</span>
+                  <h3 className="text-xs text-emerald-400/60 tracking-widest">{isChinese ? "深 度 日 运 分 析" : "DEEP DAILY ANALYSIS"}</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="bg-white/[0.02] rounded-xl p-3.5 border border-white/5">
+                    <div className="text-xs font-semibold text-amber-200/70 mb-1">🎯 {isChinese ? "今日关键时段" : "Key Time Windows"}</div>
+                    <p className="text-[11px] text-amber-100/50 leading-relaxed">
+                      {scores.career >= 70
+                        ? (isChinese ? "上午 9-11 点（巳时）事业运最旺，适合重要会议和决策。下午 3-5 点（申时）财运活跃，宜处理财务。" : "9-11am best for career decisions. 3-5pm favorable for financial matters.")
+                        : (isChinese ? "上午宜静不宜动，下午 1-3 点（未时）运势回升，适合推进重要事项。晚间宜休养。" : "Morning: stay calm. 1-3pm energy rises, good for important tasks. Evening: rest.")}
+                    </p>
+                  </div>
+                  <div className="bg-white/[0.02] rounded-xl p-3.5 border border-white/5">
+                    <div className="text-xs font-semibold text-amber-200/70 mb-1">💡 {isChinese ? "个性化行动建议" : "Personalized Actions"}</div>
+                    <p className="text-[11px] text-amber-100/50 leading-relaxed">
+                      {chart.dayMasterStrength === "strong"
+                        ? (isChinese ? `今日${scores.tenGod}当令，身强者宜主动出击。适合谈判、签约、社交拓展。穿${rec.colors.split("、")[0]}系衣物增运。` : `Today favors proactive moves. Good for negotiations and networking. Wear ${rec.colors.split("、")[0]} for luck.`)
+                        : (isChinese ? `今日${scores.tenGod}当令，身弱者宜借力使力。寻求团队支持，避免单打独斗。佩戴${chart.luckyElement}属性饰品助运。` : `Today favors teamwork over solo efforts. Seek support. Wear ${chart.luckyElement} element accessories.`)}
+                    </p>
+                  </div>
+                  <div className="bg-white/[0.02] rounded-xl p-3.5 border border-white/5">
+                    <div className="text-xs font-semibold text-amber-200/70 mb-1">🍽️ {isChinese ? "今日饮食调养" : "Diet & Wellness"}</div>
+                    <p className="text-[11px] text-amber-100/50 leading-relaxed">
+                      {chart.luckyElement === "木" ? (isChinese ? "今日宜多食绿色蔬菜、酸味食物。推荐：菠菜沙拉、柠檬水、绿茶。" : "Eat green vegetables and sour foods. Try: spinach salad, lemon water, green tea.")
+                       : chart.luckyElement === "火" ? (isChinese ? "今日宜食红色食物、苦味适量。推荐：番茄、红枣、苦瓜。" : "Eat red foods and moderate bitter flavors. Try: tomatoes, dates, bitter melon.")
+                       : chart.luckyElement === "土" ? (isChinese ? "今日宜食甘味、黄色食物。推荐：南瓜、玉米、蜂蜜水。" : "Eat sweet and yellow foods. Try: pumpkin, corn, honey water.")
+                       : chart.luckyElement === "金" ? (isChinese ? "今日宜食辛味、白色食物。推荐：白萝卜、梨、薏仁。" : "Eat pungent and white foods. Try: radish, pear, barley.")
+                       : (isChinese ? "今日宜食咸味、黑色食物。推荐：海带、黑豆、黑芝麻糊。" : "Eat salty and dark foods. Try: seaweed, black beans, sesame paste.")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white/[0.03] border border-emerald-400/10 rounded-2xl p-5 text-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#12101c] via-transparent to-transparent pointer-events-none" />
+                <div className="relative">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <span className="text-xs bg-emerald-900/40 text-emerald-300 px-2 py-0.5 rounded-full font-semibold">PRO</span>
+                    <span className="text-xs text-emerald-400/60">{isChinese ? "深度日运分析" : "Deep Daily Analysis"}</span>
+                  </div>
+                  <p className="text-amber-200/30 text-xs mb-3">
+                    {isChinese ? "关键时段 · 行动建议 · 饮食调养 · 每日更新" : "Key time windows · Action items · Diet tips · Updated daily"}
+                  </p>
+                  <Link
+                    href="/fortune"
+                    className="inline-block px-5 py-2 bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-700 text-white rounded-lg text-xs font-semibold"
+                  >
+                    {isChinese ? "解锁 Pro · $4.99/月" : "Unlock Pro · $4.99/mo"}
+                  </Link>
+                </div>
+              </div>
+            )}
+
             {/* Actions */}
             <div className="flex gap-3 pt-2">
               <Link href="/fortune" className="flex-1 py-3 rounded-xl text-sm font-medium text-center cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white transition-all">
-                完整八字分析
+                {isChinese ? "完整八字分析" : "Full BaZi Analysis"}
               </Link>
               <button
                 onClick={() => setChart(null)}
                 className="flex-1 py-3 rounded-xl text-sm font-medium cursor-pointer bg-white/5 text-amber-200/60 hover:bg-white/10 transition-colors border border-white/5"
               >
-                换人查看
+                {isChinese ? "换人查看" : "Try Another"}
               </button>
             </div>
           </div>

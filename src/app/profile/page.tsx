@@ -13,11 +13,23 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function ProfilePage() {
   const { user, loading: authLoading, signOut } = useAuth();
-  const { t } = useLocale();
+  const { isChinese, t } = useLocale();
   const router = useRouter();
   const [myReviews, setMyReviews] = useState<Review[]>([]);
   const [masterNames, setMasterNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
+  const [subscription, setSubscription] = useState<{
+    subscribed: boolean;
+    plan?: string;
+    expiresAt?: string;
+    cancelAtPeriodEnd?: boolean;
+  }>({ subscribed: false });
+  const [referral, setReferral] = useState<{
+    referralCode: string | null;
+    freeReadings: number;
+    stats: { signups: number; converted: number };
+  }>({ referralCode: null, freeReadings: 0, stats: { signups: 0, converted: 0 } });
+  const [refCopied, setRefCopied] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -35,11 +47,24 @@ export default function ProfilePage() {
         .order("created_at", { ascending: false })
         .then(({ data }: { data: Review[] | null }) => data ?? []),
       getMasters(),
-    ]).then(([reviews, masters]: [Review[], Master[]]) => {
+      fetch("/api/subscription/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id }),
+      }).then((r) => r.json()).catch(() => ({ subscribed: false })),
+      fetch(`/api/referral?userId=${user.id}`)
+        .then((r) => r.json())
+        .catch(() => ({ referralCode: null, freeReadings: 0, stats: { signups: 0, converted: 0 } })),
+    ]).then(([reviews, masters, sub, ref]: [Review[], Master[], typeof subscription, typeof referral]) => {
       setMyReviews(reviews);
       const names: Record<string, string> = {};
       masters.forEach((m) => { names[m.id] = m.name_th || m.name; });
       setMasterNames(names);
+      setSubscription(sub);
+      setReferral(ref);
+      if (ref.referralCode) {
+        try { localStorage.setItem("trustmaster_ref_code", ref.referralCode); } catch {}
+      }
       setLoading(false);
     });
   }, [user, authLoading]);
@@ -112,7 +137,109 @@ export default function ProfilePage() {
                 {user?.user_metadata?.display_name || user?.email?.split("@")[0]}
               </h2>
               <p className="text-sm text-amber-200/40">{user?.email}</p>
+              {subscription.subscribed && (
+                <div className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 bg-emerald-900/30 border border-emerald-500/30 rounded-full">
+                  <span className="text-xs">♾️</span>
+                  <span className="text-xs font-semibold text-emerald-300">Pro {subscription.plan === "yearly" ? (isChinese ? "年度" : "Yearly") : (isChinese ? "月度" : "Monthly")}</span>
+                </div>
+              )}
             </div>
+
+            {/* Subscription Status */}
+            {subscription.subscribed ? (
+              <div className="bg-emerald-900/10 rounded-2xl border border-emerald-400/15 p-5">
+                <h3 className="font-semibold text-emerald-200/80 mb-2">
+                  {isChinese ? "Pro 会员" : "Pro Membership"}
+                </h3>
+                <div className="space-y-1.5 text-sm text-emerald-200/50">
+                  <p>{isChinese ? "无限 AI 深度解读" : "Unlimited AI deep readings"}</p>
+                  {subscription.expiresAt && (
+                    <p>{isChinese ? "续费日期：" : "Renews: "}{new Date(subscription.expiresAt).toLocaleDateString()}</p>
+                  )}
+                  {subscription.cancelAtPeriodEnd && (
+                    <p className="text-amber-400/70">{isChinese ? "将在当前周期结束后取消" : "Cancels at end of period"}</p>
+                  )}
+                </div>
+                <button
+                  onClick={async () => {
+                    const res = await fetch("/api/subscription/portal", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ userId: user?.id }),
+                    });
+                    const data = await res.json();
+                    if (data.url) window.location.href = data.url;
+                  }}
+                  className="mt-3 px-4 py-2 bg-white/5 hover:bg-white/10 border border-emerald-400/15 rounded-lg text-xs text-emerald-200/70 font-medium transition-colors cursor-pointer"
+                >
+                  {isChinese ? "管理订阅" : "Manage Subscription"}
+                </button>
+              </div>
+            ) : (
+              <div className="bg-white/[0.03] rounded-2xl border border-amber-400/10 p-5">
+                <h3 className="font-semibold text-amber-200/80 mb-2">
+                  {isChinese ? "升级 Pro 会员" : "Upgrade to Pro"}
+                </h3>
+                <p className="text-sm text-amber-200/40 mb-3">
+                  {isChinese ? "无限 AI 解读 · 每日深度运势 · $4.99/月" : "Unlimited AI readings · Daily insights · $4.99/mo"}
+                </p>
+                <Link
+                  href="/fortune"
+                  className="inline-block px-5 py-2 bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-700 text-white rounded-xl text-sm font-semibold"
+                >
+                  {isChinese ? "了解详情" : "Learn More"}
+                </Link>
+              </div>
+            )}
+
+            {/* Referral Program */}
+            {referral.referralCode && (
+              <div className="bg-white/[0.03] rounded-2xl border border-amber-400/10 p-5">
+                <h3 className="font-semibold text-amber-200/80 mb-3">
+                  {isChinese ? "🎁 邀请有礼" : "🎁 Invite & Earn"}
+                </h3>
+                <p className="text-xs text-amber-200/40 mb-3">
+                  {isChinese
+                    ? "邀请好友注册并付费，你将获得免费 AI 解读次数"
+                    : "Invite friends to sign up and pay — earn free AI readings"}
+                </p>
+
+                {/* Referral link */}
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="flex-1 bg-white/5 border border-amber-400/15 rounded-lg px-3 py-2 text-xs text-amber-200/60 truncate">
+                    {typeof window !== "undefined" ? `${window.location.origin}/fortune?ref=${referral.referralCode}` : `trustmaster.app/fortune?ref=${referral.referralCode}`}
+                  </div>
+                  <button
+                    onClick={() => {
+                      const link = `${window.location.origin}/fortune?ref=${referral.referralCode}`;
+                      navigator.clipboard.writeText(link).then(() => {
+                        setRefCopied(true);
+                        setTimeout(() => setRefCopied(false), 2000);
+                      });
+                    }}
+                    className="px-3 py-2 bg-amber-700/50 hover:bg-amber-600/50 text-amber-100 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                  >
+                    {refCopied ? "✓" : (isChinese ? "复制" : "Copy")}
+                  </button>
+                </div>
+
+                {/* Stats */}
+                <div className="grid grid-cols-3 gap-3 text-center">
+                  <div className="bg-white/[0.03] rounded-xl p-2.5 border border-white/5">
+                    <div className="text-lg font-bold text-amber-300">{referral.stats.signups}</div>
+                    <div className="text-[10px] text-amber-200/30">{isChinese ? "邀请注册" : "Signups"}</div>
+                  </div>
+                  <div className="bg-white/[0.03] rounded-xl p-2.5 border border-white/5">
+                    <div className="text-lg font-bold text-emerald-300">{referral.stats.converted}</div>
+                    <div className="text-[10px] text-amber-200/30">{isChinese ? "付费转化" : "Converted"}</div>
+                  </div>
+                  <div className="bg-white/[0.03] rounded-xl p-2.5 border border-white/5">
+                    <div className="text-lg font-bold text-purple-300">{referral.freeReadings}</div>
+                    <div className="text-[10px] text-amber-200/30">{isChinese ? "免费次数" : "Free reads"}</div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* My Reviews */}
             <div className="bg-white/[0.03] rounded-2xl border border-amber-400/10 p-6">

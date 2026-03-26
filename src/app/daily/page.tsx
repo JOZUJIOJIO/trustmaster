@@ -164,7 +164,7 @@ function DailyContent() {
     <div className="min-h-screen bg-[#12101c]">
       <PageHeader title={isChinese ? "每日运势" : "Daily Insights"} />
 
-      <main className="max-w-lg mx-auto px-4 py-8 pb-24">
+      <main className="max-w-lg lg:max-w-4xl mx-auto px-4 py-8 pb-24">
         {/* Date header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 text-amber-400/30 text-xs mb-3">
@@ -225,6 +225,9 @@ function DailyContent() {
               <span className="mx-2">·</span>
               <span>{scores.todayStem}{scores.todayBranch}日</span>
             </div>
+
+            {/* Desktop 2-column grid */}
+            <div className="lg:grid lg:grid-cols-2 lg:gap-6 space-y-5 lg:space-y-0">
 
             {/* Four dimension scores */}
             <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5 space-y-4">
@@ -293,6 +296,8 @@ function DailyContent() {
                   : "比劫当令，今日适合团队协作和朋友交流。注意控制支出。"}
               </p>
             </div>
+
+            </div>{/* End desktop 2-column grid */}
 
             {/* Pro Deep Insights — subscriber only */}
             {isSubscriber ? (

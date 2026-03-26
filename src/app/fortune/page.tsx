@@ -474,7 +474,7 @@ function FortuneContent() {
           <LanguageSwitcher />
         </header>
 
-        <main className="max-w-2xl mx-auto px-4 py-12 lg:py-20 pb-24">
+        <main className="max-w-2xl lg:max-w-5xl mx-auto px-4 py-12 lg:py-20 pb-24">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className="w-8 h-px bg-amber-400/30" />
@@ -485,7 +485,7 @@ function FortuneContent() {
             <p className="text-amber-200/40 mt-3 text-sm">{t("bazi.selectMethod")}</p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
             {/* Saved chart — welcome back */}
             {(() => {
               try {
@@ -592,7 +592,7 @@ function FortuneContent() {
         <LanguageSwitcher />
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-8 lg:py-16 pb-24">
+      <main className="max-w-lg lg:max-w-4xl mx-auto px-4 py-8 lg:py-16 pb-24">
         {/* ===== Step 1: Date ===== */}
         {step === "date" && (
           <div className="text-center animate-fadeIn" style={{ animationDuration: "0.5s" }}>
@@ -692,9 +692,9 @@ function FortuneContent() {
         {/* ===== Step 5: Result ===== */}
         {step === "result" && chart && (
           <div className="space-y-6">
-            {/* Header */}
+            {/* Header — full width */}
             <RevealSection delay={0}>
-              <div className="text-center">
+              <div className="text-center lg:mb-4">
                 <div className="flex items-center justify-center gap-2 text-amber-400/30 text-xs mb-4">
                   <span>☸</span><span>四柱八字命盘</span><span>☸</span>
                 </div>
@@ -709,8 +709,11 @@ function FortuneContent() {
               </div>
             </RevealSection>
 
-            {/* ① Four Pillars */}
-            <RevealSection delay={100}>
+            {/* Desktop 2-column grid for chart sections */}
+            <div className="lg:grid lg:grid-cols-2 lg:gap-6 space-y-6 lg:space-y-0">
+
+            {/* ① Four Pillars — full width on desktop */}
+            <RevealSection delay={100} className="lg:col-span-2">
               <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
                 <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">
                   <Term k="四柱">四 柱 八 字</Term>
@@ -897,8 +900,8 @@ function FortuneContent() {
               </div>
             </RevealSection>
 
-            {/* ⑧ Luck Curve — SVG Life Trend */}
-            <RevealSection delay={800}>
+            {/* ⑧ Luck Curve — SVG Life Trend (full width) */}
+            <RevealSection delay={800} className="lg:col-span-2">
               {chart.luckCycles && chart.luckCycles.length > 0 && (
                 <Accordion title={isChinese ? "人 生 运 势 曲 线" : "LIFE LUCK CURVE"} icon="📈" defaultOpen={true}>
                   <LuckCurve chart={chart} />
@@ -970,7 +973,9 @@ function FortuneContent() {
               </Accordion>
             </RevealSection>
 
-            {/* AI Deep Reading — Paywall or Content */}
+            </div>{/* End desktop 2-column grid */}
+
+            {/* AI Deep Reading — Paywall or Content (full width) */}
             <RevealSection delay={1100}>
               {!unlocked && !aiReading ? (
                 <>

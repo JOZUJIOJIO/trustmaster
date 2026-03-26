@@ -164,9 +164,9 @@ function CompatibilityContent() {
     <div className="min-h-screen bg-[#12101c]">
       <PageHeader title={isChinese ? "双人合盘" : "Compatibility"} />
 
-      <main className="max-w-lg mx-auto px-4 py-8 pb-24">
+      <main className="max-w-lg lg:max-w-4xl mx-auto px-4 py-8 pb-24">
         {step === "input" ? (
-          <div className="space-y-8">
+          <div className="space-y-8 lg:space-y-10">
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 text-amber-400/30 text-xs mb-3">
                 <span>☸</span><span>Compatibility Analysis</span><span>☸</span>
@@ -175,8 +175,11 @@ function CompatibilityContent() {
               <p className="text-amber-200/40 text-sm mt-2">{isChinese ? "输入两人出生日期，分析五行互补与性格兼容" : "Enter two birth dates to analyze Five Elements compatibility"}</p>
             </div>
 
+            {/* Two person cards — side by side on desktop */}
+            <div className="lg:flex lg:gap-6 lg:items-start space-y-8 lg:space-y-0">
+
             {/* Person A */}
-            <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5 space-y-3">
+            <div className="lg:flex-1 bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5 space-y-3">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-lg">👤</span>
                 <span className="text-sm font-semibold text-amber-200/70">{isChinese ? "第一个人" : "Person 1"}</span>
@@ -199,14 +202,14 @@ function CompatibilityContent() {
             </div>
 
             {/* VS divider */}
-            <div className="flex items-center justify-center gap-3">
-              <div className="w-16 h-px bg-amber-400/15" />
+            <div className="flex lg:flex-col items-center justify-center gap-3 lg:py-8">
+              <div className="w-16 lg:w-px lg:h-16 h-px bg-amber-400/15" />
               <span className="text-amber-400/30 text-xs font-bold tracking-widest">VS</span>
-              <div className="w-16 h-px bg-amber-400/15" />
+              <div className="w-16 lg:w-px lg:h-16 h-px bg-amber-400/15" />
             </div>
 
             {/* Person B */}
-            <div className="bg-white/[0.03] border border-purple-400/10 rounded-2xl p-5 space-y-3">
+            <div className="lg:flex-1 bg-white/[0.03] border border-purple-400/10 rounded-2xl p-5 space-y-3">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-lg">👤</span>
                 <span className="text-sm font-semibold text-purple-200/70">{isChinese ? "第二个人" : "Person 2"}</span>
@@ -228,10 +231,12 @@ function CompatibilityContent() {
               />
             </div>
 
+            </div>{/* End two-person flex row */}
+
             <button
               onClick={handleAnalyze}
               disabled={!dateA || !dateB}
-              className="w-full py-4 rounded-2xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
+              className="w-full lg:max-w-md lg:mx-auto py-4 rounded-2xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
             >
               {isChinese ? "开始分析兼容度" : "Analyze Compatibility"}
             </button>

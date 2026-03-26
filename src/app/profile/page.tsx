@@ -121,7 +121,7 @@ export default function ProfilePage() {
         <LanguageSwitcher />
       </div>
 
-      <main className="lg:max-w-2xl lg:mx-auto lg:px-6 lg:py-10 pb-24">
+      <main className="lg:max-w-3xl lg:mx-auto lg:px-6 lg:py-10 pb-24">
         {loading ? (
           <div className="text-center py-20">
             <div className="animate-spin text-3xl">🔮</div>

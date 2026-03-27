@@ -81,15 +81,40 @@ export default function ProfilePage() {
           <Link href="/" className="text-amber-200/60 hover:text-amber-200 mr-3 text-lg">←</Link>
           <span className="font-semibold text-[15px] text-amber-100">{t("nav.profile")}</span>
         </div>
-        <div className="text-center py-20">
-          <div className="text-4xl mb-4">👤</div>
-          <p className="text-amber-200/40 text-sm mb-4">{t("profile.loginRequired")}</p>
-          <Link
+        {/* Non-logged-in state */}
+        <div className="text-center space-y-6 py-8">
+          <div className="text-5xl mb-2">🔮</div>
+          <h2 className="text-xl font-bold text-amber-100">
+            {isChinese ? "解锁你的专属命盘" : "Unlock Your Personal Chart"}
+          </h2>
+          <p className="text-amber-200/50 text-sm max-w-xs mx-auto">
+            {isChinese ? "登录后，你可以保存命盘、追踪每日运势、获得个性化建议" : "Sign in to save your chart, track daily fortune, and get personalized insights"}
+          </p>
+
+          {/* Feature highlights */}
+          <div className="space-y-3 max-w-xs mx-auto text-left">
+            {[
+              { icon: "📊", text: isChinese ? "永久保存你的八字命盘" : "Save your BaZi chart permanently" },
+              { icon: "📅", text: isChinese ? "每日个性化运势追踪" : "Daily personalized fortune tracking" },
+              { icon: "🎁", text: isChinese ? "注册即送一次免费 AI 深度解读" : "Free AI deep reading on signup" },
+              { icon: "💑", text: isChinese ? "保存合盘分析记录" : "Save compatibility analysis records" },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3 bg-white/[0.03] rounded-xl px-4 py-3 border border-white/5">
+                <span className="text-lg">{item.icon}</span>
+                <span className="text-amber-200/60 text-sm">{item.text}</span>
+              </div>
+            ))}
+          </div>
+
+          <a
             href="/login"
-            className="inline-block px-6 py-2.5 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white rounded-xl text-sm font-semibold"
+            className="inline-block px-8 py-3.5 rounded-2xl font-semibold text-sm bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
           >
-            {t("auth.login")}
-          </Link>
+            {isChinese ? "登录 / 注册" : "Log In / Sign Up"}
+          </a>
+          <p className="text-amber-200/20 text-[10px]">
+            {isChinese ? "支持 Google 一键登录" : "Google one-click sign in available"}
+          </p>
         </div>
         <BottomNav />
       </div>

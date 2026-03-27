@@ -264,12 +264,21 @@ export function calculateBazi(
   const dayPillar = buildPillar(dayStem, dayBranch);
   const hourPillar = buildPillar(hourStem, hourBranch);
 
-  // Count Five Elements (天干 + 地支 + 藏干)
+  // Count Five Elements (天干 + 地支 + 藏干 with weighted scoring)
+  // Hidden stem weights: main stem 1.0, secondary 0.5, tertiary 0.3
+  const HIDDEN_WEIGHTS = [1.0, 0.5, 0.3];
   const fiveElements: FiveElementCount = { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 };
   const allPillars = [yearPillar, monthPillar, dayPillar, hourPillar];
   for (const p of allPillars) {
     fiveElements[p.stemElement as keyof FiveElementCount]++;
     fiveElements[p.branchElement as keyof FiveElementCount]++;
+    // Add hidden stems with decreasing weight
+    for (let hi = 0; hi < p.hiddenStems.length; hi++) {
+      const hiddenEl = STEM_ELEMENTS[p.hiddenStems[hi]];
+      if (hiddenEl) {
+        fiveElements[hiddenEl as keyof FiveElementCount] += HIDDEN_WEIGHTS[hi] ?? 0.3;
+      }
+    }
   }
 
   const dayMasterElement = STEM_ELEMENTS[dayStem];
@@ -338,6 +347,34 @@ export function calculateBazi(
   const monthBranchIdx = EARTHLY_BRANCHES.indexOf(monthBranch);
   const luckCycles: BaziChart["luckCycles"] = [];
 
+  // Calculate precise luck cycle start age
+  // Traditional method: count days between birth and nearest Jie (月节)
+  let startAgeYears = 3; // fallback
+  try {
+    const birthSolar = Solar.fromYmd(year, month, day);
+    const birthLunar = birthSolar.getLunar();
+
+    if (isForward) {
+      // Count days from birth to next Jie
+      const nextJie = birthLunar.getNextJie();
+      if (nextJie) {
+        const jieSolar = nextJie.getSolar();
+        const diffDays = jieSolar.subtract(birthSolar);
+        startAgeYears = Math.max(1, Math.round(Math.abs(diffDays) / 3));
+      }
+    } else {
+      // Count days from previous Jie to birth
+      const prevJie = birthLunar.getPrevJie();
+      if (prevJie) {
+        const jieSolar = prevJie.getSolar();
+        const diffDays = birthSolar.subtract(jieSolar);
+        startAgeYears = Math.max(1, Math.round(Math.abs(diffDays) / 3));
+      }
+    }
+  } catch {
+    startAgeYears = 3; // fallback on any error
+  }
+
   for (let i = 1; i <= 8; i++) {
     const stemIdx = isForward
       ? (monthStemIdx + i) % 10
@@ -348,7 +385,7 @@ export function calculateBazi(
     const s = HEAVENLY_STEMS[stemIdx];
     const b = EARTHLY_BRANCHES[branchIdx];
     luckCycles.push({
-      startAge: i * 10 - 7, // Simplified: starts around age 3, then every 10 years
+      startAge: startAgeYears + (i - 1) * 10,
       stem: s,
       branch: b,
       element: STEM_ELEMENTS[s],

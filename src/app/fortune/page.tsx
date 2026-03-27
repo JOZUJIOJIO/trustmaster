@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense, useRef, useCallback } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useLocale } from "@/lib/LocaleContext";
@@ -23,6 +23,11 @@ import MysticalNameInput from "@/components/MysticalNameInput";
 import { generateBlueprint } from "@/lib/bazi-interpreter";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { useToast } from "@/components/Toast";
+import { ElementBar } from "@/components/fortune/ElementBar";
+import { ReadingCard } from "@/components/fortune/ReadingCard";
+import { RevealSection } from "@/components/fortune/RevealSection";
+import { StrengthGauge } from "@/components/fortune/StrengthGauge";
+import { PaywallSection } from "@/components/fortune/PaywallSection";
 
 // Generate a stable hash for a chart to use as cache/order key
 function getChartHash(chart: BaziChart): string {
@@ -38,106 +43,6 @@ function getChartHash(chart: BaziChart): string {
 type Mode = "select" | "bazi" | "zodiac";
 type Step = "date" | "hour" | "gender" | "name" | "reveal" | "result";
 
-// ===== Five Element Bar =====
-function ElementBar({ element, count, max, color, emoji }: {
-  element: string; count: number; max: number; color: string; emoji: string;
-}) {
-  const pct = max > 0 ? (count / max) * 100 : 0;
-  const strength = count >= 3 ? "旺" : count >= 2 ? "中" : "弱";
-  return (
-    <div className="flex items-center gap-3">
-      <span className="text-lg w-7">{emoji}</span>
-      <span className="text-amber-200/70 text-sm w-6">{element}</span>
-      <div className="flex-1 h-3 bg-white/5 rounded-full overflow-hidden">
-        <div
-          className="h-full rounded-full transition-all duration-1000 ease-out"
-          style={{ width: `${pct}%`, backgroundColor: color }}
-        />
-      </div>
-      <span className="text-amber-200/50 text-xs w-12 text-right">{count} ({strength})</span>
-    </div>
-  );
-}
-
-// ===== AI Reading Card — Upgraded =====
-function ReadingCard({ icon, title, content, delay = 0 }: { icon: string; title: string; content: string; delay?: number }) {
-  return (
-    <div
-      className="relative bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5 overflow-hidden group hover:border-amber-400/20 transition-all duration-500"
-      style={{ animation: `slideUp 0.6s ease-out ${delay}ms both` }}
-    >
-      {/* Subtle gradient overlay on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-amber-400/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="relative">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-xl">{icon}</span>
-          <h3 className="text-amber-300 font-semibold">{title}</h3>
-        </div>
-        <p className="text-amber-100/70 text-sm leading-relaxed whitespace-pre-line">{content}</p>
-      </div>
-    </div>
-  );
-}
-
-// ===== Section wrapper with scroll reveal =====
-function RevealSection({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
-      { threshold: 0.15 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ease-out ${className}`}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(30px)",
-        transitionDelay: `${delay}ms`,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-// ===== Strength Gauge (circular) =====
-function StrengthGauge({ score, label, color }: { score: number; label: string; color: string }) {
-  const r = 36;
-  const circumference = 2 * Math.PI * r;
-  const offset = circumference - (score / 100) * circumference;
-
-  return (
-    <div className="flex flex-col items-center">
-      <svg width="90" height="90" className="transform -rotate-90">
-        <circle cx="45" cy="45" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6" />
-        <circle
-          cx="45" cy="45" r={r} fill="none"
-          stroke={color}
-          strokeWidth="6"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          style={{ transition: "stroke-dashoffset 1.5s ease-out" }}
-        />
-      </svg>
-      <div className="absolute flex flex-col items-center justify-center" style={{ width: 90, height: 90 }}>
-        <span className="text-xl font-bold" style={{ color }}>{score}</span>
-        <span className="text-[9px] text-amber-200/30">/100</span>
-      </div>
-      <span className="text-xs text-amber-200/50 mt-1">{label}</span>
-    </div>
-  );
-}
 
 export default function FortunePage() {
   return (
@@ -1036,182 +941,24 @@ function FortuneContent() {
                   </div>
 
                   {/* Unlock CTA */}
-                  <div className="relative -mt-20 pt-12">
-                    {/* Login Gate Modal */}
-                    {showLoginGate && !user && (
-                      <div className="bg-white/[0.03] border border-amber-400/15 rounded-2xl p-6 space-y-4 animate-slideUp mb-4" style={{ animationDuration: "0.4s" }}>
-                        <div className="text-center">
-                          <div className="text-3xl mb-2">👤</div>
-                          <h3 className="text-lg font-bold text-amber-100">
-                            {isChinese ? "请先登录" : "Sign in to continue"}
-                          </h3>
-                          <p className="text-amber-200/40 text-sm mt-1">
-                            {isChinese ? "登录后解锁购买，并永久保存您的解读报告" : "Sign in to purchase and permanently save your reading"}
-                          </p>
-                        </div>
-                        <a
-                          href={`/login?redirect=${encodeURIComponent("/fortune?paid=pending")}`}
-                          className="block w-full py-3 rounded-xl font-semibold text-sm text-center bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
-                        >
-                          {isChinese ? "登录 / 注册" : "Log In / Sign Up"}
-                        </a>
-                        <button
-                          onClick={() => setShowLoginGate(false)}
-                          className="w-full text-center text-amber-200/20 text-xs hover:text-amber-200/40 cursor-pointer transition-colors"
-                        >
-                          {isChinese ? "暂不登录" : "Skip for now"}
-                        </button>
-                      </div>
-                    )}
-
-                    {!showPaywall ? (
-                      <button
-                        onClick={() => setShowPaywall(true)}
-                        className="w-full py-4 rounded-2xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_40px_rgba(217,119,6,0.25)] transition-all animate-glowPulse"
-                      >
-                        {t("bazi.unlock")}
-                      </button>
-                    ) : (
-                      /* Paywall Modal */
-                      <div className="bg-white/[0.03] border border-amber-400/15 rounded-2xl p-5 space-y-4 animate-slideUp max-h-[calc(100vh-160px)] overflow-y-auto" style={{ animationDuration: "0.4s" }}>
-                        <div className="text-center">
-                          <div className="text-2xl mb-2">✨</div>
-                          <h3 className="text-xl font-bold text-amber-100">{t("bazi.unlockTitle")}</h3>
-                          <p className="text-amber-200/40 text-sm mt-2">
-                            {isChinese ? "基于您的真实八字，AI 大师将为您深度解读 6 大维度" : "AI will deeply analyze 6 dimensions based on your real birth chart"}
-                          </p>
-                        </div>
-
-                        <div className="space-y-2">
-                          {[
-                            { icon: "🧠", text: isChinese ? "性格特质深度分析" : "Deep personality analysis" },
-                            { icon: "💼", text: isChinese ? "事业运势与发展方向" : "Career & development" },
-                            { icon: "💰", text: isChinese ? "财运分析与投资建议" : "Wealth & investment" },
-                            { icon: "❤️", text: isChinese ? "感情运势与桃花分析" : "Love & relationships" },
-                            { icon: "🏥", text: isChinese ? "健康提醒与养生建议" : "Health guidance" },
-                            { icon: "🍀", text: isChinese ? "开运指南（颜色/方位/行业）" : "Lucky guidance" },
-                          ].map((item) => (
-                            <div key={item.text} className="flex items-center gap-2.5 text-sm text-amber-200/60">
-                              <span>{item.icon}</span>
-                              <span>{item.text}</span>
-                              <span className="ml-auto text-amber-500/40">✓</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Free reading from referral rewards */}
-                        {user && freeReadings > 0 && (
-                          <button
-                            onClick={() => {
-                              setUnlocked(true);
-                              setShowPaywall(false);
-                              setFreeReadings((prev) => prev - 1);
-                              // Deduct on server
-                              fetch("/api/referral?userId=" + user.id).catch(() => {});
-                              handleAiReading();
-                            }}
-                            className="w-full py-3.5 rounded-xl font-semibold text-sm cursor-pointer bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.3)] transition-all"
-                          >
-                            🎁 {isChinese ? `使用免费解读（剩余 ${freeReadings} 次）` : `Use free reading (${freeReadings} left)`}
-                          </button>
-                        )}
-
-                        {/* Subscription Option — Best Value */}
-                        <div className="bg-emerald-900/15 border border-emerald-400/25 rounded-xl p-4 text-center relative overflow-hidden">
-                          <div className="absolute top-0 right-0 bg-emerald-500/80 text-white text-[8px] px-2 py-0.5 rounded-bl-lg font-bold">
-                            {isChinese ? "最划算" : "BEST VALUE"}
-                          </div>
-                          <div className="text-[10px] text-emerald-300/60 mb-1">♾️ {isChinese ? "Pro 会员" : "Pro Membership"}</div>
-                          <div className="flex items-baseline justify-center gap-1">
-                            <span className="text-2xl font-bold text-emerald-200">$4.99</span>
-                            <span className="text-emerald-200/40 text-xs">/{isChinese ? "月" : "mo"}</span>
-                          </div>
-                          <p className="text-emerald-200/25 text-[10px] mt-1 mb-3">
-                            {isChinese ? "无限 AI 解读 · 每日深度运势 · 优先支持" : "Unlimited readings · Daily insights · Priority support"}
-                          </p>
-                          <div className="grid grid-cols-2 gap-2">
-                            <button
-                              onClick={() => handleSubscribe("monthly")}
-                              disabled={subLoading}
-                              className="py-3 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-all"
-                            >
-                              {subLoading ? "..." : (isChinese ? "$4.99/月" : "$4.99/mo")}
-                            </button>
-                            <button
-                              onClick={() => handleSubscribe("yearly")}
-                              disabled={subLoading}
-                              className="py-3 rounded-lg font-semibold cursor-pointer bg-emerald-800/50 text-emerald-200 text-xs border border-emerald-500/20 disabled:opacity-50 hover:bg-emerald-700/50 transition-all"
-                            >
-                              {subLoading ? "..." : (isChinese ? "$39.90/年 省33%" : "$39.90/yr save 33%")}
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <div className="flex-1 h-px bg-white/5" />
-                          <span className="text-amber-200/20 text-[10px]">{isChinese ? "或单次购买" : "or one-time purchase"}</span>
-                          <div className="flex-1 h-px bg-white/5" />
-                        </div>
-
-                        {/* Two-tier one-time pricing */}
-                        <div className="grid grid-cols-2 gap-3">
-                          {/* Pro */}
-                          <div className="bg-amber-900/15 border border-amber-500/20 rounded-xl p-3.5 text-center">
-                            <div className="text-[10px] text-amber-400/50 mb-1">⭐ {isChinese ? "专业版" : "Pro"}</div>
-                            <div className="text-2xl font-bold text-amber-300">$9.90</div>
-                            <p className="text-amber-200/25 text-[10px] mt-1 mb-3">{isChinese ? "6维AI深度解读" : "6-dimension AI reading"}</p>
-                            <button
-                              onClick={() => handleStripeCheckout("pro")}
-                              disabled={checkoutLoading}
-                              className="w-full py-3 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(217,119,6,0.2)] transition-all"
-                            >
-                              {checkoutLoading ? "..." : (isChinese ? "选择专业版" : "Choose Pro")}
-                            </button>
-                          </div>
-                          {/* Master */}
-                          <div className="bg-purple-900/15 border border-purple-400/25 rounded-xl p-3.5 text-center relative overflow-hidden">
-                            <div className="absolute top-0 right-0 bg-purple-500/80 text-white text-[8px] px-2 py-0.5 rounded-bl-lg font-bold">{isChinese ? "推荐" : "BEST"}</div>
-                            <div className="text-[10px] text-purple-300/60 mb-1">👑 {isChinese ? "大师版" : "Master"}</div>
-                            <div className="text-2xl font-bold text-purple-200">$29.90</div>
-                            <p className="text-purple-200/25 text-[10px] mt-1 mb-3">{isChinese ? "宗师级全盘深度解析" : "Master-level deep reading"}</p>
-                            <button
-                              onClick={() => handleStripeCheckout("master")}
-                              disabled={checkoutLoading}
-                              className="w-full py-3 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-purple-700 via-purple-600 to-purple-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-all"
-                            >
-                              {checkoutLoading ? "..." : (isChinese ? "选择大师版" : "Choose Master")}
-                            </button>
-                          </div>
-                        </div>
-
-                        {checkoutError && (
-                          <p className="text-center text-red-400/80 text-xs">{checkoutError}</p>
-                        )}
-                        <p className="text-center text-amber-200/15 text-[10px] leading-relaxed">
-                          Secure payment via Stripe · Card / Alipay / WeChat Pay
-                        </p>
-
-                        <div className="space-y-1.5 pt-2 border-t border-white/5">
-                          <p className="text-amber-200/20 text-[10px] leading-relaxed text-center">
-                            Digital product · Delivered instantly · Non-refundable after delivery
-                          </p>
-                          <p className="text-amber-200/20 text-[10px] leading-relaxed text-center">
-                            By purchasing you agree to our <a href="/terms" className="underline hover:text-amber-200/40">Terms of Service</a> and <a href="/privacy" className="underline hover:text-amber-200/40">Privacy Policy</a>
-                          </p>
-                          <p className="text-amber-200/15 text-[10px] text-center">
-                            This is an AI-powered personality analysis for entertainment purposes only.
-                          </p>
-                        </div>
-
-                        <button
-                          onClick={() => setShowPaywall(false)}
-                          className="w-full text-center text-amber-200/20 text-xs hover:text-amber-200/40 cursor-pointer transition-colors"
-                        >
-                          {isChinese ? "暂不需要" : "Not now"}
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  <PaywallSection
+                    user={user}
+                    showLoginGate={showLoginGate}
+                    showPaywall={showPaywall}
+                    setShowPaywall={setShowPaywall}
+                    setShowLoginGate={setShowLoginGate}
+                    setUnlocked={setUnlocked}
+                    setFreeReadings={setFreeReadings}
+                    freeReadings={freeReadings}
+                    isChinese={isChinese}
+                    t={t}
+                    handleAiReading={handleAiReading}
+                    handleStripeCheckout={handleStripeCheckout}
+                    handleSubscribe={handleSubscribe}
+                    checkoutLoading={checkoutLoading}
+                    subLoading={subLoading}
+                    checkoutError={checkoutError}
+                  />
                 </>
               ) : aiLoading ? (
                 <div className="text-center py-12">

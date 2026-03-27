@@ -79,7 +79,7 @@ export async function POST(request: Request) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error("Stripe checkout error:", msg);
     return NextResponse.json(
-      { error: `Payment error: ${msg}` },
+      { error: "Payment processing failed. Please try again." },
       { status: 500 }
     );
   }

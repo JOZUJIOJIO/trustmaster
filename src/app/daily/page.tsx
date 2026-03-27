@@ -112,6 +112,53 @@ function ScoreBar({ label, score, icon, color }: { label: string; score: number;
   );
 }
 
+function getPersonalizedInsight(chart: BaziChart, scores: ReturnType<typeof calcDailyScores>, isChinese: boolean): string {
+  const dm = chart.dayMaster;
+  const dmEl = chart.dayMasterElement;
+  const todayEl = scores.todayStemEl;
+  const strength = chart.dayMasterStrength;
+
+  // Element relationship between today and day master
+  const GEN_CYCLE: Record<string, string> = { 木: "火", 火: "土", 土: "金", 金: "水", 水: "木" };
+  const CTRL_CYCLE: Record<string, string> = { 木: "土", 火: "金", 土: "水", 金: "木", 水: "火" };
+
+  const todayGeneratesDM = GEN_CYCLE[todayEl] === dmEl; // today生我
+  const todayControlsDM = CTRL_CYCLE[todayEl] === dmEl; // today克我
+  const dmGeneratesToday = GEN_CYCLE[dmEl] === todayEl; // 我生today
+  const dmControlsToday = CTRL_CYCLE[dmEl] === todayEl; // 我克today
+
+  if (isChinese) {
+    if (todayGeneratesDM) {
+      return `今日${scores.todayStem}${todayEl}生扶你的${dm}${dmEl}，如同贵人相助。${strength === "strong" ? "身强得助，能量充沛，适合主动出击、推进重要项目。" : "身弱得生，正是补充能量的好时机。多亲近长辈、师友，借力使力。"}`;
+    }
+    if (todayControlsDM) {
+      return `今日${scores.todayStem}${todayEl}克制你的${dm}${dmEl}，压力感较强。${strength === "strong" ? "身强逢克反成磨砺，适合迎接挑战、面试竞聘、做重大决策。" : "身弱逢克需谨慎，避免硬碰硬。今天适合退一步，观察局势，养精蓄锐。"}`;
+    }
+    if (dmControlsToday) {
+      return `今日你的${dm}${dmEl}克制${scores.todayStem}${todayEl}，财星当前。${strength === "strong" ? "身强克财，把控力强。适合谈判、签约、处理财务事项，主动争取。" : "身弱克财需量力而行，不宜大额支出或冒险投资。先稳住基本盘。"}`;
+    }
+    if (dmGeneratesToday) {
+      return `今日你的${dm}${dmEl}生助${scores.todayStem}${todayEl}，食伤泄秀。创意和表达力旺盛，${strength === "strong" ? "身强泄秀为美，适合创作、演讲、社交、展示才华。" : "身弱逢泄需控制输出节奏，表达想法但不要过度消耗自己。"}`;
+    }
+    // Same element
+    return `今日${scores.todayStem}${todayEl}与你的${dm}${dmEl}同气相求，比劫助身。${strength === "strong" ? "能量叠加，行动力极强。但注意不要过于刚硬，适当圆融处事。" : "同气扶持，今天自信心回升。适合团队合作、拓展人脉、争取机会。"}`;
+  } else {
+    if (todayGeneratesDM) {
+      return `Today's ${todayEl} energy nurtures your ${dm} ${dmEl} — like receiving support from a mentor. ${strength === "strong" ? "With strong foundations boosted further, take bold action on important projects." : "Your energy gets a welcome boost. Lean on mentors and allies today."}`;
+    }
+    if (todayControlsDM) {
+      return `Today's ${todayEl} energy challenges your ${dm} ${dmEl} — expect some pressure. ${strength === "strong" ? "Strong enough to turn pressure into growth. Good day for tough decisions." : "Tread carefully. Avoid confrontation and focus on observation."}`;
+    }
+    if (dmControlsToday) {
+      return `Your ${dm} ${dmEl} dominates today's ${todayEl} — wealth energy is active. ${strength === "strong" ? "Strong position to negotiate, close deals, and handle finances." : "Don't overextend. Secure what you have before reaching for more."}`;
+    }
+    if (dmGeneratesToday) {
+      return `Your ${dm} ${dmEl} feeds today's ${todayEl} — creativity flows freely. ${strength === "strong" ? "Channel your abundant energy into creative work, presentations, or social events." : "Express yourself, but pace your energy. Quality over quantity today."}`;
+    }
+    return `Today's ${todayEl} mirrors your ${dm} ${dmEl} — kindred energy. ${strength === "strong" ? "Double energy means double momentum. Stay flexible to avoid rigidity." : "A confidence boost today. Good for teamwork and expanding connections."}`;
+  }
+}
+
 function DailyContent() {
   const { isChinese, t } = useLocale();
   const { user } = useAuth();
@@ -281,19 +328,11 @@ function DailyContent() {
               </div>
             </div>
 
-            {/* Daily advice based on ten god */}
+            {/* Personalized Daily Insight */}
             <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
-              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-3">{isChinese ? "今 日 箴 言" : "DAILY WISDOM"}</h3>
+              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-3">{isChinese ? "今 日 专 属 洞 察" : "YOUR DAILY INSIGHT"}</h3>
               <p className="text-amber-100/60 text-sm leading-relaxed text-center">
-                {scores.tenGod === "正财" || scores.tenGod === "偏财"
-                  ? "财星当令，今日适合处理与钱财相关的事务。把握机遇，但勿贪心。"
-                  : scores.tenGod === "正官" || scores.tenGod === "七杀"
-                  ? "官杀当令，今日宜认真对待工作和责任。纪律和自律会带来回报。"
-                  : scores.tenGod === "正印" || scores.tenGod === "偏印"
-                  ? "印星当令，今日适合学习、思考和充电。贵人运佳，多请教长辈。"
-                  : scores.tenGod === "食神" || scores.tenGod === "伤官"
-                  ? "食伤当令，今日创意和表达力旺盛。适合创作、演讲、社交。"
-                  : "比劫当令，今日适合团队协作和朋友交流。注意控制支出。"}
+                {getPersonalizedInsight(chart, scores, isChinese)}
               </p>
             </div>
 

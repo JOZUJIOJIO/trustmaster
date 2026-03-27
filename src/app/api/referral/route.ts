@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { getAuthUser } from "@/lib/supabase/auth-guard";
 
 // GET: Get referral info for a user
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get("userId");
-
-  if (!userId) {
-    return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+export async function GET() {
+  const { user } = await getAuthUser();
+  if (!user) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
+  const userId = user.id;
 
   const supabaseRaw = getSupabaseAdmin();
   if (!supabaseRaw) {
@@ -97,12 +97,12 @@ export async function POST(request: Request) {
 }
 
 // PATCH: Convert a referral (called after purchase) and reward referrer
-export async function PATCH(request: Request) {
-  const { referredUserId } = await request.json();
-
-  if (!referredUserId) {
-    return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+export async function PATCH() {
+  const { user } = await getAuthUser();
+  if (!user) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
+  const referredUserId = user.id;
 
   const supabaseRaw = getSupabaseAdmin();
   if (!supabaseRaw) {

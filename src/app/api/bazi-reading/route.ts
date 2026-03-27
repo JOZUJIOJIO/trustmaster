@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { getChartHash } from "@/lib/chart-hash";
+import { getAuthUser } from "@/lib/supabase/auth-guard";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -47,8 +49,19 @@ const TEN_GOD_MEANING: Record<string, string> = {
 
 export async function POST(request: Request) {
   try {
-    const { chart } = await request.json();
+    // Auth check
+    const { user } = await getAuthUser();
+    if (!user) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    }
 
+    // Rate limit: 5 requests per minute per user
+    const { allowed } = checkRateLimit(`bazi:${user.id}`, 5, 60_000);
+    if (!allowed) {
+      return NextResponse.json({ error: "Too many requests. Please wait a moment." }, { status: 429 });
+    }
+
+    const { chart } = await request.json();
     if (!chart) {
       return NextResponse.json({ error: "Missing chart data" }, { status: 400 });
     }
@@ -62,10 +75,41 @@ export async function POST(request: Request) {
         .from("readings_cache")
         .select("reading")
         .eq("chart_hash", chartHash)
-        .single() as { data: { reading: unknown } | null; error: unknown };
+        .single() as any;
 
       if (cached?.reading) {
         return NextResponse.json(cached.reading);
+      }
+    }
+
+    // === Server-side payment verification ===
+    if (supabase) {
+      const [orderResult, subResult] = await Promise.all([
+        supabase.from("orders").select("id").eq("user_id", user.id).eq("status", "paid").limit(1),
+        supabase.from("subscriptions").select("id").eq("user_id", user.id).eq("status", "active").limit(1),
+      ]);
+      const hasPaidOrder = (orderResult.data?.length ?? 0) > 0;
+      const hasActiveSub = (subResult.data?.length ?? 0) > 0;
+
+      // Also check free readings from referrals
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("free_readings")
+        .eq("id", user.id)
+        .single() as any;
+      const hasFreeReading = (profile?.free_readings ?? 0) > 0;
+
+      if (!hasPaidOrder && !hasActiveSub && !hasFreeReading) {
+        return NextResponse.json({ error: "Payment required" }, { status: 402 });
+      }
+
+      // Deduct free reading if that's what they're using
+      if (!hasPaidOrder && !hasActiveSub && hasFreeReading) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (supabase as any)
+          .from("profiles")
+          .update({ free_readings: (profile?.free_readings ?? 1) - 1 })
+          .eq("id", user.id);
       }
     }
 

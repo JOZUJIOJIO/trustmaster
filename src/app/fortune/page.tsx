@@ -237,8 +237,7 @@ function FortuneContent() {
       || localStorage.getItem("kairos_chart");
     const savedName = sessionStorage.getItem("kairos_userName")
       || localStorage.getItem("kairos_userName");
-    const wasPaid = sessionStorage.getItem("kairos_paid") === "true"
-      || localStorage.getItem("kairos_paid") === "true";
+    const wasPaid = sessionStorage.getItem("kairos_paid") === "true";
 
     if (saved && !chart) {
       try {
@@ -271,7 +270,6 @@ function FortuneContent() {
             toast(isChinese ? "支付成功！AI 大师正在为您解读..." : "Payment successful! AI reading starting...", "success");
             // Persist payment status to both storages
             sessionStorage.setItem("kairos_paid", "true");
-            localStorage.setItem("kairos_paid", "true");
             localStorage.setItem("kairos_order_session", sessionId);
             // Convert referral if this user was referred
             if (user) {
@@ -393,6 +391,16 @@ function FortuneContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chart }),
       });
+      if (res.status === 401) {
+        toast(isChinese ? "请先登录" : "Please log in first", "error");
+        setAiLoading(false);
+        return;
+      }
+      if (res.status === 402) {
+        setShowPaywall(true);
+        setAiLoading(false);
+        return;
+      }
       const data = await res.json();
       setAiReading(data);
     } catch {

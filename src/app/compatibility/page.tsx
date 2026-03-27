@@ -114,6 +114,72 @@ function DimensionBar({ label, score, icon }: { label: string; score: number; ic
   );
 }
 
+function getRelationshipAdvice(chartA: BaziChart, chartB: BaziChart, nameA: string, nameB: string, isChinese: boolean): { title: string; content: string }[] {
+  const elA = chartA.dayMasterElement;
+  const elB = chartB.dayMasterElement;
+  const generates: Record<string, string> = { 木: "火", 火: "土", 土: "金", 金: "水", 水: "木" };
+  const controls: Record<string, string> = { 木: "土", 火: "金", 土: "水", 金: "木", 水: "火" };
+
+  const advice: { title: string; content: string }[] = [];
+
+  // Relationship dynamic based on element interaction
+  if (generates[elA] === elB) {
+    advice.push({
+      title: isChinese ? "🔥 关系动力：滋养型" : "🔥 Dynamic: Nurturing",
+      content: isChinese
+        ? `${nameA || "A"}的${elA}生${nameB || "B"}的${elB}，天然的给予型关系。${nameA || "A"}倾向于付出和支持，${nameB || "B"}接收并发展。建议：${nameB || "B"}要主动表达感谢，${nameA || "A"}也要学会适时索取，保持能量平衡。`
+        : `${nameA || "A"}'s ${elA} nurtures ${nameB || "B"}'s ${elB} — a natural giver-receiver dynamic. Tip: ${nameB || "B"} should express gratitude actively; ${nameA || "A"} should learn to receive too.`,
+    });
+  } else if (generates[elB] === elA) {
+    advice.push({
+      title: isChinese ? "🌱 关系动力：被滋养型" : "🌱 Dynamic: Being Nurtured",
+      content: isChinese
+        ? `${nameB || "B"}的${elB}生${nameA || "A"}的${elA}，${nameA || "A"}在这段关系中被滋养。建议：${nameA || "A"}不要觉得理所当然，主动回馈${nameB || "B"}的付出。在重大决定上多听${nameB || "B"}的意见。`
+        : `${nameB || "B"}'s ${elB} nurtures ${nameA || "A"}'s ${elA}. Tip: ${nameA || "A"}, don't take it for granted — actively reciprocate. Consult ${nameB || "B"} on big decisions.`,
+    });
+  } else if (controls[elA] === elB) {
+    advice.push({
+      title: isChinese ? "⚔️ 关系动力：主导型" : "⚔️ Dynamic: Dominant",
+      content: isChinese
+        ? `${nameA || "A"}的${elA}克${nameB || "B"}的${elB}，${nameA || "A"}在关系中天然占据主导。这不是坏事，但需要觉察。建议：重大决定时让${nameB || "B"}先表态，给TA充分的话语权。${nameA || "A"}要学会柔软，${nameB || "B"}要学会坚持。`
+        : `${nameA || "A"}'s ${elA} dominates ${nameB || "B"}'s ${elB}. Not bad, but requires awareness. Tip: Let ${nameB || "B"} speak first on big decisions. ${nameA || "A"}: soften; ${nameB || "B"}: stand firm when it matters.`,
+    });
+  } else if (controls[elB] === elA) {
+    advice.push({
+      title: isChinese ? "🛡️ 关系动力：被制约型" : "🛡️ Dynamic: Being Guided",
+      content: isChinese
+        ? `${nameB || "B"}的${elB}克${nameA || "A"}的${elA}，${nameB || "B"}对${nameA || "A"}有自然的影响力。建议：${nameB || "B"}要意识到自己的影响力，用引导代替命令。${nameA || "A"}不必总是退让，适当表达自己的需求。`
+        : `${nameB || "B"}'s ${elB} naturally influences ${nameA || "A"}'s ${elA}. Tip: ${nameB || "B"}, guide rather than command. ${nameA || "A"}, express your needs — don't always yield.`,
+    });
+  } else {
+    advice.push({
+      title: isChinese ? "🤝 关系动力：平等型" : "🤝 Dynamic: Equal Partners",
+      content: isChinese
+        ? `两人${elA}${elB}同属一行，性格底色相似，容易产生共鸣。但「太像」也是一种挑战——争执时容易僵持。建议：遇到分歧时主动让步一次，打破僵局。培养不同的兴趣爱好，给彼此新鲜感。`
+        : `Both share ${elA} energy — great resonance but risk of deadlocks. Tip: When stuck, one person yields first. Develop different hobbies to keep things fresh.`,
+    });
+  }
+
+  // Strength-based advice
+  if (chartA.dayMasterStrength === "strong" && chartB.dayMasterStrength === "strong") {
+    advice.push({
+      title: isChinese ? "💪 能量提醒：双强组合" : "💪 Energy: Double Strong",
+      content: isChinese
+        ? "两人都是身强格局，能量充沛、主见鲜明。这是一对有力量的组合，但也容易在决策上产生碰撞。建议：明确分工，各自在擅长领域做主，避免事事争论。"
+        : "Both have strong Day Masters — powerful pair, but may clash on decisions. Tip: Divide responsibilities and let each lead in their strength area.",
+    });
+  } else if (chartA.dayMasterStrength === "weak" && chartB.dayMasterStrength === "weak") {
+    advice.push({
+      title: isChinese ? "🌸 能量提醒：双柔组合" : "🌸 Energy: Double Gentle",
+      content: isChinese
+        ? "两人都是身弱格局，温和体贴、善解人意。但在面对困难时可能缺乏果断。建议：遇到挑战时约定一方站出来担当，轮流做「那个拍板的人」。"
+        : "Both have gentle Day Masters — empathetic but may lack decisiveness under pressure. Tip: Take turns being the decision-maker when challenges arise.",
+    });
+  }
+
+  return advice;
+}
+
 export default function CompatibilityPage() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#12101c]" />}>
@@ -376,6 +442,12 @@ function CompatibilityContent() {
                       : `${nameA || "A"}属${chartA.dayMasterElement}，${nameB || "B"}属${chartB.dayMasterElement}。不同五行带来不同视角，沟通时要理解对方的思维方式，避免用自己的标准要求对方。`}
                   </p>
                 </div>
+                {getRelationshipAdvice(chartA, chartB, nameA, nameB, isChinese).map((item, i) => (
+                  <div key={i} className="bg-white/[0.02] rounded-xl p-3.5 border border-white/5">
+                    <div className="text-xs font-semibold text-amber-200/70 mb-1">{item.title}</div>
+                    <p className="text-[11px] text-amber-100/50 leading-relaxed">{item.content}</p>
+                  </div>
+                ))}
                 <div className="bg-white/[0.02] rounded-xl p-3.5 border border-white/5">
                   <div className="text-xs font-semibold text-amber-200/70 mb-1">💡 相处建议</div>
                   <p className="text-[11px] text-amber-100/50 leading-relaxed">
@@ -408,6 +480,34 @@ function CompatibilityContent() {
             >
               {shareCopied ? (isChinese ? "✓ 已复制" : "✓ Copied") : (isChinese ? "📤 分享结果" : "📤 Share Result")}
             </button>
+
+            {/* Viral referral CTA */}
+            <div className="bg-gradient-to-r from-purple-900/20 via-purple-800/15 to-amber-900/20 border border-purple-400/10 rounded-2xl p-5 text-center space-y-3">
+              <div className="text-2xl">🔮</div>
+              <p className="text-amber-100 text-sm font-semibold">
+                {isChinese ? "想看 TA 眼中的你？" : "Want to see yourself through their eyes?"}
+              </p>
+              <p className="text-amber-200/40 text-xs leading-relaxed">
+                {isChinese
+                  ? `让${nameB || "对方"}也生成自己的命盘，解锁双向合盘视角`
+                  : `Have ${nameB || "them"} generate their own chart for a two-way compatibility view`}
+              </p>
+              <button
+                onClick={() => {
+                  const baseUrl = window.location.origin;
+                  const link = `${baseUrl}/fortune?ref=compat`;
+                  navigator.clipboard.writeText(link).then(() => {
+                    toast(isChinese ? "链接已复制！发送给 TA 吧" : "Link copied! Send it to them", "success");
+                  });
+                }}
+                className="inline-block px-6 py-2.5 rounded-xl font-semibold text-sm cursor-pointer bg-gradient-to-r from-purple-700 via-purple-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(139,92,246,0.2)] transition-all"
+              >
+                {isChinese ? "复制邀请链接" : "Copy Invite Link"}
+              </button>
+              <p className="text-amber-200/20 text-[10px]">
+                {isChinese ? "对方注册后你们都将获得一次免费深度解读" : "You both get a free deep reading when they sign up"}
+              </p>
+            </div>
 
             {/* Actions */}
             <div className="flex gap-3">

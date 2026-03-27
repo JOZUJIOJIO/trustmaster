@@ -176,9 +176,9 @@ CREATE INDEX IF NOT EXISTS idx_orders_chart_id ON orders(chart_id);
 -- Orders: service role can write, anyone can read their own by session_id
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Orders are queryable by stripe session id"
+CREATE POLICY "Users can view own orders"
   ON orders FOR SELECT
-  USING (true);
+  USING (auth.uid() = user_id);
 
 -- ============================================
 -- AI Reading Cache table

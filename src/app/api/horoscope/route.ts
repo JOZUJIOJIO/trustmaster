@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -33,6 +34,23 @@ export async function POST(req: NextRequest) {
     const lang = langMap[locale] || "English";
     const today = new Date().toISOString().split("T")[0];
 
+    // === Cache lookup ===
+    const supabase = getSupabaseAdmin();
+    if (supabase) {
+      const { data: cached } = await supabase
+        .from("horoscope_cache")
+        .select("data")
+        .eq("sign", sign)
+        .eq("locale", locale)
+        .eq("date", today)
+        .single() as any;
+
+      if (cached?.data) {
+        return NextResponse.json(cached.data);
+      }
+    }
+
+    // === AI generation ===
     const prompt = `You are a warm, insightful astrologer. Generate a daily horoscope for ${signName} (${sign}) for ${today}.
 
 Respond in ${lang} language. Return ONLY valid JSON with this exact structure (no markdown, no code blocks):
@@ -69,12 +87,22 @@ The rating is 1-5 stars for overall fortune. Be specific, positive but honest, a
 
     const data = JSON.parse(jsonStr);
 
-    return NextResponse.json({
-      sign,
-      signName,
-      date: today,
-      ...data,
-    });
+    const result = { sign, signName, date: today, ...data };
+
+    // === Save to cache (non-blocking) ===
+    if (supabase) {
+      (supabase as any)
+        .from("horoscope_cache")
+        .upsert(
+          { sign, locale, date: today, data: result },
+          { onConflict: "sign,locale,date" }
+        )
+        .then(({ error }: any) => {
+          if (error) console.error("Failed to cache horoscope:", error);
+        });
+    }
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Horoscope API error:", error);
     return NextResponse.json(

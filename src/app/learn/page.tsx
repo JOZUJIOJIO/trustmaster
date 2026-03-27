@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useLocale } from "@/lib/LocaleContext";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -53,6 +54,7 @@ const sections = [
 export default function LearnPage() {
   const { locale } = useLocale();
   const isChinese = locale === "zh" || locale === "th";
+  const [expanded, setExpanded] = useState<number | null>(0);
 
   return (
     <div className="min-h-screen bg-[#12101c]">
@@ -77,31 +79,96 @@ export default function LearnPage() {
           </p>
         </div>
 
-        <div className="space-y-6">
-          {sections.map((s, i) => (
-            <div key={i} className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-6 hover-glow transition-all">
-              <div className="flex items-start gap-4">
-                <div className="text-3xl flex-shrink-0 mt-1">{s.icon}</div>
-                <div>
-                  <h2 className="text-lg font-bold text-amber-200 mb-2">
-                    {isChinese ? s.titleZh : s.title}
-                  </h2>
-                  <p className="text-sm text-amber-100/50 leading-relaxed">
-                    {isChinese ? s.contentZh : s.content}
-                  </p>
+        <p className="text-amber-200/30 text-xs text-center mb-6">
+          {isChinese ? "3000 年东方智慧，六分钟读懂" : "3,000 years of Eastern wisdom, 6 minutes to understand"}
+        </p>
+
+        <div className="space-y-4">
+          {sections.map((s, i) => {
+            const isOpen = expanded === i;
+            const text = isChinese ? s.contentZh : s.content;
+            const preview = text.slice(0, 80) + (text.length > 80 ? "…" : "");
+
+            return (
+              <div
+                key={i}
+                className="bg-white/[0.03] border border-amber-400/10 rounded-2xl overflow-hidden hover-glow transition-all cursor-pointer"
+                onClick={() => setExpanded(isOpen ? null : i)}
+              >
+                <div className="flex items-center justify-between px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{s.icon}</span>
+                    <h2 className="text-base font-bold text-amber-200">
+                      {isChinese ? s.titleZh : s.title}
+                    </h2>
+                  </div>
+                  <span className="text-amber-400/40 text-xs transition-transform duration-200" style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}>
+                    ▾
+                  </span>
                 </div>
+
+                {!isOpen && (
+                  <div className="px-6 pb-4">
+                    <p className="text-xs text-amber-100/30 leading-relaxed">{preview}</p>
+                  </div>
+                )}
+
+                {isOpen && (
+                  <div className="px-6 pb-5 border-t border-amber-400/5 pt-3">
+                    {i === 1 && (
+                      <>
+                        <div className="flex justify-center my-4">
+                          <svg viewBox="0 0 200 200" className="w-48 h-48">
+                            {[
+                              { el: "木", emoji: "🌳", color: "#22c55e", x: 100, y: 20 },
+                              { el: "火", emoji: "🔥", color: "#ef4444", x: 180, y: 80 },
+                              { el: "土", emoji: "⛰️", color: "#a3712a", x: 150, y: 170 },
+                              { el: "金", emoji: "⚙️", color: "#f59e0b", x: 50, y: 170 },
+                              { el: "水", emoji: "💧", color: "#3b82f6", x: 20, y: 80 },
+                            ].map((item) => (
+                              <g key={item.el}>
+                                <circle cx={item.x} cy={item.y} r="22" fill={item.color} fillOpacity="0.15" stroke={item.color} strokeOpacity="0.4" strokeWidth="1.5" />
+                                <text x={item.x} y={item.y - 4} textAnchor="middle" fontSize="14">{item.emoji}</text>
+                                <text x={item.x} y={item.y + 12} textAnchor="middle" fill={item.color} fontSize="9" fontWeight="bold">{item.el}</text>
+                              </g>
+                            ))}
+                            {[
+                              { x1: 118, y1: 32, x2: 168, y2: 65 },
+                              { x1: 185, y1: 100, x2: 162, y2: 155 },
+                              { x1: 135, y1: 178, x2: 68, y2: 178 },
+                              { x1: 38, y1: 155, x2: 18, y2: 100 },
+                              { x1: 32, y1: 65, x2: 82, y2: 32 },
+                            ].map((a, idx) => (
+                              <line key={`gen-${idx}`} x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} stroke="rgba(217,169,106,0.2)" strokeWidth="1" markerEnd="url(#arrowGold)" />
+                            ))}
+                            <defs>
+                              <marker id="arrowGold" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+                                <polygon points="0 0, 6 2, 0 4" fill="rgba(217,169,106,0.4)" />
+                              </marker>
+                            </defs>
+                          </svg>
+                        </div>
+                        <p className="text-center text-amber-200/30 text-[10px] mb-3">{isChinese ? "外圈 → 相生（滋养）" : "Outer → Generation (nurture)"}</p>
+                      </>
+                    )}
+                    <p className="text-sm text-amber-100/50 leading-relaxed">{text}</p>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* CTA */}
-        <div className="mt-12 text-center">
+        <div className="text-center mt-10 space-y-3">
+          <p className="text-amber-200/40 text-xs">
+            {isChinese ? "理论已就绪，现在来看看你的命盘" : "Theory complete — now see your own chart"}
+          </p>
           <Link
             href="/fortune"
-            className="inline-block px-10 py-4 rounded-full font-semibold bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
+            className="inline-block px-8 py-3.5 rounded-2xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
           >
-            {isChinese ? "开始分析我的命盘 →" : "Analyze My Chart →"}
+            {isChinese ? "生成我的命盘 →" : "Generate My Chart →"}
           </Link>
         </div>
       </main>

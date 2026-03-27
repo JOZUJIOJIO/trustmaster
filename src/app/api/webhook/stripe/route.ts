@@ -57,6 +57,7 @@ export async function POST(request: Request) {
 
       if (error) {
         console.error("Failed to save order:", error);
+        return NextResponse.json({ error: "Database write failed" }, { status: 500 });
       }
     }
 
@@ -92,6 +93,7 @@ export async function POST(request: Request) {
 
       if (error) {
         console.error("Failed to save subscription:", error);
+        return NextResponse.json({ error: "Database write failed" }, { status: 500 });
       }
     }
   }
@@ -120,6 +122,7 @@ export async function POST(request: Request) {
 
       if (error) {
         console.error("Failed to update subscription:", error);
+        return NextResponse.json({ error: "Database write failed" }, { status: 500 });
       }
     }
   }

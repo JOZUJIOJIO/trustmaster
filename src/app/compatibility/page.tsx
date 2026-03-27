@@ -263,7 +263,8 @@ function CompatibilityContent() {
                 onChange={(e) => setDateA(e.target.value)}
                 max={new Date().toISOString().split("T")[0]}
                 min="1940-01-01"
-                className="w-full bg-white/5 border border-amber-400/15 rounded-xl px-4 py-2.5 text-amber-100 text-sm focus:outline-none focus:border-amber-400/30"
+                className="w-full bg-white/5 border border-amber-400/15 rounded-xl px-4 py-2.5 text-amber-100 text-sm focus:outline-none focus:border-amber-400/30 [color-scheme:dark]"
+                style={{ colorScheme: "dark" }}
               />
             </div>
 
@@ -293,7 +294,8 @@ function CompatibilityContent() {
                 onChange={(e) => setDateB(e.target.value)}
                 max={new Date().toISOString().split("T")[0]}
                 min="1940-01-01"
-                className="w-full bg-white/5 border border-purple-400/15 rounded-xl px-4 py-2.5 text-purple-100 text-sm focus:outline-none focus:border-purple-400/30"
+                className="w-full bg-white/5 border border-purple-400/15 rounded-xl px-4 py-2.5 text-purple-100 text-sm focus:outline-none focus:border-purple-400/30 [color-scheme:dark]"
+                style={{ colorScheme: "dark" }}
               />
             </div>
 

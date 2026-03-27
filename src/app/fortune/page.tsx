@@ -294,6 +294,8 @@ function FortuneContent() {
       localStorage.setItem("kairos_chart", chartJson);
       localStorage.setItem("kairos_userName", userName);
       localStorage.setItem("kairos_saved_chart", JSON.stringify({ chart: result, userName, date: new Date().toISOString() }));
+      localStorage.setItem("kairos_birth_date", birthDate);
+      localStorage.setItem("kairos_gender", gender);
     } catch { /* ignore */ }
   };
 

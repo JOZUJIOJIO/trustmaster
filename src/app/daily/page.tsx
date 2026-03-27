@@ -180,6 +180,14 @@ function DailyContent() {
       .catch(() => {});
   }, [user]);
 
+  // Auto-fill from localStorage saved birth date
+  useEffect(() => {
+    const saved = localStorage.getItem("kairos_birth_date");
+    if (saved && !birthDate) {
+      setBirthDate(saved);
+    }
+  }, []);
+
   // Check URL for pre-filled date
   useEffect(() => {
     const dateParam = searchParams.get("date");
@@ -231,7 +239,8 @@ function DailyContent() {
               onChange={(e) => setBirthDate(e.target.value)}
               max={new Date().toISOString().split("T")[0]}
               min="1940-01-01"
-              className="w-full max-w-xs mx-auto bg-white/5 border border-amber-400/20 rounded-xl px-4 py-3 text-amber-100 text-center focus:outline-none focus:border-amber-400/40"
+              className="w-full max-w-xs mx-auto block px-4 py-3 rounded-xl bg-white/[0.06] border border-amber-400/20 text-amber-100 text-center placeholder-amber-200/30 focus:outline-none focus:border-amber-400/40 focus:bg-white/[0.08] transition-all [color-scheme:dark]"
+              style={{ colorScheme: "dark" }}
             />
             <button
               onClick={handleGenerate}

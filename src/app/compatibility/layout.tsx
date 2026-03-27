@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Compatibility Analysis — Five Elements Love Match",
     description: "Enter two birth dates to discover your Five Elements compatibility. Love, career, and communication scores.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Kairós" }],
   },
 };
 

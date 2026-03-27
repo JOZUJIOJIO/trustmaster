@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "BaZi Four Pillars Analysis — AI Personality Reading",
     description: "Generate your BaZi chart and get AI-powered personality insights based on 3,000 years of Eastern wisdom.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Kairós" }],
   },
 };
 

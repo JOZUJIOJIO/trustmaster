@@ -30,6 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ stem: str
     openGraph: {
       title: meta.title,
       description: meta.desc,
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Kairós" }],
     },
   };
 }

@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Daily BaZi Insights — Personalized Daily Fortune",
     description: "Personalized daily fortune scores based on your birth chart. Updated every day.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Kairós" }],
   },
 };
 

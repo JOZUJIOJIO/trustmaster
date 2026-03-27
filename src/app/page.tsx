@@ -216,11 +216,6 @@ export default function Home() {
   // ===== Main app view (after CTA click) — DARK THEME =====
   return (
     <div className="min-h-screen page-enter bg-[#0a0814]">
-      {/* Fixed starfield background */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-        <StarfieldCanvas />
-      </div>
-
       {/* PC Header */}
       <header className="hidden lg:block sticky top-0 z-50 bg-[#0a0814]/80 backdrop-blur-md border-b border-amber-400/10">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">

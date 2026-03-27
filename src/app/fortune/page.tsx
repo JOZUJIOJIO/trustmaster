@@ -532,6 +532,13 @@ function FortuneContent() {
             <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectDate")}</h2>
             <p className="text-amber-200/40 text-sm mb-6">{t("bazi.dateHint")}</p>
             <CelestialDatePicker value={birthDate} onChange={setBirthDate} />
+            {birthDate && (
+              <div className="mt-4 animate-fadeIn text-center" style={{ animationDuration: "0.4s" }}>
+                <p className="text-amber-400/40 text-xs">
+                  {isChinese ? "✨ 出生日期已锁定，命盘轮廓正在浮现..." : "✨ Birth date locked — your chart is taking shape..."}
+                </p>
+              </div>
+            )}
             <button
               onClick={() => birthDate && setStep("hour")}
               disabled={!birthDate}
@@ -553,6 +560,15 @@ function FortuneContent() {
             <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectHour")}</h2>
             <p className="text-amber-200/40 text-sm mb-4">{t("bazi.hourHint")}</p>
             <ChineseHourDial value={hourBranch} onChange={setHourBranch} isChinese={isChinese} />
+            {hourBranch && (
+              <div className="mt-3 animate-fadeIn text-center" style={{ animationDuration: "0.4s" }}>
+                <p className="text-amber-400/40 text-xs">
+                  {isChinese
+                    ? `✨ ${CHINESE_HOURS.find(h => h.branch === hourBranch)?.name || ""}时 — 时柱已就位，内心世界即将揭示`
+                    : `✨ ${CHINESE_HOURS.find(h => h.branch === hourBranch)?.name || ""} hour — your inner world is forming`}
+                </p>
+              </div>
+            )}
             <button
               onClick={() => { if (!hourBranch) setHourBranch("午"); setStep("gender"); }}
               className="mt-4 text-amber-200/30 text-xs hover:text-amber-200/50 cursor-pointer transition-colors"
@@ -580,6 +596,15 @@ function FortuneContent() {
             <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectGender")}</h2>
             <p className="text-amber-200/40 text-sm mb-4">{t("bazi.genderHint")}</p>
             <YinYangSelector value={gender} onChange={setGender} isChinese={isChinese} />
+            {gender && (
+              <div className="mt-3 animate-fadeIn text-center" style={{ animationDuration: "0.4s" }}>
+                <p className="text-amber-400/40 text-xs">
+                  {isChinese
+                    ? `✨ ${gender === "male" ? "阳" : "阴"}性能量确认 — 大运流转方向已确定`
+                    : `✨ ${gender === "male" ? "Yang" : "Yin"} energy confirmed — destiny cycle direction set`}
+                </p>
+              </div>
+            )}
             <button
               onClick={() => gender && setStep("name")}
               disabled={!gender}
@@ -623,10 +648,12 @@ function FortuneContent() {
             {/* Header — full width */}
             <RevealSection delay={0}>
               <div className="text-center lg:mb-4">
-                <div className="flex items-center justify-center gap-2 text-amber-400/30 text-xs mb-4">
-                  <span>☸</span><span>四柱八字命盘</span><span>☸</span>
-                </div>
-                {userName && <h2 className="text-xl font-bold text-amber-100 mb-1">{userName}</h2>}
+                {/* Dramatic arrival */}
+                <div className="text-3xl mb-3 animate-float">🔮</div>
+                <p className="text-amber-400/50 text-[10px] tracking-[0.3em] mb-4 animate-fadeIn" style={{ animationDuration: "1s" }}>
+                  {isChinese ? "命 盘 已 解 码" : "CHART DECODED"}
+                </p>
+                {userName && userName !== "缘主" && <h2 className="text-xl font-bold text-amber-100 mb-1">{userName}</h2>}
                 <p className="text-amber-200/60 text-sm">{chart.solarDate}</p>
                 <p className="text-amber-200/40 text-xs mt-1">{chart.lunarDate} · {chart.birthHour}</p>
                 <div className="flex items-center justify-center gap-3 mt-2">
@@ -634,6 +661,22 @@ function FortuneContent() {
                   <span className="text-amber-400/20">·</span>
                   <span className="text-sm text-amber-200/40">{chart.westernZodiacSymbol} {chart.westernZodiac}</span>
                 </div>
+                {/* Quick summary line */}
+                <div className="mt-4 bg-white/[0.02] rounded-xl px-4 py-2.5 border border-amber-400/8 inline-block">
+                  <p className="text-amber-200/50 text-xs">
+                    {isChinese
+                      ? `${chart.dayMaster}${chart.dayMasterElement}命 · ${chart.dayMasterStrength === "strong" ? "身强" : "身弱"} · 喜${chart.luckyElement}`
+                      : `${chart.dayMaster} ${chart.dayMasterElement} · ${chart.dayMasterStrength === "strong" ? "Strong" : "Gentle"} · Lucky: ${chart.luckyElement}`}
+                  </p>
+                </div>
+              </div>
+            </RevealSection>
+
+            {/* Section navigation hint */}
+            <RevealSection delay={50}>
+              <div className="flex items-center justify-center gap-4 text-amber-200/20 text-[10px] py-1">
+                <span>四柱</span><span>·</span><span>日主</span><span>·</span><span>五行</span><span>·</span><span>十神</span><span>·</span><span>大运</span><span>·</span><span>AI解读</span>
+                <span className="animate-bounce text-amber-400/30">↓</span>
               </div>
             </RevealSection>
 
@@ -709,6 +752,19 @@ function FortuneContent() {
                   </div>
                 </div>
                 <p className="text-amber-100/60 text-xs leading-relaxed text-center mt-4">{chart.dayMasterDesc}</p>
+                <p className="text-amber-200/30 text-[11px] mt-2 leading-relaxed max-w-xs mx-auto">
+                  {isChinese
+                    ? `日主${chart.dayMasterStrength === "strong" ? "偏强" : "偏弱"}（${chart.dayMasterScore}/100），${
+                        chart.dayMasterStrength === "strong"
+                          ? "意味着您个性独立、行动力强，适合主导型角色。宜泄宜克，忌过旺。"
+                          : "意味着您善于借力、包容力强，适合合作型角色。宜生宜扶，忌过耗。"
+                      }`
+                    : `Day Master is ${chart.dayMasterStrength} (${chart.dayMasterScore}/100). ${
+                        chart.dayMasterStrength === "strong"
+                          ? "You're independent with strong initiative — suited for leadership roles."
+                          : "You excel at collaboration and adaptability — suited for partnership roles."
+                      }`}
+                </p>
               </div>
             </RevealSection>
 
@@ -875,7 +931,7 @@ function FortuneContent() {
 
             {/* ⑨ Personality Blueprint */}
             <RevealSection delay={900}>
-              <Accordion title={isChinese ? "性 格 蓝 图" : "PERSONALITY BLUEPRINT"} icon="🧠" defaultOpen={false}>
+              <Accordion title={isChinese ? "性 格 蓝 图" : "PERSONALITY BLUEPRINT"} icon="🧠" defaultOpen={true}>
                 {(() => {
                   const bp = generateBlueprint(chart);
                   return (

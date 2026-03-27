@@ -75,7 +75,7 @@ export default function Home() {
   // ===== Full-screen Hero Landing =====
   if (showHero) {
     return (
-      <div className="relative min-h-screen overflow-hidden">
+      <div className="relative overflow-hidden">
         {/* === Background — minimal: dark base + single subtle nebula + vignette === */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[#0a0814]" />
@@ -95,9 +95,9 @@ export default function Home() {
         <StarfieldCanvas />
 
         {/* Content */}
-        <div className="relative z-10 min-h-screen flex flex-col">
+        <div className="relative z-10 min-h-[75vh] flex flex-col">
           {/* Top nav */}
-          <nav className="flex items-center justify-between px-6 lg:px-12 py-5 animate-fadeIn" style={{ animationDuration: "1s" }}>
+          <nav className="flex items-center justify-between px-6 lg:px-12 py-4 animate-fadeIn" style={{ animationDuration: "1s" }}>
             <div className="flex items-center gap-2.5">
               <span className="text-2xl drop-shadow-lg">🔮</span>
               <span className="text-xl font-bold text-amber-100/90 tracking-widest uppercase drop-shadow-lg">
@@ -116,14 +116,14 @@ export default function Home() {
           </nav>
 
           {/* Main content */}
-          <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-            {/* Taiji SVG — centerpiece with mouse parallax */}
-            <div className="mb-8 animate-fadeIn" style={{ animationDelay: "0.3s", animationDuration: "2s", animationFillMode: "both" }}>
-              <TaijiSvg size={160} />
+          <div className="flex-1 flex flex-col items-center justify-center px-6 text-center py-4">
+            {/* Taiji SVG — smaller, decorative */}
+            <div className="mb-4 animate-fadeIn" style={{ animationDelay: "0.3s", animationDuration: "2s", animationFillMode: "both" }}>
+              <TaijiSvg size={96} />
             </div>
 
             {/* Decorative line */}
-            <div className="flex items-center gap-3 mb-6 animate-fadeIn" style={{ animationDelay: "0.8s", animationDuration: "1.5s", animationFillMode: "both" }}>
+            <div className="flex items-center gap-3 mb-4 animate-fadeIn" style={{ animationDelay: "0.8s", animationDuration: "1.5s", animationFillMode: "both" }}>
               <div className="w-12 h-px bg-amber-400/40 animate-reveal" style={{ animationDelay: "1s" }} />
               <span className="text-amber-400/50 text-[10px] tracking-[0.4em] uppercase">
                 Ancient Eastern Wisdom × AI
@@ -136,13 +136,13 @@ export default function Home() {
               <TypewriterText text={t("hero.title")} delay={1200} />
             </h1>
 
-            <p className="mt-6 text-amber-100/50 text-sm sm:text-base lg:text-lg max-w-lg leading-relaxed animate-fadeIn"
+            <p className="mt-4 text-amber-100/50 text-sm sm:text-base lg:text-lg max-w-lg leading-relaxed animate-fadeIn"
                style={{ animationDelay: "3s", animationDuration: "1.5s", animationFillMode: "both" }}>
               {t("hero.subtitle")}
             </p>
 
             {/* Quick Fortune Entry */}
-            <div className="mt-10 animate-fadeIn" style={{ animationDelay: "3.2s", animationDuration: "1s", animationFillMode: "both" }}>
+            <div className="mt-6 animate-fadeIn" style={{ animationDelay: "3.2s", animationDuration: "1s", animationFillMode: "both" }}>
               <p className="text-amber-200/30 text-xs mb-3 tracking-wider">{locale === "zh" ? "输入出生日期，秒出命盘" : "Enter birth date for instant chart"}</p>
               <div className="flex flex-col sm:flex-row items-center gap-2 max-w-sm mx-auto">
                 <input
@@ -151,7 +151,8 @@ export default function Home() {
                   onChange={(e) => setQuickDate(e.target.value)}
                   max={new Date().toISOString().split("T")[0]}
                   min="1940-01-01"
-                  className="flex-1 bg-white/[0.06] border border-amber-400/20 hover:border-amber-400/30 rounded-full px-5 py-3 text-amber-100 text-sm text-center focus:outline-none focus:border-amber-400/50 focus:ring-1 focus:ring-amber-400/20 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-amber-400/20 text-amber-100 text-center placeholder-amber-200/30 focus:outline-none focus:border-amber-400/40 focus:bg-white/[0.08] transition-all [color-scheme:dark]"
+                  style={{ colorScheme: "dark" }}
                 />
                 <button
                   onClick={handleQuickFortune}
@@ -167,43 +168,21 @@ export default function Home() {
               <p className="text-amber-200/15 text-[10px] mt-2">{locale === "zh" ? "免费 · 无需注册 · 即时生成" : "Free · No signup · Instant"}</p>
             </div>
 
-            {/* Stats row */}
-            <div className="flex items-center gap-8 lg:gap-12 mt-12 animate-fadeIn"
-                 style={{ animationDelay: "3.5s", animationDuration: "1s", animationFillMode: "both" }}>
-              {[
-                { value: loading ? 0 : masters.length, label: t("stats.masters"), dur: 2000 },
-                { value: loading ? 0 : totalReviews, label: t("stats.reviews"), dur: 2500 },
-                { value: loading ? 0 : avgSatisfaction, label: t("stats.satisfaction"), dur: 2000, suffix: "%" },
-              ].map((stat, i) => (
-                <div key={i} className="text-center flex items-center gap-8 lg:gap-12">
-                  {i > 0 && <div className="w-px h-10 bg-amber-400/15 -ml-8 lg:-ml-12" />}
-                  <div>
-                    <div className="text-2xl lg:text-3xl font-bold text-amber-300 drop-shadow-lg">
-                      {loading ? "--" : <><AnimatedNumber value={stat.value} duration={stat.dur} />{stat.suffix || ""}</>}
-                    </div>
-                    <div className="text-[10px] lg:text-xs text-amber-200/40 mt-1 tracking-wider uppercase">
-                      {stat.label}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
             {/* CTA button */}
             <button
               onClick={() => setShowHero(false)}
-              className="mt-14 group px-10 py-4 rounded-full font-semibold text-base lg:text-lg cursor-pointer
+              className="mt-8 group px-10 py-4 rounded-full font-semibold text-base lg:text-lg cursor-pointer
                          bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700
                          text-white border border-amber-500/30
                          shadow-[0_0_40px_rgba(217,119,6,0.2)] hover:shadow-[0_0_60px_rgba(217,119,6,0.35)]
                          hover:scale-105 transition-all duration-500 animate-glowPulse animate-fadeIn border-flow"
-              style={{ animationDelay: "4s", animationFillMode: "both" }}
+              style={{ animationDelay: "3.5s", animationFillMode: "both" }}
             >
               {t("hero.cta")} →
             </button>
 
             {/* Secondary links */}
-            <div className="mt-8 flex items-center gap-6 animate-fadeIn" style={{ animationDelay: "4.5s", animationFillMode: "both" }}>
+            <div className="mt-5 flex items-center gap-6 animate-fadeIn" style={{ animationDelay: "4s", animationFillMode: "both" }}>
               <Link href="/learn" className="text-xs text-amber-200/30 hover:text-amber-200/60 transition-colors underline underline-offset-2">
                 {locale === "zh" ? "了解八字" : "What is BaZi?"}
               </Link>
@@ -211,18 +190,18 @@ export default function Home() {
                 {locale === "zh" ? "关于我们" : "About Us"}
               </Link>
             </div>
-
-            {/* Scroll hint — minimal */}
-            <div className="mt-16 animate-fadeIn" style={{ animationDelay: "4s", animationFillMode: "both" }}>
-              <div className="text-amber-400/15 text-sm tracking-[0.3em]">↓</div>
-            </div>
           </div>
 
           {/* Bottom disclaimer */}
-          <div className="text-center pb-6 lg:pb-8">
+          <div className="text-center pb-4 lg:pb-6">
             <p className="text-[10px] text-amber-200/20 tracking-wider">
               {t("disclaimer.text")}
             </p>
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce text-amber-400/30 text-xs">
+            {locale === "zh" ? "↓ 探索更多" : "↓ Explore More"}
           </div>
         </div>
 
@@ -328,6 +307,9 @@ export default function Home() {
         </section>
 
         {/* ===== Masters Section — Dark ===== */}
+        <div className="text-center py-6">
+          <p className="text-amber-400/40 text-[10px] tracking-[0.2em]">{locale === "zh" ? "✦ 认 证 大 师 ✦" : "✦ CERTIFIED MASTERS ✦"}</p>
+        </div>
         <main id="masters" className="lg:max-w-6xl lg:mx-auto lg:px-6 lg:pb-10">
           <div className="lg:bg-white/[0.02] lg:rounded-2xl lg:border lg:border-amber-400/10 lg:overflow-hidden">
             <div className="lg:flex lg:items-center lg:gap-4 lg:p-6 lg:border-b lg:border-amber-400/10">

@@ -36,7 +36,8 @@ export default function StarfieldCanvas() {
     window.addEventListener("resize", resize);
 
     // Initialize stars
-    const count = Math.min(80, Math.floor((w * h) / 15000));
+    const starCount = Math.min(50, Math.floor((w * h) / 25000));
+    const count = starCount;
     starsRef.current = Array.from({ length: count }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
@@ -77,9 +78,10 @@ export default function StarfieldCanvas() {
         // Mouse interaction — stars gently repel from cursor
         const dx = star.x - mouse.x;
         const dy = star.y - mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 200) {
-          const force = (200 - dist) / 200 * 0.5;
+        const distSq = dx * dx + dy * dy;
+        if (distSq < 10000) { // 100 * 100
+          const dist = Math.sqrt(distSq); // only calculate sqrt when needed
+          const force = (100 - dist) / 100 * 0.5;
           star.vx += (dx / dist) * force * 0.1;
           star.vy += (dy / dist) * force * 0.1;
         }
@@ -111,10 +113,10 @@ export default function StarfieldCanvas() {
         for (let j = i + 1; j < stars.length; j++) {
           const dx = stars[i].x - stars[j].x;
           const dy = stars[i].y - stars[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+          const distSq = dx * dx + dy * dy;
 
-          if (dist < 120) {
-            const opacity = (1 - dist / 120) * 0.12;
+          if (distSq < 14400) { // 120 * 120
+            const opacity = (1 - distSq / 14400) * 0.12;
             ctx.beginPath();
             ctx.moveTo(stars[i].x, stars[i].y);
             ctx.lineTo(stars[j].x, stars[j].y);
@@ -138,9 +140,9 @@ export default function StarfieldCanvas() {
         for (const star of stars) {
           const dx = star.x - mouse.x;
           const dy = star.y - mouse.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 180) {
-            const opacity = (1 - dist / 180) * 0.2;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < 32400) { // 180 * 180
+            const opacity = (1 - distSq / 32400) * 0.2;
             ctx.beginPath();
             ctx.moveTo(mouse.x, mouse.y);
             ctx.lineTo(star.x, star.y);

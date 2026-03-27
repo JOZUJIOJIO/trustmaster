@@ -1,29 +1,27 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { getAuthUser } from "@/lib/supabase/auth-guard";
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
-    const { userId } = await request.json();
-
-    if (!userId) {
+    const { user } = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ subscribed: false });
     }
 
-    const supabaseRaw = getSupabaseAdmin();
-    if (!supabaseRaw) {
+    const supabase = getSupabaseAdmin();
+    if (!supabase) {
       return NextResponse.json({ subscribed: false });
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const supabase = supabaseRaw as any;
 
     const { data } = await supabase
       .from("subscriptions")
       .select("status, plan, current_period_end, cancel_at_period_end")
-      .eq("user_id", userId)
+      .eq("user_id", user.id)
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .limit(1)
-      .single();
+      .single() as any;
 
     if (data) {
       return NextResponse.json({

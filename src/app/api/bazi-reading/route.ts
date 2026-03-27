@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
+import { getChartHash } from "@/lib/chart-hash";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -12,22 +13,6 @@ function getSupabaseAdmin() {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !serviceKey) return null;
   return createClient(url, serviceKey);
-}
-
-// Generate a stable hash for a chart to use as cache key
-function getChartHash(chart: Record<string, unknown>): string {
-  const key = [
-    chart.yearPillar && (chart.yearPillar as Record<string, string>).stem,
-    chart.yearPillar && (chart.yearPillar as Record<string, string>).branch,
-    chart.monthPillar && (chart.monthPillar as Record<string, string>).stem,
-    chart.monthPillar && (chart.monthPillar as Record<string, string>).branch,
-    chart.dayPillar && (chart.dayPillar as Record<string, string>).stem,
-    chart.dayPillar && (chart.dayPillar as Record<string, string>).branch,
-    chart.hourPillar && (chart.hourPillar as Record<string, string>).stem,
-    chart.hourPillar && (chart.hourPillar as Record<string, string>).branch,
-    chart.gender,
-  ].join("-");
-  return key;
 }
 
 // Day Master nature descriptions for prompt context

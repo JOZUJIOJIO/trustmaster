@@ -1,17 +1,10 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-02-25.clover",
 });
-
-function getSupabaseAdmin() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !serviceKey) return null;
-  return createClient(url, serviceKey);
-}
 
 export async function POST(request: Request) {
   try {
@@ -28,7 +21,7 @@ export async function POST(request: Request) {
         .from("orders")
         .select("status, tier")
         .eq("stripe_session_id", sessionId)
-        .single();
+        .single() as { data: { status: string; tier: string } | null; error: unknown };
 
       if (existing?.status === "paid") {
         return NextResponse.json({
@@ -44,7 +37,8 @@ export async function POST(request: Request) {
 
     // If paid but not in DB yet (webhook race condition), write it now
     if (paid && supabase) {
-      await supabase.from("orders").upsert(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase as any).from("orders").upsert(
         {
           stripe_session_id: session.id,
           stripe_payment_intent:

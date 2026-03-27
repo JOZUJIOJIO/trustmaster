@@ -1,17 +1,10 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-02-25.clover",
 });
-
-function getSupabaseAdmin() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !serviceKey) return null;
-  return createClient(url, serviceKey);
-}
 
 export async function POST(request: Request) {
   try {
@@ -22,10 +15,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing userId" }, { status: 400 });
     }
 
-    const supabase = getSupabaseAdmin();
-    if (!supabase) {
+    const supabaseRaw = getSupabaseAdmin();
+    if (!supabaseRaw) {
       return NextResponse.json({ error: "Not configured" }, { status: 500 });
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = supabaseRaw as any;
 
     // Get the user's Stripe customer ID from subscriptions
     const { data: sub } = await supabase

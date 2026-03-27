@@ -1,19 +1,12 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { getChartHash } from "@/lib/chart-hash";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   baseURL: process.env.OPENAI_BASE_URL || "https://api.openai.com/v1",
 });
-
-function getSupabaseAdmin() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !serviceKey) return null;
-  return createClient(url, serviceKey);
-}
 
 // Day Master nature descriptions for prompt context
 const STEM_NATURE: Record<string, string> = {
@@ -69,7 +62,7 @@ export async function POST(request: Request) {
         .from("readings_cache")
         .select("reading")
         .eq("chart_hash", chartHash)
-        .single();
+        .single() as { data: { reading: unknown } | null; error: unknown };
 
       if (cached?.reading) {
         return NextResponse.json(cached.reading);
@@ -202,7 +195,8 @@ ${currentLuckCycle ? `当前大运：${currentLuckCycle.stem}${currentLuckCycle.
 
     // === Save to cache (non-blocking) ===
     if (supabase && !parsed.error) {
-      supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (supabase as any)
         .from("readings_cache")
         .upsert(
           {
@@ -218,7 +212,7 @@ ${currentLuckCycle ? `当前大运：${currentLuckCycle.stem}${currentLuckCycle.
           },
           { onConflict: "chart_hash" }
         )
-        .then(({ error }) => {
+        .then(({ error }: { error: unknown }) => {
           if (error) console.error("Failed to cache reading:", error);
         });
     }

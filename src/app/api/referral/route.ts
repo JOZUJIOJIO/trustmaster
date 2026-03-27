@@ -1,12 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-function getSupabaseAdmin() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !serviceKey) return null;
-  return createClient(url, serviceKey);
-}
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
 
 // GET: Get referral info for a user
 export async function GET(request: Request) {
@@ -17,10 +10,12 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing userId" }, { status: 400 });
   }
 
-  const supabase = getSupabaseAdmin();
-  if (!supabase) {
+  const supabaseRaw = getSupabaseAdmin();
+  if (!supabaseRaw) {
     return NextResponse.json({ referralCode: null, stats: null });
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = supabaseRaw as any;
 
   // Get user's referral code and free readings
   const { data: profile } = await supabase
@@ -37,7 +32,7 @@ export async function GET(request: Request) {
     .order("created_at", { ascending: false });
 
   const signups = referrals?.length ?? 0;
-  const converted = referrals?.filter((r) => r.status === "converted").length ?? 0;
+  const converted = referrals?.filter((r: { status: string }) => r.status === "converted").length ?? 0;
 
   return NextResponse.json({
     referralCode: profile?.referral_code ?? null,
@@ -55,10 +50,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing params" }, { status: 400 });
   }
 
-  const supabase = getSupabaseAdmin();
-  if (!supabase) {
+  const supabaseRaw = getSupabaseAdmin();
+  if (!supabaseRaw) {
     return NextResponse.json({ error: "Not configured" }, { status: 500 });
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = supabaseRaw as any;
 
   // Look up referrer by code
   const { data: referrer } = await supabase
@@ -107,10 +104,12 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Missing userId" }, { status: 400 });
   }
 
-  const supabase = getSupabaseAdmin();
-  if (!supabase) {
+  const supabaseRaw = getSupabaseAdmin();
+  if (!supabaseRaw) {
     return NextResponse.json({ error: "Not configured" }, { status: 500 });
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = supabaseRaw as any;
 
   // Find the referral
   const { data: referral } = await supabase

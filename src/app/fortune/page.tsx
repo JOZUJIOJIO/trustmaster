@@ -297,6 +297,20 @@ function FortuneContent() {
 
   const [checkoutError, setCheckoutError] = useState("");
 
+  // Dynamic day master personality snippets for blurred preview
+  const previewPersonality: Record<string, { zh: string; en: string }> = {
+    "甲": { zh: "基于您的日主甲木和八字组合，您天生如同参天大树，正直向上，有领袖气质。您的思维敏捷，善于规划...", en: "Based on your Day Master Jia Wood, you are like a towering tree — upright, ambitious, with natural leadership..." },
+    "乙": { zh: "基于您的日主乙木和八字组合，您外柔内刚，如同藤蔓般善于借力攀升。您的适应力极强，温和中藏着韧性...", en: "Based on your Day Master Yi Wood, you are like a vine — flexible yet resilient, adapting and climbing with quiet strength..." },
+    "丙": { zh: "基于您的日主丙火和八字组合，您天生光明磊落，如同太阳般热情奔放。您的感染力极强，走到哪里都是焦点...", en: "Based on your Day Master Bing Fire, you radiate warmth like the sun — passionate, generous, and naturally magnetic..." },
+    "丁": { zh: "基于您的日主丁火和八字组合，您温暖内敛，如同烛光般照亮身边人。您的洞察力极强，能看穿表象...", en: "Based on your Day Master Ding Fire, you are like candlelight — warm, perceptive, illuminating truth in darkness..." },
+    "戊": { zh: "基于您的日主戊土和八字组合，您厚重可靠，如同高山般沉稳。您是团队中的定海神针，让人安心...", en: "Based on your Day Master Wu Earth, you are like a mountain — steady, reliable, the anchor everyone depends on..." },
+    "己": { zh: "基于您的日主己土和八字组合，您温润如田园沃土，善于滋养和培育他人。您的包容力极强...", en: "Based on your Day Master Ji Earth, you are like fertile soil — nurturing, inclusive, growing everything around you..." },
+    "庚": { zh: "基于您的日主庚金和八字组合，您果决刚毅，如同刀剑般锋利。您重义气，做事雷厉风行...", en: "Based on your Day Master Geng Metal, you are like a blade — decisive, principled, cutting through confusion..." },
+    "辛": { zh: "基于您的日主辛金和八字组合，您精致高雅，如同珠宝般内敛清贵。您追求完美，品味独到...", en: "Based on your Day Master Xin Metal, you are like a gemstone — refined, elegant, with exquisite taste..." },
+    "壬": { zh: "基于您的日主壬水和八字组合，您智慧深沉，如同江河般胸怀宽广。您志向远大，思维不受束缚...", en: "Based on your Day Master Ren Water, you are like a river — deep, wise, flowing toward grand ambitions..." },
+    "癸": { zh: "基于您的日主癸水和八字组合，您至柔至弱却能润泽万物，如同雨露。您的直觉极强，感应力敏锐...", en: "Based on your Day Master Gui Water, you are like morning dew — gentle yet penetrating, with powerful intuition..." },
+  };
+
   const handleSubscribe = async (plan: "monthly" | "yearly" = "monthly") => {
     if (!user) { setShowLoginGate(true); return; }
     setSubLoading(true);
@@ -987,11 +1001,26 @@ function FortuneContent() {
             <RevealSection delay={1100}>
               {!unlocked && !aiReading ? (
                 <>
-                  {/* Blurred preview with sweep effect */}
+                  {/* Free basic personality reading from deterministic blueprint */}
+                  {chart && (() => {
+                    const bp = generateBlueprint(chart);
+                    return bp.personality ? (
+                      <div className="mb-6">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300/80 border border-emerald-400/20 font-semibold tracking-wide">
+                            {isChinese ? "免费 · 基础解读" : "FREE · Basic Reading"}
+                          </span>
+                        </div>
+                        <ReadingCard icon="🧠" title={isChinese ? "性格特质" : "Personality"} content={bp.personality} />
+                      </div>
+                    ) : null;
+                  })()}
+
+                  {/* Blurred AI deep reading preview with sweep effect */}
                   <div className="relative overflow-hidden rounded-2xl">
                     <div className="space-y-4 blur-sm pointer-events-none select-none">
-                      <ReadingCard icon="🧠" title="性格特质" content="基于您的日主甲木和八字组合，您天生具有坚韧不拔的品质，如同参天大树般扎根深处。您的思维敏捷，善于规划..." />
-                      <ReadingCard icon="💼" title="事业运势" content="2026年流年丙午，火势旺盛。对于您的八字组合而言，今年适合积极拓展事业版图，尤其在创意和管理领域..." />
+                      <ReadingCard icon="🧠" title={isChinese ? "性格特质" : "Personality"} content={chart ? (isChinese ? (previewPersonality[chart.dayMaster]?.zh || "...") : (previewPersonality[chart.dayMaster]?.en || "...")) : "..."} />
+                      <ReadingCard icon="💼" title={isChinese ? "事业运势" : "Career"} content={isChinese ? `${chart?.currentYearStem || ""}${chart?.currentYearBranch || ""}年流年运势分析，结合您的十神格局，今年的事业发展方向将呈现新的机遇...` : `${chart?.currentYearStem || ""}${chart?.currentYearBranch || ""} year career analysis based on your Ten Gods pattern reveals new opportunities...`} />
                     </div>
                     {/* Gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#12101c] via-[#12101c]/80 to-transparent" />
@@ -1209,9 +1238,53 @@ function FortuneContent() {
                   {aiReading.love && <EnhancedReadingCard icon="❤️" title="感情运势" content={aiReading.love} chart={chart} dimension="love" delay={300} />}
                   {aiReading.health && <EnhancedReadingCard icon="🏥" title="健康提醒" content={aiReading.health} chart={chart} dimension="health" delay={400} />}
                   {aiReading.advice && <EnhancedReadingCard icon="🍀" title="开运指南" content={aiReading.advice} chart={chart} dimension="advice" delay={500} />}
+                  {aiReading.actionItems && (
+                    <div className="bg-gradient-to-br from-amber-900/15 via-transparent to-amber-900/10 border border-amber-500/15 rounded-2xl p-5 animate-fadeIn" style={{ animationDelay: "600ms", animationFillMode: "both" }}>
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-lg">📋</span>
+                        <h3 className="text-sm font-bold text-amber-200">{isChinese ? "本月行动清单" : "This Month's Action Plan"}</h3>
+                      </div>
+                      <div className="space-y-2.5">
+                        {aiReading.actionItems.split(/\n|；/).filter((s: string) => s.trim()).map((item: string, i: number) => (
+                          <div key={i} className="flex items-start gap-2.5 bg-white/[0.02] rounded-xl p-3 border border-white/5">
+                            <span className="text-amber-400/50 text-xs mt-0.5">▸</span>
+                            <p className="text-xs text-amber-100/60 leading-relaxed">{item.trim()}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : null}
             </RevealSection>
+
+            {/* Share prompt — appears after AI reading loads */}
+            {aiReading && !aiReading.error && (
+              <div className="bg-gradient-to-r from-purple-900/20 via-purple-800/20 to-purple-900/20 border border-purple-400/15 rounded-2xl p-5 text-center space-y-3 animate-slideUp" style={{ animationDuration: "0.6s" }}>
+                <div className="text-2xl">✨</div>
+                <p className="text-amber-100 text-sm font-semibold">
+                  {isChinese ? "您的命盘已生成" : "Your chart is ready"}
+                </p>
+                <p className="text-amber-200/40 text-xs">
+                  {isChinese ? "分享给朋友，看看你们的默契度" : "Share with friends to discover your compatibility"}
+                </p>
+                <div className="flex gap-3 justify-center">
+                  <button
+                    onClick={handleShareCard}
+                    disabled={shareLoading}
+                    className="px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer bg-gradient-to-r from-purple-700 via-purple-600 to-purple-700 text-white hover:shadow-[0_0_30px_rgba(139,92,246,0.2)] transition-all disabled:opacity-50"
+                  >
+                    {shareLoading ? "..." : (isChinese ? "生成分享卡片" : "Create Share Card")}
+                  </button>
+                  <a
+                    href={`/compatibility?from=${encodeURIComponent(userName || "")}&date=${chart?.solarDate || ""}`}
+                    className="px-5 py-2.5 rounded-xl font-semibold text-sm bg-white/5 text-amber-200/70 border border-amber-400/15 hover:bg-white/10 transition-all"
+                  >
+                    {isChinese ? "测默契度" : "Check Compatibility"}
+                  </a>
+                </div>
+              </div>
+            )}
 
             {/* Action Buttons */}
             <RevealSection delay={1200}>

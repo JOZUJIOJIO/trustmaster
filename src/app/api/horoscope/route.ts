@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -16,6 +17,13 @@ const langMap: Record<string, string> = {
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit: 10 requests per minute per IP
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const { allowed } = checkRateLimit(`horoscope:${ip}`, 10, 60_000);
+    if (!allowed) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+
     const { sign, signName, locale } = await req.json();
 
     if (!sign || !signName || !locale) {

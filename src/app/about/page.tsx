@@ -127,6 +127,37 @@ export default function AboutPage() {
           </div>
         </section>
 
+        {/* Founder Story */}
+        <section className="mb-16 lg:mb-20">
+          <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-6 lg:p-10">
+            <h2 className="font-display text-xl lg:text-2xl font-bold text-amber-200 mb-6">
+              {isChinese ? "创造者的话" : "From the Creator"}
+            </h2>
+            <div className="space-y-4 text-sm lg:text-base text-amber-100/50 leading-relaxed">
+              <p>
+                {isChinese
+                  ? "我在硅谷做了多年技术工作，对数据和逻辑有天然的信仰。命理？那不过是玄学罢了——至少我曾经这样认为。"
+                  : "I spent years in tech, with a natural faith in data and logic. Metaphysics? Just superstition — or so I thought."}
+              </p>
+              <p>
+                {isChinese
+                  ? "2024年一次偶然的机会，一位老师帮我排了八字。他没有问我任何问题，却精准地描述了我过去十年的每一次重大转折——换行业、跨国搬迁、那次差点放弃一切的低谷。那一刻，我的世界观被动摇了。"
+                  : "In 2024, a master read my BaZi chart without asking a single question — yet precisely described every major turning point in my past decade: the career change, the cross-country move, that low point where I almost gave up everything. My worldview shifted."}
+              </p>
+              <p>
+                {isChinese
+                  ? "我不相信「算命」，但我开始相信这套三千年的分析框架蕴含着深刻的智慧。问题是：它被锁在古文和少数人的圈子里。于是我决定用技术打开它——让每个人都能理解自己的「Kairós」。"
+                  : "I don't believe in fortune-telling. But I started believing that this 3,000-year-old analytical framework holds profound wisdom. The problem: it was locked behind classical texts and closed circles. So I decided to use technology to unlock it — to help everyone find their 'Kairós'."}
+              </p>
+              <p className="text-amber-200/30 italic">
+                {isChinese
+                  ? "—— Kairós 创始人，一个被八字说服的工程师"
+                  : "— The Kairós founder, an engineer convinced by BaZi"}
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Disclaimer — full width */}
         <section className="mb-10">
           <div className="bg-white/[0.02] border border-amber-400/8 rounded-2xl p-6 lg:p-8">

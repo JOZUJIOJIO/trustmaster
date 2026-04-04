@@ -261,6 +261,7 @@ export default function Home() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
             {[
               { href: "/fortune", icon: "☯", title: locale === "zh" ? "八字分析" : "BaZi Analysis", desc: locale === "zh" ? "四柱命理 · AI 解读" : "Four Pillars · AI Reading", glow: "rgba(217,119,6,0.1)" },
+              { href: "/health", icon: "🌿", title: locale === "zh" ? "体质测评" : "Health Assessment", desc: locale === "zh" ? "五行体质 · AI 养生" : "TCM Constitution · AI Wellness", glow: "rgba(34,197,94,0.1)" },
               { href: "/daily", icon: "📅", title: locale === "zh" ? "每日运势" : "Daily Insights", desc: locale === "zh" ? "个性化评分 · 宜忌" : "Personal Scores · Guidance", glow: "rgba(59,130,246,0.1)" },
               { href: "/compatibility", icon: "💑", title: locale === "zh" ? "双人合盘" : "Compatibility", desc: locale === "zh" ? "五行互补 · 兼容度" : "Elements Match · Score", glow: "rgba(139,92,246,0.1)" },
               { href: "/learn", icon: "📖", title: locale === "zh" ? "了解八字" : "Learn BaZi", desc: locale === "zh" ? "3000年东方智慧" : "3,000 Years of Wisdom", glow: "rgba(34,197,94,0.1)" },

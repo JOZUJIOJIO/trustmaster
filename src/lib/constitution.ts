@@ -16,7 +16,7 @@ export function calculateConstitution(answers: QuizAnswer[]): ConstitutionResult
     const q = QUESTIONS[i];
     const score = answers[i];
     for (const [element, weight] of Object.entries(q.elementWeights)) {
-      rawElements[element] += score * weight;
+      rawElements[element] += score * (weight ?? 0);
     }
   }
 
@@ -48,7 +48,7 @@ export function calculateConstitution(answers: QuizAnswer[]): ConstitutionResult
     const q = QUESTIONS[i];
     const score = answers[i];
     for (const [cType, weight] of Object.entries(q.constitutionWeights)) {
-      rawNine[cType] += score * weight;
+      rawNine[cType] += score * (weight ?? 0);
     }
   }
 

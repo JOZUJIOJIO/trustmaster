@@ -64,6 +64,7 @@ export interface HealthAssessment {
   answers: number[];
   constitution_type: string;
   constitution_subtype: string;
+  secondary_type: string | null;
   five_elements_score: { 木: number; 火: number; 土: number; 金: number; 水: number };
   nine_constitutions_score: Record<string, number>;
   bazi_chart_hash: string | null;

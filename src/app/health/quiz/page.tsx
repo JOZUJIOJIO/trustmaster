@@ -72,7 +72,7 @@ export default function HealthQuizPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0814]">
-      <PageHeader title={t("health.title")} backHref="/health" />
+      <PageHeader title={t("health.title")} href="/health" />
 
       <div className="py-8 lg:py-16 max-w-lg mx-auto">
         {phase === "quiz" && (

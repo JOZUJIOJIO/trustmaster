@@ -122,7 +122,7 @@ export default function HealthReportPage({ params }: { params: Promise<{ id: str
 
   return (
     <div className="min-h-screen bg-[#0a0814]">
-      <PageHeader title={t("health.title")} backHref="/health" />
+      <PageHeader title={t("health.title")} href="/health" />
 
       <div className="max-w-lg mx-auto px-4 py-8 space-y-8">
         {/* Section 1: Constitution Badge */}

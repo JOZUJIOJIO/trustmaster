@@ -31,6 +31,9 @@ export default function TaijiSvg({ size = 200 }: { size?: number }) {
 
   const trigrams = ["☰", "☱", "☲", "☳", "☴", "☵", "☶", "☷"];
 
+  // Round to avoid SSR/client hydration mismatch from floating-point precision differences
+  const r = (n: number) => Math.round(n * 1000) / 1000;
+
   return (
     <div
       className="relative"
@@ -75,8 +78,8 @@ export default function TaijiSvg({ size = 200 }: { size?: number }) {
           {trigrams.map((t, i) => {
             const angle = ((i * 45) - 90) * (Math.PI / 180);
             const tr = outerR - 4;
-            const x = half + tr * Math.cos(angle);
-            const y = half + tr * Math.sin(angle);
+            const x = r(half + tr * Math.cos(angle));
+            const y = r(half + tr * Math.sin(angle));
             return (
               <text
                 key={i}
@@ -100,10 +103,10 @@ export default function TaijiSvg({ size = 200 }: { size?: number }) {
             return (
               <line
                 key={i}
-                x1={half + r1 * Math.cos(angle)}
-                y1={half + r1 * Math.sin(angle)}
-                x2={half + r2 * Math.cos(angle)}
-                y2={half + r2 * Math.sin(angle)}
+                x1={r(half + r1 * Math.cos(angle))}
+                y1={r(half + r1 * Math.sin(angle))}
+                x2={r(half + r2 * Math.cos(angle))}
+                y2={r(half + r2 * Math.sin(angle))}
                 stroke={`rgba(217,169,106,${i % 3 === 0 ? 0.12 : 0.06})`}
                 strokeWidth={i % 3 === 0 ? 1 : 0.5}
               />

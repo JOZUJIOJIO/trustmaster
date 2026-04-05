@@ -272,13 +272,33 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ===== Trust Section — Dark ===== */}
+        {/* ===== Brand Story — Why Kairós ===== */}
         <section className="lg:max-w-6xl lg:mx-auto px-4 lg:px-6 pb-8">
           <div className="bg-white/[0.02] rounded-2xl p-6 lg:p-8 border border-amber-400/10">
             <div className="text-center mb-6">
-              <h3 className="text-lg font-bold text-amber-100">{locale === "zh" ? "为什么选择 Kairós" : "Why Kairós"}</h3>
+              <h3 className="text-lg font-bold text-amber-100">{locale === "zh" ? "为什么叫 Kairós" : "Why Kairós"}</h3>
+              <p className="text-amber-200/30 text-xs mt-1 tracking-wider">/ˈkaɪroʊs/</p>
             </div>
-            <div className="grid grid-cols-3 gap-4 text-center">
+
+            <div className="max-w-lg mx-auto text-center mb-8">
+              <p className="text-sm text-amber-100/60 leading-relaxed">
+                {locale === "zh"
+                  ? "古希腊人用两个词描述时间：Chronos 是钟表上流逝的每一秒；Kairos 则是命运转折的那一刻——稍纵即逝，抓住就能改变一切。"
+                  : "Ancient Greeks had two words for time: Chronos, the steady tick of the clock; and Kairos, the fleeting moment when fate turns — seize it, and everything changes."}
+              </p>
+              <p className="text-sm text-amber-100/60 leading-relaxed mt-3">
+                {locale === "zh"
+                  ? "东方智慧同样相信：天时地利人和，汇于一瞬。八字命理，正是读懂这个瞬间的钥匙。"
+                  : "Eastern wisdom shares this belief: when heaven, earth, and self align in one moment. BaZi is the key to reading that moment."}
+              </p>
+              <p className="text-sm text-amber-200/80 leading-relaxed mt-3 font-medium">
+                {locale === "zh"
+                  ? "Kairós 将千年东方命理与 AI 结合，帮你识别属于你的关键时刻。"
+                  : "Kairós combines ancient Eastern wisdom with AI to help you recognize the moments that matter."}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4 text-center border-t border-amber-400/10 pt-6">
               {[
                 { icon: "⚙️", title: locale === "zh" ? "精准算法" : "Precise Engine", desc: locale === "zh" ? "确定性计算，无随机" : "Deterministic, no randomness" },
                 { icon: "📖", title: locale === "zh" ? "经典方法论" : "Classical Methods", desc: locale === "zh" ? "子平真诠 · 滴天髓" : "Zi Ping Zhen Quan" },

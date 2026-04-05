@@ -146,7 +146,7 @@ export default function Home() {
             {/* Quick Fortune Entry */}
             <div className="mt-6 animate-fadeIn" style={{ animationDelay: "3.2s", animationDuration: "1s", animationFillMode: "both" }}>
               <p className="text-amber-200/30 text-xs mb-3 tracking-wider">{locale === "zh" ? "输入出生日期，秒出命盘" : "Enter birth date for instant chart"}</p>
-              <div className="flex flex-col sm:flex-row items-center gap-2 max-w-sm mx-auto">
+              <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
                 <input
                   type="date"
                   value={quickDate}
@@ -156,23 +156,13 @@ export default function Home() {
                   className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-amber-400/20 text-amber-100 text-center placeholder-amber-200/30 focus:outline-none focus:border-amber-400/40 focus:bg-white/[0.08] transition-all [color-scheme:dark]"
                   style={{ colorScheme: "dark" }}
                 />
-                <button
-                  onClick={handleQuickFortune}
-                  disabled={!quickDate}
-                  className="w-full sm:w-auto px-6 py-3 rounded-full font-semibold text-sm cursor-pointer
-                             bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white
-                             border border-amber-500/30 disabled:opacity-30 disabled:cursor-not-allowed
-                             hover:shadow-[0_0_30px_rgba(217,119,6,0.25)] transition-all"
-                >
-                  {locale === "zh" ? "开启" : "Go"} →
-                </button>
               </div>
               <p className="text-amber-200/15 text-[10px] mt-2">{locale === "zh" ? "免费 · 无需注册 · 即时生成" : "Free · No signup · Instant"}</p>
             </div>
 
             {/* CTA button */}
             <button
-              onClick={() => setShowHero(false)}
+              onClick={() => quickDate ? handleQuickFortune() : setShowHero(false)}
               className="mt-8 group px-10 py-4 rounded-full font-semibold text-base lg:text-lg cursor-pointer
                          bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700
                          text-white border border-amber-500/30

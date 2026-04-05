@@ -184,17 +184,171 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Bottom disclaimer */}
-          <div className="text-center pb-4 lg:pb-6">
-            <p className="text-[10px] text-amber-200/20 tracking-wider">
-              {t("disclaimer.text")}
-            </p>
-          </div>
-
           {/* Scroll indicator */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce text-amber-400/30 text-xs">
-            {locale === "zh" ? "↓ 探索更多" : "↓ Explore More"}
+            ↓
           </div>
+        </div>
+
+        {/* ===== Scrollable Sections Below Hero ===== */}
+        <div className="relative z-10">
+
+          {/* Section 1 — Brand Story */}
+          <section className="py-20 lg:py-28 px-6">
+            <div className="max-w-2xl mx-auto text-center">
+              <p className="text-amber-400/40 text-[10px] tracking-[0.4em] uppercase mb-6">
+                {locale === "zh" ? "关于 Kairós" : "About Kairós"}
+              </p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-amber-100 leading-snug">
+                {locale === "zh"
+                  ? "两种时间，一个答案"
+                  : "Two Kinds of Time, One Answer"}
+              </h2>
+              <div className="w-12 h-px bg-amber-400/30 mx-auto my-6" />
+              <p className="text-amber-100/50 text-sm lg:text-base leading-relaxed">
+                {locale === "zh"
+                  ? "古希腊人区分两种时间：Chronos 是钟表上流逝的每一秒，Kairos 是命运转折的那一刻——稍纵即逝，抓住就能改变一切。"
+                  : "The ancient Greeks distinguished two kinds of time: Chronos, the steady tick of every second; Kairos, the pivotal moment of fate — fleeting, yet transformative."}
+              </p>
+              <p className="text-amber-100/50 text-sm lg:text-base leading-relaxed mt-4">
+                {locale === "zh"
+                  ? "东方智慧称之为「天时」。八字命理，正是读懂这个瞬间的钥匙。"
+                  : "In the East, it's called 'Tianshi' — heavenly timing. BaZi is the key to reading that moment."}
+              </p>
+            </div>
+          </section>
+
+          {/* Section 2 — How It Works */}
+          <section className="py-20 lg:py-28 px-6">
+            <div className="max-w-3xl mx-auto">
+              <div className="text-center mb-12">
+                <p className="text-amber-400/40 text-[10px] tracking-[0.4em] uppercase mb-6">
+                  {locale === "zh" ? "如何运作" : "How It Works"}
+                </p>
+                <h2 className="text-2xl lg:text-3xl font-bold text-amber-100">
+                  {locale === "zh" ? "三步，解读你的命盘" : "Three Steps to Your Reading"}
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+                {[
+                  {
+                    step: "01",
+                    title: locale === "zh" ? "输入生辰" : "Enter Birth Date",
+                    desc: locale === "zh" ? "年月日时，四柱八字的起点" : "Year, month, day, hour — the four pillars begin here",
+                  },
+                  {
+                    step: "02",
+                    title: locale === "zh" ? "AI 排盘解读" : "AI Analysis",
+                    desc: locale === "zh" ? "融合子平真诠与现代 AI，秒出深度命盘" : "Classical methods meet modern AI for instant deep analysis",
+                  },
+                  {
+                    step: "03",
+                    title: locale === "zh" ? "获取洞见" : "Get Insights",
+                    desc: locale === "zh" ? "性格、事业、财运、关系——全面个性化解读" : "Personality, career, wealth, relationships — fully personalized",
+                  },
+                ].map((item) => (
+                  <div key={item.step} className="text-center lg:text-left">
+                    <div className="text-3xl lg:text-4xl font-bold text-amber-400/15 mb-3">{item.step}</div>
+                    <h3 className="text-base font-semibold text-amber-200 mb-2">{item.title}</h3>
+                    <p className="text-sm text-amber-100/40 leading-relaxed">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Section 3 — Features */}
+          <section className="py-20 lg:py-28 px-6">
+            <div className="max-w-3xl mx-auto">
+              <div className="text-center mb-12">
+                <p className="text-amber-400/40 text-[10px] tracking-[0.4em] uppercase mb-6">
+                  {locale === "zh" ? "核心能力" : "Core Features"}
+                </p>
+                <h2 className="text-2xl lg:text-3xl font-bold text-amber-100">
+                  {locale === "zh" ? "千年智慧，现代演绎" : "Ancient Wisdom, Modern Expression"}
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {[
+                  {
+                    icon: "☯",
+                    title: locale === "zh" ? "八字命理" : "BaZi Analysis",
+                    desc: locale === "zh" ? "基于子平真诠的四柱排盘，确定性算法，无随机因素" : "Four Pillars chart based on classical methods, deterministic — no randomness",
+                  },
+                  {
+                    icon: "🌿",
+                    title: locale === "zh" ? "五行体质" : "TCM Constitution",
+                    desc: locale === "zh" ? "中医九种体质测评，AI 定制养生方案" : "Nine-type TCM assessment with AI-customized wellness plans",
+                  },
+                  {
+                    icon: "📅",
+                    title: locale === "zh" ? "每日运势" : "Daily Insights",
+                    desc: locale === "zh" ? "个性化每日评分与宜忌指南" : "Personalized daily scores and guidance",
+                  },
+                  {
+                    icon: "💑",
+                    title: locale === "zh" ? "双人合盘" : "Compatibility",
+                    desc: locale === "zh" ? "五行互补分析，关系兼容度评分" : "Five Elements harmony analysis and relationship scoring",
+                  },
+                ].map((item) => (
+                  <div key={item.title} className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-6 hover:border-amber-400/20 transition-colors">
+                    <div className="text-2xl mb-3">{item.icon}</div>
+                    <h3 className="text-sm font-semibold text-amber-200 mb-2">{item.title}</h3>
+                    <p className="text-xs text-amber-100/40 leading-relaxed">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Section 4 — Trust Signals */}
+          <section className="py-20 lg:py-28 px-6">
+            <div className="max-w-2xl mx-auto">
+              <div className="grid grid-cols-3 gap-8 text-center">
+                {[
+                  { value: "3000+", label: locale === "zh" ? "年历史传承" : "Years of Tradition" },
+                  { value: "100%", label: locale === "zh" ? "确定性算法" : "Deterministic" },
+                  { value: "24/7", label: locale === "zh" ? "AI 即时解读" : "Instant AI Readings" },
+                ].map((item) => (
+                  <div key={item.label}>
+                    <div className="text-2xl lg:text-3xl font-bold text-amber-400/80">{item.value}</div>
+                    <div className="text-[10px] lg:text-xs text-amber-200/30 mt-1">{item.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Section 5 — Final CTA */}
+          <section className="py-20 lg:py-28 px-6 text-center">
+            <div className="max-w-lg mx-auto">
+              <h2 className="text-2xl lg:text-3xl font-bold text-amber-100 mb-4">
+                {locale === "zh" ? "你的时刻，就是现在" : "Your Moment Is Now"}
+              </h2>
+              <p className="text-sm text-amber-100/40 mb-8">
+                {locale === "zh"
+                  ? "免费开始，无需注册，即时生成你的命盘。"
+                  : "Start free, no signup required, get your chart instantly."}
+              </p>
+              <button
+                onClick={() => quickDate ? handleQuickFortune() : setShowHero(false)}
+                className="px-10 py-4 rounded-full font-semibold text-base cursor-pointer
+                           bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700
+                           text-white border border-amber-500/30
+                           shadow-[0_0_40px_rgba(217,119,6,0.2)] hover:shadow-[0_0_60px_rgba(217,119,6,0.35)]
+                           hover:scale-105 transition-all duration-500"
+              >
+                {t("hero.cta")} →
+              </button>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer className="border-t border-amber-400/10 py-8 px-6 text-center">
+            <p className="text-[10px] text-amber-200/20 tracking-wider">
+              © 2026 Kairós. {t("disclaimer.text")}
+            </p>
+          </footer>
         </div>
 
         {/* Mobile bottom nav */}

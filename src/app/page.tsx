@@ -78,19 +78,43 @@ export default function Home() {
   if (showHero) {
     return (
       <div className="relative overflow-hidden">
-        {/* === Background — minimal: dark base + single subtle nebula + vignette === */}
+        {/* === Background — deep cosmic atmosphere === */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[#0a0814]" />
-          {/* Single slow nebula — purple/gold blend */}
+          <div className="absolute inset-0 bg-[#060410]" />
+          {/* Nebula layer 1 — deep purple core */}
           <div
             className="absolute inset-0 animate-drift"
             style={{
-              background: "radial-gradient(ellipse 80% 60% at 30% 40%, rgba(88,28,135,0.12) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 70% 60%, rgba(120,70,20,0.08) 0%, transparent 60%)",
-              animationDuration: "30s",
+              background: "radial-gradient(ellipse 90% 70% at 25% 35%, rgba(60,20,120,0.18) 0%, transparent 55%)",
+              animationDuration: "40s",
             }}
           />
-          {/* Vignette */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.6)_100%)]" />
+          {/* Nebula layer 2 — warm gold cluster */}
+          <div
+            className="absolute inset-0 animate-drift"
+            style={{
+              background: "radial-gradient(ellipse 70% 55% at 75% 55%, rgba(140,80,20,0.12) 0%, transparent 50%)",
+              animationDuration: "55s",
+              animationDirection: "reverse",
+            }}
+          />
+          {/* Nebula layer 3 — blue cosmic dust */}
+          <div
+            className="absolute inset-0 animate-drift"
+            style={{
+              background: "radial-gradient(ellipse 60% 40% at 50% 70%, rgba(20,40,100,0.1) 0%, transparent 50%), radial-gradient(ellipse 40% 30% at 80% 20%, rgba(50,20,80,0.08) 0%, transparent 45%)",
+              animationDuration: "70s",
+            }}
+          />
+          {/* Milky Way band — faint diagonal stripe */}
+          <div
+            className="absolute inset-0 opacity-[0.04]"
+            style={{
+              background: "linear-gradient(135deg, transparent 20%, rgba(200,180,150,1) 45%, rgba(200,180,150,0.6) 50%, rgba(200,180,150,1) 55%, transparent 80%)",
+            }}
+          />
+          {/* Vignette — stronger for depth */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.7)_100%)]" />
         </div>
 
         {/* Interactive starfield canvas */}

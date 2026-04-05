@@ -15,6 +15,7 @@ import { TypewriterText, AnimatedNumber, useScrollReveal } from "@/components/My
 import StarfieldCanvas from "@/components/StarfieldCanvas";
 import TaijiSvg from "@/components/TaijiSvg";
 import TiltCard from "@/components/TiltCard";
+import { useAuth } from "@/lib/supabase/auth-context";
 
 function MasterCardSkeleton() {
   return (
@@ -43,6 +44,7 @@ export default function Home() {
   const [quickDate, setQuickDate] = useState("");
   const { locale, t } = useLocale();
   const router = useRouter();
+  const { user } = useAuth();
   useScrollReveal();
 
   const handleQuickFortune = useCallback(() => {
@@ -106,10 +108,10 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-5">
               <Link
-                href="/fortune"
-                className="hidden sm:flex items-center gap-1.5 text-sm text-amber-200/60 hover:text-amber-200 transition-colors"
+                href={user ? "/profile" : "/login"}
+                className="flex items-center gap-1.5 text-sm text-amber-200/60 hover:text-amber-200 transition-colors"
               >
-                ✨ {t("nav.fortune")}
+                {user ? (locale === "zh" ? "👤 我的" : "👤 Profile") : (locale === "zh" ? "登录" : "Sign in")}
               </Link>
               <LanguageSwitcher />
             </div>

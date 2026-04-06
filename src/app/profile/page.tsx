@@ -34,7 +34,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
-      setLoading(false);
+      router.replace("/login?redirect=/profile");
       return;
     }
 

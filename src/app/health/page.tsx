@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useLocale } from "@/lib/LocaleContext";
 import BottomNav from "@/components/BottomNav";
-import PageHeader from "@/components/PageHeader";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import TiltCard from "@/components/TiltCard";
 
@@ -39,7 +38,13 @@ export default function HealthPage() {
       </header>
 
       {/* Mobile Header */}
-      <PageHeader title={t("health.title")} />
+      <header className="lg:hidden flex items-center justify-between h-12 px-4 border-b border-amber-400/10 sticky top-0 bg-[#0a0814]/90 backdrop-blur-md z-50">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="text-amber-200/60 hover:text-amber-200 text-lg active:scale-95 transition-transform p-2.5 -ml-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center">←</Link>
+          <span className="text-[15px] font-semibold text-amber-100">{t("health.title")}</span>
+        </div>
+        <LanguageSwitcher />
+      </header>
 
       {/* Hero */}
       <section className="px-4 lg:px-6 py-12 lg:py-20 text-center max-w-2xl mx-auto">

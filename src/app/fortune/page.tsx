@@ -56,7 +56,7 @@ function FortuneContent() {
   const { locale, isChinese, t } = useLocale();
   const { user } = useAuth();
   const { toast } = useToast();
-  const [mode, setMode] = useState<Mode>("select");
+  const [mode, setMode] = useState<Mode>("bazi");
   const [step, setStep] = useState<Step>("date");
   const [isSubscriber, setIsSubscriber] = useState(false);
   const [showLoginGate, setShowLoginGate] = useState(false);

@@ -261,7 +261,54 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== Section 5 — Masters ===== */}
+      {/* ===== Section 5 — Testimonials ===== */}
+      <section className="relative z-10 py-20 lg:py-28 px-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-amber-400/40 text-[10px] tracking-[0.4em] uppercase mb-6">
+              {locale === "zh" ? "用户体验" : "User Stories"}
+            </p>
+            <h2 className="text-2xl lg:text-3xl font-bold text-amber-100">
+              {locale === "zh" ? "他们找到了自己的时刻" : "They Found Their Moment"}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {[
+              {
+                quote: locale === "zh"
+                  ? "一直对八字好奇但看不懂，Kairós 的 AI 解读终于让我理解了自己的命盘，尤其是事业方向的分析特别准。"
+                  : "I was always curious about BaZi but couldn't understand it. Kairós finally helped me decode my chart — the career analysis was spot on.",
+                name: locale === "zh" ? "林小姐" : "Ms. Lin",
+                tag: locale === "zh" ? "产品经理 · 深圳" : "Product Manager · Shenzhen",
+              },
+              {
+                quote: locale === "zh"
+                  ? "体质测评结果出乎意料地准确，推荐的食疗方案我坚持了一个月，确实感觉身体轻松了很多。"
+                  : "The constitution assessment was surprisingly accurate. I followed the diet plan for a month and genuinely felt the difference.",
+                name: locale === "zh" ? "张先生" : "Mr. Zhang",
+                tag: locale === "zh" ? "自由职业 · 曼谷" : "Freelancer · Bangkok",
+              },
+              {
+                quote: locale === "zh"
+                  ? "和伴侣做了合盘分析，终于理解了我们为什么在某些事情上总是意见不合，五行互补的视角很新颖。"
+                  : "The compatibility reading helped us understand why we always clash on certain things. The five elements perspective was eye-opening.",
+                name: locale === "zh" ? "王女士" : "Ms. Wang",
+                tag: locale === "zh" ? "设计师 · 新加坡" : "Designer · Singapore",
+              },
+            ].map((item) => (
+              <div key={item.name} className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-6">
+                <p className="text-sm text-amber-100/60 leading-relaxed italic">&ldquo;{item.quote}&rdquo;</p>
+                <div className="mt-4 pt-4 border-t border-amber-400/10">
+                  <div className="text-sm font-semibold text-amber-200">{item.name}</div>
+                  <div className="text-[10px] text-amber-200/30 mt-0.5">{item.tag}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Section 6 — Masters ===== */}
       <section className="relative z-10 py-12 lg:py-16">
         <div className="text-center mb-6">
           <p className="text-amber-400/40 text-[10px] tracking-[0.2em]">{locale === "zh" ? "✦ 认 证 大 师 ✦" : "✦ CERTIFIED MASTERS ✦"}</p>

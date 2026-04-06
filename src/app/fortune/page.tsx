@@ -28,6 +28,7 @@ import { ReadingCard } from "@/components/fortune/ReadingCard";
 import { RevealSection } from "@/components/fortune/RevealSection";
 import { StrengthGauge } from "@/components/fortune/StrengthGauge";
 import { PaywallSection } from "@/components/fortune/PaywallSection";
+import { ShareCard } from "@/components/fortune/ShareCard";
 
 // Generate a stable hash for a chart to use as cache/order key
 function getChartHash(chart: BaziChart): string {
@@ -670,6 +671,10 @@ function FortuneContent() {
                       ? `${chart.dayMaster}${chart.dayMasterElement}命 · ${chart.dayMasterStrength === "strong" ? "身强" : "身弱"} · 喜${chart.luckyElement}`
                       : `${chart.dayMaster} ${chart.dayMasterElement} · ${chart.dayMasterStrength === "strong" ? "Strong" : "Gentle"} · Lucky: ${chart.luckyElement}`}
                   </p>
+                </div>
+                {/* Share button */}
+                <div className="mt-4">
+                  <ShareCard chart={chart} userName={userName} isChinese={isChinese} />
                 </div>
               </div>
             </RevealSection>

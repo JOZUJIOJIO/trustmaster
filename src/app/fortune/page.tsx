@@ -42,7 +42,7 @@ function getChartHash(chart: BaziChart): string {
 }
 
 type Mode = "select" | "bazi" | "zodiac";
-type Step = "date" | "hour" | "gender" | "name" | "reveal" | "result";
+type Step = "input" | "date" | "hour" | "gender" | "name" | "reveal" | "result";
 
 
 export default function FortunePage() {
@@ -58,7 +58,7 @@ function FortuneContent() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [mode, setMode] = useState<Mode>("bazi");
-  const [step, setStep] = useState<Step>("date");
+  const [step, setStep] = useState<Step>("input");
   const [isSubscriber, setIsSubscriber] = useState(false);
   const [showLoginGate, setShowLoginGate] = useState(false);
   const [subLoading, setSubLoading] = useState(false);
@@ -127,7 +127,7 @@ function FortuneContent() {
     if (dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
       setBirthDate(dateParam);
       setMode("bazi");
-      setStep("hour");
+      // Stay on "input" step — date is pre-filled, user fills the rest
     }
     // Store referral code from URL
     const ref = searchParams.get("ref");
@@ -369,11 +369,12 @@ function FortuneContent() {
   };
 
   const goBack = () => {
-    if (step === "date") reset();
-    else if (step === "hour") setStep("date");
-    else if (step === "gender") setStep("hour");
-    else if (step === "name") setStep("gender");
-    else if (step === "result") { setChart(null); setAiReading(null); setStep("name"); }
+    if (step === "input") reset();
+    else if (step === "date") reset();
+    else if (step === "hour") setStep("input");
+    else if (step === "gender") setStep("input");
+    else if (step === "name") setStep("input");
+    else if (step === "result") { setChart(null); setAiReading(null); setStep("input"); }
   };
 
   const progressIndex = ["date", "hour", "gender", "name"].indexOf(step);
@@ -524,7 +525,143 @@ function FortuneContent() {
       </header>
 
       <main className="max-w-lg lg:max-w-4xl mx-auto px-4 py-8 lg:py-16 pb-24">
-        {/* ===== Step 1: Date ===== */}
+        {/* ===== Unified Input ===== */}
+        {step === "input" && (
+          <div className="text-center animate-fadeIn max-w-md mx-auto" style={{ animationDuration: "0.5s" }}>
+            <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">
+              {isChinese ? "输入你的出生信息" : "Enter Your Birth Info"}
+            </h2>
+            <p className="text-amber-200/40 text-sm mb-8">
+              {isChinese ? "只需几秒，即刻生成命盘" : "Takes seconds, instant chart generation"}
+            </p>
+
+            <div className="space-y-5 text-left">
+              {/* Date */}
+              <div>
+                <label className="block text-xs font-medium text-amber-200/50 mb-1.5">
+                  {isChinese ? "出生日期" : "Birth Date"} <span className="text-amber-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  value={birthDate}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                  max={new Date().toISOString().split("T")[0]}
+                  min="1940-01-01"
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-amber-400/20 text-amber-100 focus:outline-none focus:border-amber-400/40 transition-all [color-scheme:dark]"
+                  style={{ colorScheme: "dark" }}
+                />
+              </div>
+
+              {/* Hour */}
+              <div>
+                <label className="block text-xs font-medium text-amber-200/50 mb-1.5">
+                  {isChinese ? "出生时辰" : "Birth Hour"}
+                  <span className="text-amber-200/30 ml-1">({isChinese ? "可选" : "optional"})</span>
+                </label>
+                <select
+                  value={hourBranch}
+                  onChange={(e) => setHourBranch(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-amber-400/20 text-amber-100 focus:outline-none focus:border-amber-400/40 transition-all appearance-none cursor-pointer"
+                >
+                  <option value="" className="bg-[#12101c]">{isChinese ? "不确定（默认午时）" : "Not sure (default noon)"}</option>
+                  {CHINESE_HOURS.map((h) => (
+                    <option key={h.branch} value={h.branch} className="bg-[#12101c]">
+                      {h.branch} {h.name}（{h.time}）
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Gender */}
+              <div>
+                <label className="block text-xs font-medium text-amber-200/50 mb-1.5">
+                  {isChinese ? "性别" : "Gender"} <span className="text-amber-500">*</span>
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setGender("male")}
+                    className={`py-3 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                      gender === "male"
+                        ? "bg-amber-600/20 border-2 border-amber-500/40 text-amber-200"
+                        : "bg-white/[0.04] border border-amber-400/10 text-amber-200/50 hover:bg-white/[0.06]"
+                    }`}
+                  >
+                    {isChinese ? "♂ 男" : "♂ Male"}
+                  </button>
+                  <button
+                    onClick={() => setGender("female")}
+                    className={`py-3 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                      gender === "female"
+                        ? "bg-amber-600/20 border-2 border-amber-500/40 text-amber-200"
+                        : "bg-white/[0.04] border border-amber-400/10 text-amber-200/50 hover:bg-white/[0.06]"
+                    }`}
+                  >
+                    {isChinese ? "♀ 女" : "♀ Female"}
+                  </button>
+                </div>
+              </div>
+
+              {/* Name */}
+              <div>
+                <label className="block text-xs font-medium text-amber-200/50 mb-1.5">
+                  {isChinese ? "姓名" : "Name"}
+                  <span className="text-amber-200/30 ml-1">({isChinese ? "可选" : "optional"})</span>
+                </label>
+                <input
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder={isChinese ? "输入你的名字" : "Your name"}
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-amber-400/20 text-amber-100 placeholder-amber-200/20 focus:outline-none focus:border-amber-400/40 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Submit */}
+            <button
+              onClick={() => {
+                if (!hourBranch) setHourBranch("午");
+                if (!userName.trim()) setUserName("缘主");
+                if (!gender) setGender("male");
+                // Need a small delay to let state update, or compute directly
+                const finalHour = hourBranch || "午";
+                const finalGender = (gender || "male") as "male" | "female";
+                const finalName = userName.trim() || "缘主";
+                const [y, m, d] = birthDate.split("-").map(Number);
+                const result = calculateBazi(y, m, d, finalHour, finalGender);
+                setChart(result);
+                setUserName(finalName);
+                setHourBranch(finalHour);
+                setGender(finalGender);
+                setStep("reveal");
+                try {
+                  const chartJson = JSON.stringify(result);
+                  sessionStorage.setItem("kairos_chart", chartJson);
+                  sessionStorage.setItem("kairos_userName", finalName);
+                  localStorage.setItem("kairos_chart", chartJson);
+                  localStorage.setItem("kairos_userName", finalName);
+                  localStorage.setItem("kairos_saved_chart", JSON.stringify({ chart: result, userName: finalName, date: new Date().toISOString() }));
+                  localStorage.setItem("kairos_birth_date", birthDate);
+                  localStorage.setItem("kairos_gender", finalGender);
+                } catch { /* ignore */ }
+              }}
+              disabled={!birthDate}
+              className="mt-8 w-full py-4 rounded-xl font-semibold text-base cursor-pointer
+                         bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700
+                         text-white border border-amber-500/30
+                         disabled:opacity-30 disabled:cursor-not-allowed
+                         hover:shadow-[0_0_30px_rgba(217,119,6,0.25)] transition-all"
+            >
+              {isChinese ? "生成命盘 →" : "Generate Chart →"}
+            </button>
+
+            <p className="text-amber-200/20 text-[10px] mt-3">
+              {isChinese ? "只需出生日期即可生成 · 其余可选" : "Only birth date required · rest optional"}
+            </p>
+          </div>
+        )}
+
+        {/* ===== Legacy Step 1: Date (kept for backwards compat) ===== */}
         {step === "date" && (
           <div className="text-center animate-fadeIn" style={{ animationDuration: "0.5s" }}>
             <div className="flex items-center justify-center gap-2 mb-10">

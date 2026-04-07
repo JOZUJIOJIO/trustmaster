@@ -398,10 +398,10 @@ function FortuneContent() {
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
               <span className="text-xl">🔮</span>
-              <span className="text-lg font-bold text-amber-200/80">Kairós</span>
+              <span className="text-lg font-bold text-[#F2F0EB]/70">Kairós</span>
             </Link>
             <span className="text-white/10">/</span>
-            <span className="text-sm text-amber-200/40">{t("horoscope.title")}</span>
+            <span className="text-sm text-[#F2F0EB]/30">{t("horoscope.title")}</span>
           </div>
           <LanguageSwitcher />
         </header>
@@ -414,7 +414,7 @@ function FortuneContent() {
               <div className="w-8 h-px bg-amber-400/30" />
             </div>
             <h1 className="font-display text-3xl lg:text-4xl font-bold text-gradient-gold">{t("bazi.exploreTitle")}</h1>
-            <p className="text-amber-200/40 mt-3 text-sm">{t("bazi.selectMethod")}</p>
+            <p className="text-[#F2F0EB]/30 mt-3 text-sm">{t("bazi.selectMethod")}</p>
           </div>
 
           <div className="space-y-4 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
@@ -434,7 +434,7 @@ function FortuneContent() {
                           <div className="text-2xl">👋</div>
                           <div className="flex-1">
                             <div className="text-sm font-bold text-amber-200">{isChinese ? "欢迎回来" : "Welcome Back"}{savedName ? `，${savedName}` : ""}</div>
-                            <div className="text-xs text-amber-200/40 mt-0.5">
+                            <div className="text-xs text-[#F2F0EB]/30 mt-0.5">
                               {savedChart.dayMaster}{savedChart.dayMasterElement}{isChinese ? "命" : ""} · {savedChart.zodiacEmoji} {savedChart.zodiacAnimal} · {isChinese ? "查看上次的命盘" : "View your saved chart"}
                             </div>
                           </div>
@@ -450,13 +450,13 @@ function FortuneContent() {
 
             <button
               onClick={() => { setMode("bazi"); setStep("date"); }}
-              className="w-full text-left bg-white/[0.03] hover:bg-white/[0.06] border border-amber-400/10 hover:border-amber-400/20 rounded-2xl p-6 transition-all duration-300 cursor-pointer group"
+              className="w-full text-left bg-white/[0.03] hover:bg-white/[0.06] border border-[#F2F0EB]/[0.07] hover:border-[#F2F0EB]/10 rounded-2xl p-6 transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-start gap-4">
                 <div className="text-3xl">☯</div>
                 <div className="flex-1">
-                  <h2 className="text-lg font-bold text-amber-200 group-hover:text-amber-100 transition-colors">{t("bazi.title")}</h2>
-                  <p className="text-amber-200/40 text-sm mt-1 leading-relaxed">{t("bazi.baziDesc")}</p>
+                  <h2 className="text-lg font-bold text-amber-200 group-hover:text-[#F2F0EB] transition-colors">{t("bazi.title")}</h2>
+                  <p className="text-[#F2F0EB]/30 text-sm mt-1 leading-relaxed">{t("bazi.baziDesc")}</p>
                   <div className="flex items-center gap-2 mt-3 text-amber-400/30 text-xs">
                     <span>Four Pillars 四柱</span><span>·</span><span>Five Elements 五行</span><span>·</span><span>AI Reading</span>
                   </div>
@@ -467,13 +467,13 @@ function FortuneContent() {
 
             <Link
               href="/daily"
-              className="block w-full text-left bg-white/[0.03] hover:bg-white/[0.06] border border-amber-400/10 hover:border-amber-400/20 rounded-2xl p-6 transition-all duration-300 group"
+              className="block w-full text-left bg-white/[0.03] hover:bg-white/[0.06] border border-[#F2F0EB]/[0.07] hover:border-[#F2F0EB]/10 rounded-2xl p-6 transition-all duration-300 group"
             >
               <div className="flex items-start gap-4">
                 <div className="text-3xl">📅</div>
                 <div className="flex-1">
-                  <h2 className="text-lg font-bold text-amber-200 group-hover:text-amber-100 transition-colors">{t("bazi.dailyTitle")}</h2>
-                  <p className="text-amber-200/40 text-sm mt-1 leading-relaxed">{t("bazi.dailyDesc")}</p>
+                  <h2 className="text-lg font-bold text-amber-200 group-hover:text-[#F2F0EB] transition-colors">{t("bazi.dailyTitle")}</h2>
+                  <p className="text-[#F2F0EB]/30 text-sm mt-1 leading-relaxed">{t("bazi.dailyDesc")}</p>
                 </div>
                 <span className="text-amber-400/20 group-hover:text-amber-400/40 text-xl transition-colors">→</span>
               </div>
@@ -495,13 +495,13 @@ function FortuneContent() {
 
             <Link
               href="/fortune/zodiac"
-              className="block w-full text-left bg-white/[0.03] hover:bg-white/[0.06] border border-amber-400/10 hover:border-amber-400/20 rounded-2xl p-6 transition-all duration-300 group"
+              className="block w-full text-left bg-white/[0.03] hover:bg-white/[0.06] border border-[#F2F0EB]/[0.07] hover:border-[#F2F0EB]/10 rounded-2xl p-6 transition-all duration-300 group"
             >
               <div className="flex items-start gap-4">
                 <div className="text-3xl">♈</div>
                 <div className="flex-1">
-                  <h2 className="text-lg font-bold text-amber-200 group-hover:text-amber-100 transition-colors">{t("bazi.zodiacTitle")}</h2>
-                  <p className="text-amber-200/40 text-sm mt-1 leading-relaxed">{t("bazi.zodiacDesc")}</p>
+                  <h2 className="text-lg font-bold text-amber-200 group-hover:text-[#F2F0EB] transition-colors">{t("bazi.zodiacTitle")}</h2>
+                  <p className="text-[#F2F0EB]/30 text-sm mt-1 leading-relaxed">{t("bazi.zodiacDesc")}</p>
                 </div>
                 <span className="text-amber-400/20 group-hover:text-amber-400/40 text-xl transition-colors">→</span>
               </div>
@@ -525,8 +525,8 @@ function FortuneContent() {
       </div>
       <header className="relative z-10 flex items-center justify-between px-4 lg:px-12 py-4 border-b border-white/[0.04]">
         <div className="flex items-center gap-3">
-          <button onClick={goBack} className="text-amber-200/40 hover:text-amber-200/70 text-lg cursor-pointer transition-colors">←</button>
-          <span className="text-sm text-amber-200/40">{t("bazi.title")}</span>
+          <button onClick={goBack} className="text-[#F2F0EB]/30 hover:text-[#F2F0EB]/60 text-lg cursor-pointer transition-colors">←</button>
+          <span className="text-sm text-[#F2F0EB]/30">{t("bazi.title")}</span>
         </div>
         <LanguageSwitcher />
       </header>
@@ -535,17 +535,17 @@ function FortuneContent() {
         {/* ===== Unified Input ===== */}
         {step === "input" && (
           <div className="text-center animate-fadeIn max-w-md mx-auto" style={{ animationDuration: "0.5s" }}>
-            <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">
+            <h2 className="font-display text-2xl font-bold text-[#F2F0EB] mb-2">
               {isChinese ? "输入你的出生信息" : "Enter Your Birth Info"}
             </h2>
-            <p className="text-amber-200/40 text-sm mb-8">
+            <p className="text-[#F2F0EB]/40 text-sm mb-8">
               {isChinese ? "只需几秒，即刻生成命盘" : "Takes seconds, instant chart generation"}
             </p>
 
             <div className="space-y-5 text-left">
               {/* Date */}
               <div>
-                <label className="block text-xs font-medium text-amber-200/50 mb-1.5">
+                <label className="block text-xs font-medium text-[#F2F0EB]/40 mb-1.5">
                   {isChinese ? "出生日期" : "Birth Date"} <span className="text-amber-500">*</span>
                 </label>
                 <input
@@ -554,21 +554,21 @@ function FortuneContent() {
                   onChange={(e) => setBirthDate(e.target.value)}
                   max={new Date().toISOString().split("T")[0]}
                   min="1940-01-01"
-                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-amber-400/20 text-amber-100 focus:outline-none focus:border-amber-400/40 transition-all [color-scheme:dark]"
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-[#F2F0EB]/10 text-[#F2F0EB] focus:outline-none focus:border-amber-400/40 transition-all [color-scheme:dark]"
                   style={{ colorScheme: "dark" }}
                 />
               </div>
 
               {/* Hour */}
               <div>
-                <label className="block text-xs font-medium text-amber-200/50 mb-1.5">
+                <label className="block text-xs font-medium text-[#F2F0EB]/40 mb-1.5">
                   {isChinese ? "出生时辰" : "Birth Hour"}
-                  <span className="text-amber-200/30 ml-1">({isChinese ? "可选" : "optional"})</span>
+                  <span className="text-[#F2F0EB]/25 ml-1">({isChinese ? "可选" : "optional"})</span>
                 </label>
                 <select
                   value={hourBranch}
                   onChange={(e) => setHourBranch(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-amber-400/20 text-amber-100 focus:outline-none focus:border-amber-400/40 transition-all appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-[#F2F0EB]/10 text-[#F2F0EB] focus:outline-none focus:border-amber-400/40 transition-all appearance-none cursor-pointer"
                 >
                   <option value="" className="bg-[#12101c]">{isChinese ? "不确定（默认午时）" : "Not sure (default noon)"}</option>
                   {CHINESE_HOURS.map((h) => (
@@ -581,7 +581,7 @@ function FortuneContent() {
 
               {/* Gender */}
               <div>
-                <label className="block text-xs font-medium text-amber-200/50 mb-1.5">
+                <label className="block text-xs font-medium text-[#F2F0EB]/40 mb-1.5">
                   {isChinese ? "性别" : "Gender"} <span className="text-amber-500">*</span>
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -589,8 +589,8 @@ function FortuneContent() {
                     onClick={() => setGender("male")}
                     className={`py-3 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                       gender === "male"
-                        ? "bg-amber-600/20 border-2 border-amber-500/40 text-amber-200"
-                        : "bg-white/[0.04] border border-amber-400/10 text-amber-200/50 hover:bg-white/[0.06]"
+                        ? "bg-[#F2F0EB]/[0.08] border-2 border-[#F2F0EB]/20 text-[#F2F0EB]"
+                        : "bg-white/[0.04] border border-[#F2F0EB]/[0.07] text-[#F2F0EB]/40 hover:bg-white/[0.06]"
                     }`}
                   >
                     {isChinese ? "♂ 男" : "♂ Male"}
@@ -599,8 +599,8 @@ function FortuneContent() {
                     onClick={() => setGender("female")}
                     className={`py-3 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                       gender === "female"
-                        ? "bg-amber-600/20 border-2 border-amber-500/40 text-amber-200"
-                        : "bg-white/[0.04] border border-amber-400/10 text-amber-200/50 hover:bg-white/[0.06]"
+                        ? "bg-[#F2F0EB]/[0.08] border-2 border-[#F2F0EB]/20 text-[#F2F0EB]"
+                        : "bg-white/[0.04] border border-[#F2F0EB]/[0.07] text-[#F2F0EB]/40 hover:bg-white/[0.06]"
                     }`}
                   >
                     {isChinese ? "♀ 女" : "♀ Female"}
@@ -610,16 +610,16 @@ function FortuneContent() {
 
               {/* Name */}
               <div>
-                <label className="block text-xs font-medium text-amber-200/50 mb-1.5">
+                <label className="block text-xs font-medium text-[#F2F0EB]/40 mb-1.5">
                   {isChinese ? "姓名" : "Name"}
-                  <span className="text-amber-200/30 ml-1">({isChinese ? "可选" : "optional"})</span>
+                  <span className="text-[#F2F0EB]/25 ml-1">({isChinese ? "可选" : "optional"})</span>
                 </label>
                 <input
                   type="text"
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
                   placeholder={isChinese ? "输入你的名字" : "Your name"}
-                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-amber-400/20 text-amber-100 placeholder-amber-200/20 focus:outline-none focus:border-amber-400/40 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-[#F2F0EB]/10 text-[#F2F0EB] placeholder-amber-200/20 focus:outline-none focus:border-amber-400/40 transition-all"
                 />
               </div>
             </div>
@@ -654,15 +654,15 @@ function FortuneContent() {
               }}
               disabled={!birthDate}
               className="mt-8 w-full py-4 rounded-xl font-medium text-base cursor-pointer
-                         border border-amber-400/30 text-amber-200/80
-                         hover:bg-amber-400/[0.06] hover:text-amber-100 hover:border-amber-400/50
+                         border border-[#F2F0EB]/15 text-[#F2F0EB]/70
+                         hover:bg-amber-400/[0.06] hover:text-[#F2F0EB] hover:border-amber-400/50
                          disabled:opacity-20 disabled:cursor-not-allowed
                          transition-all duration-300"
             >
               {isChinese ? "生成命盘 →" : "Generate Chart →"}
             </button>
 
-            <p className="text-amber-200/20 text-[10px] mt-3">
+            <p className="text-[#F2F0EB]/20 text-[10px] mt-3">
               {isChinese ? "只需出生日期即可生成 · 其余可选" : "Only birth date required · rest optional"}
             </p>
           </div>
@@ -676,8 +676,8 @@ function FortuneContent() {
                 <div key={i} className={`h-1 rounded-full transition-all duration-500 w-6 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
-            <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectDate")}</h2>
-            <p className="text-amber-200/40 text-sm mb-6">{t("bazi.dateHint")}</p>
+            <h2 className="font-display text-2xl font-bold text-[#F2F0EB] mb-2">{t("bazi.selectDate")}</h2>
+            <p className="text-[#F2F0EB]/30 text-sm mb-6">{t("bazi.dateHint")}</p>
             <CelestialDatePicker value={birthDate} onChange={setBirthDate} />
             {birthDate && (
               <div className="mt-4 animate-fadeIn text-center" style={{ animationDuration: "0.4s" }}>
@@ -704,8 +704,8 @@ function FortuneContent() {
                 <div key={i} className={`h-1 rounded-full transition-all duration-500 w-6 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
-            <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectHour")}</h2>
-            <p className="text-amber-200/40 text-sm mb-4">{t("bazi.hourHint")}</p>
+            <h2 className="font-display text-2xl font-bold text-[#F2F0EB] mb-2">{t("bazi.selectHour")}</h2>
+            <p className="text-[#F2F0EB]/30 text-sm mb-4">{t("bazi.hourHint")}</p>
             <ChineseHourDial value={hourBranch} onChange={setHourBranch} isChinese={isChinese} />
             {hourBranch && (
               <div className="mt-3 animate-fadeIn text-center" style={{ animationDuration: "0.4s" }}>
@@ -718,7 +718,7 @@ function FortuneContent() {
             )}
             <button
               onClick={() => { if (!hourBranch) setHourBranch("午"); setStep("gender"); }}
-              className="mt-4 text-amber-200/30 text-xs hover:text-amber-200/50 cursor-pointer transition-colors"
+              className="mt-4 text-[#F2F0EB]/25 text-xs hover:text-[#F2F0EB]/40 cursor-pointer transition-colors"
             >
               {t("bazi.skipHour")}
             </button>
@@ -740,8 +740,8 @@ function FortuneContent() {
                 <div key={i} className={`h-1 rounded-full transition-all duration-500 w-6 ${i <= progressIndex ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
-            <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">{t("bazi.selectGender")}</h2>
-            <p className="text-amber-200/40 text-sm mb-4">{t("bazi.genderHint")}</p>
+            <h2 className="font-display text-2xl font-bold text-[#F2F0EB] mb-2">{t("bazi.selectGender")}</h2>
+            <p className="text-[#F2F0EB]/30 text-sm mb-4">{t("bazi.genderHint")}</p>
             <YinYangSelector value={gender} onChange={setGender} isChinese={isChinese} />
             {gender && (
               <div className="mt-3 animate-fadeIn text-center" style={{ animationDuration: "0.4s" }}>
@@ -770,12 +770,12 @@ function FortuneContent() {
                 <div key={i} className={`h-1 rounded-full transition-all duration-500 w-6 ${i <= 3 ? "bg-amber-500" : "bg-white/10"}`} />
               ))}
             </div>
-            <h2 className="font-display text-2xl font-bold text-amber-100 mb-2">{t("bazi.enterName")}</h2>
-            <p className="text-amber-200/40 text-sm mb-8">{t("bazi.nameHint")}</p>
+            <h2 className="font-display text-2xl font-bold text-[#F2F0EB] mb-2">{t("bazi.enterName")}</h2>
+            <p className="text-[#F2F0EB]/30 text-sm mb-8">{t("bazi.nameHint")}</p>
             <MysticalNameInput value={userName} onChange={setUserName} placeholder={t("bazi.namePlaceholder")} />
             <button
               onClick={() => { if (!userName.trim()) setUserName("缘主"); handleCalculate(); }}
-              className="mt-4 text-amber-200/30 text-xs hover:text-amber-200/50 cursor-pointer transition-colors"
+              className="mt-4 text-[#F2F0EB]/25 text-xs hover:text-[#F2F0EB]/40 cursor-pointer transition-colors"
             >
               {t("bazi.skipName")}
             </button>
@@ -800,17 +800,17 @@ function FortuneContent() {
                 <p className="text-amber-400/50 text-[10px] tracking-[0.3em] mb-4 animate-fadeIn" style={{ animationDuration: "1s" }}>
                   {isChinese ? "命 盘 已 解 码" : "CHART DECODED"}
                 </p>
-                {userName && userName !== "缘主" && <h2 className="text-xl font-bold text-amber-100 mb-1">{userName}</h2>}
+                {userName && userName !== "缘主" && <h2 className="text-xl font-bold text-[#F2F0EB] mb-1">{userName}</h2>}
                 <p className="text-amber-200/60 text-sm">{chart.solarDate}</p>
-                <p className="text-amber-200/40 text-xs mt-1">{chart.lunarDate} · {chart.birthHour}</p>
+                <p className="text-[#F2F0EB]/30 text-xs mt-1">{chart.lunarDate} · {chart.birthHour}</p>
                 <div className="flex items-center justify-center gap-3 mt-2">
-                  <span className="text-sm text-amber-200/40">{chart.zodiacEmoji} {chart.zodiacAnimal}</span>
+                  <span className="text-sm text-[#F2F0EB]/30">{chart.zodiacEmoji} {chart.zodiacAnimal}</span>
                   <span className="text-amber-400/20">·</span>
-                  <span className="text-sm text-amber-200/40">{chart.westernZodiacSymbol} {chart.westernZodiac}</span>
+                  <span className="text-sm text-[#F2F0EB]/30">{chart.westernZodiacSymbol} {chart.westernZodiac}</span>
                 </div>
                 {/* Quick summary line */}
                 <div className="mt-4 bg-white/[0.02] rounded-xl px-4 py-2.5 border border-amber-400/8 inline-block">
-                  <p className="text-amber-200/50 text-xs">
+                  <p className="text-[#F2F0EB]/40 text-xs">
                     {isChinese
                       ? `${chart.dayMaster}${chart.dayMasterElement}命 · ${chart.dayMasterStrength === "strong" ? "身强" : "身弱"} · 喜${chart.luckyElement}`
                       : `${chart.dayMaster} ${chart.dayMasterElement} · ${chart.dayMasterStrength === "strong" ? "Strong" : "Gentle"} · Lucky: ${chart.luckyElement}`}
@@ -825,7 +825,7 @@ function FortuneContent() {
 
             {/* Section navigation hint */}
             <RevealSection delay={50}>
-              <div className="flex items-center justify-center gap-4 text-amber-200/20 text-[10px] py-1">
+              <div className="flex items-center justify-center gap-4 text-[#F2F0EB]/20 text-[10px] py-1">
                 <span>四柱</span><span>·</span><span>日主</span><span>·</span><span>五行</span><span>·</span><span>十神</span><span>·</span><span>大运</span><span>·</span><span>AI解读</span>
                 <span className="animate-bounce text-amber-400/30">↓</span>
               </div>
@@ -836,7 +836,7 @@ function FortuneContent() {
 
             {/* ① Four Pillars — full width on desktop */}
             <RevealSection delay={100} className="lg:col-span-2">
-              <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
+              <div className="bg-white/[0.03] border border-[#F2F0EB]/[0.07] rounded-2xl p-5">
                 <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">
                   <Term k="四柱">四 柱 八 字</Term>
                 </h3>
@@ -848,14 +848,14 @@ function FortuneContent() {
                     { label: "时柱", pillar: chart.hourPillar, tenGod: chart.tenGods.hour, nayin: chart.nayin.hour, termKey: "时柱" },
                   ].map(({ label, pillar, tenGod, nayin, termKey }) => (
                     <div key={label} className="text-center">
-                      <div className="text-[10px] text-amber-200/40 mb-1"><Term k={termKey}>{label}</Term></div>
+                      <div className="text-[10px] text-[#F2F0EB]/30 mb-1"><Term k={termKey}>{label}</Term></div>
                       <div className="text-[9px] text-amber-500/50 mb-1"><Term k={tenGod === "日主" ? "日主" : tenGod}>{tenGod}</Term></div>
-                      <div className="bg-white/5 border border-amber-400/10 rounded-xl p-2.5 space-y-0.5 hover:border-amber-400/20 transition-colors">
+                      <div className="bg-white/5 border border-[#F2F0EB]/[0.07] rounded-xl p-2.5 space-y-0.5 hover:border-[#F2F0EB]/10 transition-colors">
                         <div className="font-chinese text-xl font-bold text-amber-300">{pillar.stem}</div>
-                        <div className="text-[10px] text-amber-200/30">{pillar.stemElement}</div>
+                        <div className="text-[10px] text-[#F2F0EB]/25">{pillar.stemElement}</div>
                         <div className="w-6 h-px bg-amber-400/15 mx-auto" />
-                        <div className="font-chinese text-xl font-bold text-amber-100">{pillar.branch}</div>
-                        <div className="text-[10px] text-amber-200/30">{pillar.branchElement}</div>
+                        <div className="font-chinese text-xl font-bold text-[#F2F0EB]">{pillar.branch}</div>
+                        <div className="text-[10px] text-[#F2F0EB]/25">{pillar.branchElement}</div>
                       </div>
                       <div className="text-[9px] text-amber-200/25 mt-1">{pillar.animal}</div>
                       {nayin && <div className="text-[9px] text-amber-400/30 mt-0.5"><Term k="纳音">{nayin}</Term></div>}
@@ -868,12 +868,12 @@ function FortuneContent() {
                   <div className="text-center text-[10px] text-amber-400/30 mb-2"><Term k="藏干">藏干</Term></div>
                   <div className="grid grid-cols-4 gap-2.5 text-center">
                     {[chart.yearPillar, chart.monthPillar, chart.dayPillar, chart.hourPillar].map((p, i) => (
-                      <div key={i} className="text-[11px] text-amber-200/40">
+                      <div key={i} className="text-[11px] text-[#F2F0EB]/30">
                         {p.hiddenStems.map((s, j) => (
                           <span key={j}>
                             {j > 0 && " "}
                             <span className="text-amber-200/60">{s}</span>
-                            <span className="text-[9px] text-amber-200/20">{STEM_ELEMENTS[s]}</span>
+                            <span className="text-[9px] text-[#F2F0EB]/20">{STEM_ELEMENTS[s]}</span>
                           </span>
                         ))}
                       </div>
@@ -885,14 +885,14 @@ function FortuneContent() {
 
             {/* ② Day Master — Circular Gauge */}
             <RevealSection delay={200}>
-              <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
+              <div className="bg-white/[0.03] border border-[#F2F0EB]/[0.07] rounded-2xl p-5">
                 <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">
                   <Term k="日主">日 主 分 析</Term>
                 </h3>
                 <div className="flex items-center justify-center gap-8">
                   <div className="text-center">
                     <div className="font-chinese text-4xl font-bold text-amber-300">{chart.dayMaster}</div>
-                    <div className="text-sm text-amber-200/40 mt-1">{chart.dayMasterElement}命</div>
+                    <div className="text-sm text-[#F2F0EB]/30 mt-1">{chart.dayMasterElement}命</div>
                   </div>
                   <div className="relative">
                     <StrengthGauge
@@ -902,8 +902,8 @@ function FortuneContent() {
                     />
                   </div>
                 </div>
-                <p className="text-amber-100/60 text-xs leading-relaxed text-center mt-4">{chart.dayMasterDesc}</p>
-                <p className="text-amber-200/30 text-[11px] mt-2 leading-relaxed max-w-xs mx-auto">
+                <p className="text-[#F2F0EB]/60 text-xs leading-relaxed text-center mt-4">{chart.dayMasterDesc}</p>
+                <p className="text-[#F2F0EB]/25 text-[11px] mt-2 leading-relaxed max-w-xs mx-auto">
                   {isChinese
                     ? `日主${chart.dayMasterStrength === "strong" ? "偏强" : "偏弱"}（${chart.dayMasterScore}/100），${
                         chart.dayMasterStrength === "strong"
@@ -921,7 +921,7 @@ function FortuneContent() {
 
             {/* ③ Five Elements — Interactive Circle + Bars */}
             <RevealSection delay={300}>
-              <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
+              <div className="bg-white/[0.03] border border-[#F2F0EB]/[0.07] rounded-2xl p-5">
                 <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-2">
                   <Term k="五行相生">五 行 生 克 关 系</Term>
                 </h3>
@@ -959,14 +959,14 @@ function FortuneContent() {
               <Accordion title={isChinese ? "命 盘 要 素" : "KEY INDICATORS"} icon="🎯" defaultOpen={true}>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-white/[0.03] rounded-xl p-3 text-center border border-white/5 hover:border-green-500/20 transition-colors">
-                    <div className="text-[10px] text-amber-200/30 mb-1"><Term k="喜用神">喜用神</Term></div>
+                    <div className="text-[10px] text-[#F2F0EB]/25 mb-1"><Term k="喜用神">喜用神</Term></div>
                     <div className="text-lg font-bold" style={{ color: chart.elementColors[chart.luckyElement] }}>
                       {chart.elementEmoji[chart.luckyElement]} {chart.luckyElement}
                     </div>
                     <div className="text-[10px] text-amber-200/25 mt-1">宜多亲近</div>
                   </div>
                   <div className="bg-white/[0.03] rounded-xl p-3 text-center border border-white/5 hover:border-red-500/20 transition-colors">
-                    <div className="text-[10px] text-amber-200/30 mb-1">忌神</div>
+                    <div className="text-[10px] text-[#F2F0EB]/25 mb-1">忌神</div>
                     <div className="text-lg font-bold text-red-400/70">
                       {chart.elementEmoji[chart.unluckyElement]} {chart.unluckyElement}
                     </div>
@@ -986,19 +986,19 @@ function FortuneContent() {
                       <div className="grid grid-cols-2 gap-3">
                         <div className="bg-white/[0.02] rounded-lg p-3 border border-white/5">
                           <div className="text-[10px] text-amber-400/40 mb-1">🎨 幸运色</div>
-                          <div className="text-xs text-amber-100/60">{rec.colors}</div>
+                          <div className="text-xs text-[#F2F0EB]/60">{rec.colors}</div>
                         </div>
                         <div className="bg-white/[0.02] rounded-lg p-3 border border-white/5">
                           <div className="text-[10px] text-amber-400/40 mb-1">🧭 方位</div>
-                          <div className="text-xs text-amber-100/60">{rec.directions}</div>
+                          <div className="text-xs text-[#F2F0EB]/60">{rec.directions}</div>
                         </div>
                         <div className="bg-white/[0.02] rounded-lg p-3 border border-white/5">
                           <div className="text-[10px] text-amber-400/40 mb-1">🔢 幸运数字</div>
-                          <div className="text-xs text-amber-100/60">{rec.numbers}</div>
+                          <div className="text-xs text-[#F2F0EB]/60">{rec.numbers}</div>
                         </div>
                         <div className="bg-white/[0.02] rounded-lg p-3 border border-white/5">
                           <div className="text-[10px] text-amber-400/40 mb-1">💼 宜从事行业</div>
-                          <div className="text-xs text-amber-100/60">{rec.industries}</div>
+                          <div className="text-xs text-[#F2F0EB]/60">{rec.industries}</div>
                         </div>
                       </div>
                     );
@@ -1009,16 +1009,16 @@ function FortuneContent() {
 
             {/* ⑦ Current Year */}
             <RevealSection delay={700}>
-              <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
+              <div className="bg-white/[0.03] border border-[#F2F0EB]/[0.07] rounded-2xl p-5">
                 <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-4">
                   <Term k="流年">{new Date().getFullYear()} 流 年 简 析</Term>
                 </h3>
                 <div className="text-center space-y-2">
                   <div className="flex items-center justify-center gap-3">
                     <span className="text-lg text-amber-300">{chart.currentYearStem}{chart.currentYearBranch}</span>
-                    {chart.currentYearNayin && <span className="text-xs text-amber-200/40"><Term k="纳音">{chart.currentYearNayin}</Term></span>}
+                    {chart.currentYearNayin && <span className="text-xs text-[#F2F0EB]/30"><Term k="纳音">{chart.currentYearNayin}</Term></span>}
                   </div>
-                  <p className="text-xs text-amber-100/50 leading-relaxed">
+                  <p className="text-xs text-[#F2F0EB]/50 leading-relaxed">
                     流年天干 <span className="text-amber-300">{chart.currentYearStem}</span>（{STEM_ELEMENTS[chart.currentYearStem]}）
                     对日主 <span className="text-amber-300">{chart.dayMaster}</span>（{chart.dayMasterElement}）为
                     <span className="text-amber-300 font-bold"> {getTenGod(chart.dayMaster, chart.currentYearStem)}</span>，
@@ -1055,7 +1055,7 @@ function FortuneContent() {
                         <div className="text-xs font-semibold text-amber-200/70 mb-1.5">
                           📍 {isChinese ? `当前大运：${currentCycle.stem}${currentCycle.branch}（${currentCycle.element}运 · ${currentCycle.tenGod}）` : `Current Cycle: ${currentCycle.stem}${currentCycle.branch} (${currentCycle.element} · ${currentCycle.tenGod})`}
                         </div>
-                        <p className="text-[11px] text-amber-100/50 leading-relaxed">
+                        <p className="text-[11px] text-[#F2F0EB]/50 leading-relaxed">
                           {isChinese
                             ? `您正处于${currentCycle.startAge}至${currentCycle.startAge + 10}岁的${currentCycle.element}运阶段，${currentCycle.tenGod}主事。${
                                 currentCycle.tenGod.includes("财") ? "此运财星当令，是积累财富、拓展事业的黄金时期。把握投资和合作机会。" :
@@ -1093,12 +1093,12 @@ function FortuneContent() {
                         { icon: "❤️", title: "感情模式", content: bp.love },
                         { icon: "🏥", title: "健康指引", content: bp.health },
                       ].map((item) => (
-                        <div key={item.title} className="bg-white/[0.02] rounded-xl p-4 border border-white/5 hover:border-amber-400/10 transition-colors">
+                        <div key={item.title} className="bg-white/[0.02] rounded-xl p-4 border border-white/5 hover:border-[#F2F0EB]/[0.07] transition-colors">
                           <div className="flex items-center gap-2 mb-2">
                             <span className="text-base">{item.icon}</span>
-                            <span className="text-sm font-semibold text-amber-200/80">{item.title}</span>
+                            <span className="text-sm font-semibold text-[#F2F0EB]/70">{item.title}</span>
                           </div>
-                          <p className="text-xs text-amber-100/50 leading-relaxed whitespace-pre-line">{item.content}</p>
+                          <p className="text-xs text-[#F2F0EB]/50 leading-relaxed whitespace-pre-line">{item.content}</p>
                         </div>
                       ))}
                     </div>
@@ -1110,7 +1110,7 @@ function FortuneContent() {
             {/* ⑩ Historical Verification */}
             <RevealSection delay={1000}>
               <Accordion title={isChinese ? "回 顾 验 证" : "HISTORICAL VERIFICATION"} icon="🔍" defaultOpen={false}>
-                <p className="text-center text-amber-200/30 text-[10px] mb-3">{isChinese ? "以下分析基于您的大运周期，请对照自身经历验证准确性" : "Compare the following with your real life experiences to verify accuracy"}</p>
+                <p className="text-center text-[#F2F0EB]/25 text-[10px] mb-3">{isChinese ? "以下分析基于您的大运周期，请对照自身经历验证准确性" : "Compare the following with your real life experiences to verify accuracy"}</p>
                 <div className="space-y-2.5">
                   {[
                     {
@@ -1136,21 +1136,21 @@ function FortuneContent() {
                       <div className="flex items-center gap-2 mb-1.5">
                         <span className="text-amber-400/50 text-xs font-mono">{item.period}</span>
                       </div>
-                      <p className="text-xs text-amber-100/50 leading-relaxed">{item.question}</p>
+                      <p className="text-xs text-[#F2F0EB]/50 leading-relaxed">{item.question}</p>
                     </div>
                   ))}
                 </div>
-                <p className="text-center text-amber-200/20 text-[10px] mt-3">{isChinese ? "如果以上分析与您的经历吻合，说明命盘分析准确度较高" : "If the above matches your experience, the chart analysis has high accuracy"}</p>
+                <p className="text-center text-[#F2F0EB]/20 text-[10px] mt-3">{isChinese ? "如果以上分析与您的经历吻合，说明命盘分析准确度较高" : "If the above matches your experience, the chart analysis has high accuracy"}</p>
                 {/* Accuracy feedback */}
                 <div className="mt-4 pt-4 border-t border-white/5">
-                  <p className="text-center text-amber-200/40 text-xs mb-3">{isChinese ? "以上分析符合您的经历吗？" : "Does this match your experience?"}</p>
+                  <p className="text-center text-[#F2F0EB]/30 text-xs mb-3">{isChinese ? "以上分析符合您的经历吗？" : "Does this match your experience?"}</p>
                   <div className="flex justify-center gap-3">
                     <button
                       onClick={() => {
                         setAccuracyVote("accurate");
                         toast(isChinese ? "感谢反馈！您的验证帮助我们提升准确度" : "Thanks! Your feedback helps improve accuracy", "success");
                       }}
-                      className={`px-5 py-2 rounded-xl text-sm font-medium cursor-pointer transition-all ${accuracyVote === "accurate" ? "bg-green-600/30 text-green-300 border border-green-400/30" : "bg-white/5 text-amber-200/50 border border-white/5 hover:bg-green-900/20 hover:text-green-300"}`}
+                      className={`px-5 py-2 rounded-xl text-sm font-medium cursor-pointer transition-all ${accuracyVote === "accurate" ? "bg-green-600/30 text-green-300 border border-green-400/30" : "bg-white/5 text-[#F2F0EB]/40 border border-white/5 hover:bg-green-900/20 hover:text-green-300"}`}
                     >
                       {isChinese ? "👍 准确" : "👍 Accurate"}
                     </button>
@@ -1159,7 +1159,7 @@ function FortuneContent() {
                         setAccuracyVote("partial");
                         toast(isChinese ? "感谢反馈！" : "Thanks for your feedback!", "success");
                       }}
-                      className={`px-5 py-2 rounded-xl text-sm font-medium cursor-pointer transition-all ${accuracyVote === "partial" ? "bg-amber-600/30 text-amber-300 border border-amber-400/30" : "bg-white/5 text-amber-200/50 border border-white/5 hover:bg-amber-900/20 hover:text-amber-300"}`}
+                      className={`px-5 py-2 rounded-xl text-sm font-medium cursor-pointer transition-all ${accuracyVote === "partial" ? "bg-amber-600/30 text-amber-300 border border-[#F2F0EB]/15" : "bg-white/5 text-[#F2F0EB]/40 border border-white/5 hover:bg-amber-900/20 hover:text-amber-300"}`}
                     >
                       {isChinese ? "🤔 部分准确" : "🤔 Partially"}
                     </button>
@@ -1168,13 +1168,13 @@ function FortuneContent() {
                         setAccuracyVote("inaccurate");
                         toast(isChinese ? "感谢反馈！我们会持续优化" : "Thanks! We'll keep improving", "success");
                       }}
-                      className={`px-5 py-2 rounded-xl text-sm font-medium cursor-pointer transition-all ${accuracyVote === "inaccurate" ? "bg-red-600/30 text-red-300 border border-red-400/30" : "bg-white/5 text-amber-200/50 border border-white/5 hover:bg-red-900/20 hover:text-red-300"}`}
+                      className={`px-5 py-2 rounded-xl text-sm font-medium cursor-pointer transition-all ${accuracyVote === "inaccurate" ? "bg-red-600/30 text-red-300 border border-red-400/30" : "bg-white/5 text-[#F2F0EB]/40 border border-white/5 hover:bg-red-900/20 hover:text-red-300"}`}
                     >
                       {isChinese ? "👎 不太准" : "👎 Not quite"}
                     </button>
                   </div>
                   {accuracyVote && (
-                    <p className="text-center text-amber-200/20 text-[10px] mt-2">
+                    <p className="text-center text-[#F2F0EB]/20 text-[10px] mt-2">
                       {isChinese ? "87% 的用户验证了命盘分析的准确性" : "87% of users verified the accuracy of their chart analysis"}
                     </p>
                   )}
@@ -1232,7 +1232,7 @@ function FortuneContent() {
                       <div key={i} className="bg-white/[0.02] rounded-xl p-3 border border-white/5 flex items-start gap-2.5">
                         <span className="text-amber-400/30 text-sm mt-0.5">💬</span>
                         <div>
-                          <p className="text-[11px] text-amber-100/50 leading-relaxed">{t.text}</p>
+                          <p className="text-[11px] text-[#F2F0EB]/50 leading-relaxed">{t.text}</p>
                           <div className="flex items-center gap-1.5 mt-1">
                             <span className="text-[10px] text-amber-400/40">{"⭐".repeat(t.stars)}</span>
                             <span className="text-[10px] text-amber-200/25">— {t.name}</span>
@@ -1265,18 +1265,18 @@ function FortuneContent() {
               ) : aiLoading ? (
                 <div className="text-center py-12">
                   <div className="relative w-16 h-16 mx-auto mb-4">
-                    <div className="absolute inset-0 rounded-full border-2 border-amber-400/10" />
+                    <div className="absolute inset-0 rounded-full border-2 border-[#F2F0EB]/[0.07]" />
                     <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-amber-400/60 animate-spin" />
                     <div className="absolute inset-2 rounded-full border border-transparent border-b-amber-400/30 animate-spin" style={{ animationDirection: "reverse", animationDuration: "1.5s" }} />
                     <span className="absolute inset-0 flex items-center justify-center text-2xl">🔮</span>
                   </div>
-                  <p className="text-amber-200/50 text-sm">AI 大师正在解读您的命盘...</p>
-                  <p className="text-amber-200/20 text-xs mt-1">基于真实八字数据，约需 5-10 秒</p>
+                  <p className="text-[#F2F0EB]/40 text-sm">AI 大师正在解读您的命盘...</p>
+                  <p className="text-[#F2F0EB]/20 text-xs mt-1">基于真实八字数据，约需 5-10 秒</p>
                 </div>
               ) : aiReading?.error ? (
                 <div className="text-center py-4">
                   <p className="text-red-400/70 text-sm mb-3">{aiReading.error}</p>
-                  <button onClick={handleAiReading} className="text-amber-200/50 text-xs hover:text-amber-200 cursor-pointer">重试</button>
+                  <button onClick={handleAiReading} className="text-[#F2F0EB]/40 text-xs hover:text-amber-200 cursor-pointer">重试</button>
                 </div>
               ) : aiReading ? (
                 <div className="space-y-4">
@@ -1297,7 +1297,7 @@ function FortuneContent() {
                         {aiReading.actionItems.split(/\n|；/).filter((s: string) => s.trim()).map((item: string, i: number) => (
                           <div key={i} className="flex items-start gap-2.5 bg-white/[0.02] rounded-xl p-3 border border-white/5">
                             <span className="text-amber-400/50 text-xs mt-0.5">▸</span>
-                            <p className="text-xs text-amber-100/60 leading-relaxed">{item.trim()}</p>
+                            <p className="text-xs text-[#F2F0EB]/60 leading-relaxed">{item.trim()}</p>
                           </div>
                         ))}
                       </div>
@@ -1311,10 +1311,10 @@ function FortuneContent() {
             {aiReading && !aiReading.error && (
               <div className="bg-gradient-to-r from-purple-900/20 via-purple-800/20 to-purple-900/20 border border-purple-400/15 rounded-2xl p-5 text-center space-y-3 animate-slideUp" style={{ animationDuration: "0.6s" }}>
                 <div className="text-2xl">✨</div>
-                <p className="text-amber-100 text-sm font-semibold">
+                <p className="text-[#F2F0EB] text-sm font-semibold">
                   {isChinese ? "您的命盘已生成" : "Your chart is ready"}
                 </p>
-                <p className="text-amber-200/40 text-xs">
+                <p className="text-[#F2F0EB]/30 text-xs">
                   {isChinese ? "分享给朋友，看看你们的默契度" : "Share with friends to discover your compatibility"}
                 </p>
                 <div className="flex gap-3 justify-center">

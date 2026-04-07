@@ -53,7 +53,7 @@ export default function BottomNav() {
   const { t } = useLocale();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-[#060410]/90 backdrop-blur-md border-t border-amber-400/[0.06] safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-[#060410]/90 backdrop-blur-md border-t border-[#F2F0EB]/[0.06] safe-bottom">
       <div className="flex justify-around items-center h-16 max-w-md mx-auto">
         {navItems.map((item) => {
           const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
@@ -62,7 +62,7 @@ export default function BottomNav() {
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center justify-center gap-1 min-w-[60px] min-h-[48px] transition-colors ${
-                active ? "text-amber-400/90" : "text-amber-200/25"
+                active ? "text-[#F2F0EB]/80" : "text-[#F2F0EB]/20"
               }`}
             >
               <item.Icon />

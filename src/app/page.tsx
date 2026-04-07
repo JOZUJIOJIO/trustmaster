@@ -76,7 +76,7 @@ export default function Home() {
       <div className="relative z-10 min-h-screen flex flex-col pb-20">
         {/* Nav — fades in first */}
         <nav className="flex items-center justify-between px-6 lg:px-12 py-4 animate-riseIn" style={{ animationDelay: "0.1s" }}>
-          <span className="text-lg font-light text-[#F2F0EB]/60 tracking-[0.3em] uppercase">
+          <span className="text-lg font-light text-[#F2F0EB]/60 tracking-[0.15em]">
             Kairós
           </span>
           <div className="flex items-center gap-5">

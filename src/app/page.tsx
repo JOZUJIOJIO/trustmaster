@@ -106,13 +106,16 @@ export default function Home() {
         </div>
       ) : (
         <div className="fixed inset-0 z-0">
-          <div className="absolute inset-0 bg-[#F5F3EE]" />
-          {/* Soft sky gradient */}
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, #E8E4F0 0%, #F5F3EE 40%, #FDF8F0 100%)" }} />
-          {/* Warm light from top-right */}
-          <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 80% 60% at 70% 10%, rgba(255,220,180,0.15) 0%, transparent 60%)", animationDuration: "30s" }} />
-          {/* Cool mist at bottom */}
-          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 100% 40% at 50% 100%, rgba(200,210,230,0.2) 0%, transparent 50%)" }} />
+          {/* Sky — gradient from deep blue-lavender at top to warm white below */}
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, #C8CBE0 0%, #D8D5E8 15%, #E8E6F0 30%, #F2F0EB 50%, #F8F5EE 70%, #FFFDF8 100%)" }} />
+          {/* Sun glow — warm light from upper right */}
+          <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 60% 50% at 75% 5%, rgba(255,210,160,0.25) 0%, transparent 55%)", animationDuration: "25s" }} />
+          {/* Secondary warm light */}
+          <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 40% 30% at 25% 15%, rgba(255,200,170,0.1) 0%, transparent 50%)", animationDuration: "40s", animationDirection: "reverse" }} />
+          {/* Cloud layer below — the "above the clouds" floor */}
+          <div className="absolute inset-x-0 bottom-0 h-[55%]" style={{ background: "linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.15) 30%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.7) 85%, rgba(255,255,255,0.85) 100%)" }} />
+          {/* Depth haze — makes the bottom feel infinitely deep */}
+          <div className="absolute inset-x-0 bottom-0 h-[30%]" style={{ background: "linear-gradient(180deg, transparent, rgba(242,240,235,0.5))" }} />
           <CloudCanvas />
         </div>
       )}

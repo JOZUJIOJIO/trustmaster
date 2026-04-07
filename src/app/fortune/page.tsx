@@ -573,7 +573,7 @@ function FortuneContent() {
                   <option value="" className="bg-[#12101c]">{isChinese ? "不确定（默认午时）" : "Not sure (default noon)"}</option>
                   {CHINESE_HOURS.map((h) => (
                     <option key={h.branch} value={h.branch} className="bg-[#12101c]">
-                      {h.branch} {h.name}（{h.time}）
+                      {h.branch} {h.name}（{h.label}）
                     </option>
                   ))}
                 </select>

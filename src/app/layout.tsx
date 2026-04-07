@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Playfair_Display, LXGW_WenKai_TC } from "next/font/g
 import "./globals.css";
 import { LocaleProvider } from "@/lib/LocaleContext";
 import { AuthProvider } from "@/lib/supabase/auth-context";
+import { ThemeProvider } from "@/lib/ThemeContext";
 import { Analytics } from "@vercel/analytics/react";
 import MouseAura from "@/components/MouseAura";
 import { ToastProvider } from "@/components/Toast";
@@ -110,11 +111,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <AuthProvider>
-          <LocaleProvider>
-            <ToastProvider>{children}</ToastProvider>
-          </LocaleProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <LocaleProvider>
+              <ToastProvider>{children}</ToastProvider>
+            </LocaleProvider>
+          </AuthProvider>
+        </ThemeProvider>
         <MouseAura />
         <Analytics />
       </body>

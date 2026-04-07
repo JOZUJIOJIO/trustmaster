@@ -515,16 +515,23 @@ function FortuneContent() {
 
   // ===== BaZi Flow =====
   return (
-    <div className="min-h-screen bg-[#12101c]">
-      <header className="flex items-center justify-between px-4 lg:px-12 py-4 border-b border-white/5">
+    <div className="min-h-screen bg-[#060410] relative">
+      {/* Cosmic background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 bg-[#060410]" />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 80% 60% at 30% 40%, rgba(60,20,120,0.12) 0%, transparent 55%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 70% 60%, rgba(140,80,20,0.08) 0%, transparent 50%)" }} />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.6)_100%)]" />
+      </div>
+      <header className="relative z-10 flex items-center justify-between px-4 lg:px-12 py-4 border-b border-white/[0.04]">
         <div className="flex items-center gap-3">
-          <button onClick={goBack} className="text-amber-200/60 hover:text-amber-200 text-lg cursor-pointer">←</button>
-          <span className="text-sm text-amber-200/60">{t("bazi.title")}</span>
+          <button onClick={goBack} className="text-amber-200/40 hover:text-amber-200/70 text-lg cursor-pointer transition-colors">←</button>
+          <span className="text-sm text-amber-200/40">{t("bazi.title")}</span>
         </div>
         <LanguageSwitcher />
       </header>
 
-      <main className="max-w-lg lg:max-w-4xl mx-auto px-4 py-8 lg:py-16 pb-24">
+      <main className="relative z-10 max-w-lg lg:max-w-4xl mx-auto px-4 py-8 lg:py-16 pb-24">
         {/* ===== Unified Input ===== */}
         {step === "input" && (
           <div className="text-center animate-fadeIn max-w-md mx-auto" style={{ animationDuration: "0.5s" }}>
@@ -646,11 +653,11 @@ function FortuneContent() {
                 } catch { /* ignore */ }
               }}
               disabled={!birthDate}
-              className="mt-8 w-full py-4 rounded-xl font-semibold text-base cursor-pointer
-                         bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700
-                         text-white border border-amber-500/30
-                         disabled:opacity-30 disabled:cursor-not-allowed
-                         hover:shadow-[0_0_30px_rgba(217,119,6,0.25)] transition-all"
+              className="mt-8 w-full py-4 rounded-xl font-medium text-base cursor-pointer
+                         border border-amber-400/30 text-amber-200/80
+                         hover:bg-amber-400/[0.06] hover:text-amber-100 hover:border-amber-400/50
+                         disabled:opacity-20 disabled:cursor-not-allowed
+                         transition-all duration-300"
             >
               {isChinese ? "生成命盘 →" : "Generate Chart →"}
             </button>

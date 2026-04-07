@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Playfair_Display, Noto_Serif_SC } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display, LXGW_WenKai_TC } from "next/font/google";
 import "./globals.css";
 import { LocaleProvider } from "@/lib/LocaleContext";
 import { AuthProvider } from "@/lib/supabase/auth-context";
@@ -23,7 +23,7 @@ const displayFont = Playfair_Display({
   weight: ["600", "700"],
 });
 
-const chineseSerif = Noto_Serif_SC({
+const chineseSerif = LXGW_WenKai_TC({
   variable: "--font-chinese",
   weight: ["400", "700"],
   subsets: ["latin"],

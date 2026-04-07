@@ -61,7 +61,7 @@ export default function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center gap-1 min-w-[60px] min-h-[48px] transition-colors ${
+              className={`flex flex-col items-center justify-center gap-1 min-w-[60px] min-h-[48px] transition-colors btn-haptic ${
                 active ? "text-[#F2F0EB]/80" : "text-[#F2F0EB]/20"
               }`}
             >

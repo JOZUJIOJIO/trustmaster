@@ -95,28 +95,30 @@ export default function Home() {
 
       {/* === Backgrounds === */}
       {theme === "cosmic" ? (
-        <div className="fixed inset-0 z-0">
+        <div className="fixed inset-0 z-0 animate-breatheSway">
           <div className="absolute inset-0 bg-[#060410]" />
           <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 90% 70% at 25% 35%, rgba(60,20,120,0.18) 0%, transparent 55%)", animationDuration: "40s" }} />
           <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 70% 55% at 75% 55%, rgba(100,60,30,0.08) 0%, transparent 50%)", animationDuration: "55s", animationDirection: "reverse" }} />
           <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 60% 40% at 50% 70%, rgba(20,40,100,0.1) 0%, transparent 50%)", animationDuration: "70s" }} />
           <div className="absolute inset-0 opacity-[0.03]" style={{ background: "linear-gradient(135deg, transparent 20%, rgba(242,240,235,1) 45%, rgba(242,240,235,0.5) 50%, rgba(242,240,235,1) 55%, transparent 80%)" }} />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.7)_100%)]" />
           <StarfieldCanvas />
+          {/* Helmet vignette — dark */}
+          <div className="absolute inset-0 z-[2] helmet-vignette" />
         </div>
       ) : (
-        <div className="fixed inset-0 z-0">
+        <div className="fixed inset-0 z-0 animate-breatheSway">
           {/* Sky — gradient from deep blue-lavender at top to warm white below */}
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, #C8CBE0 0%, #D8D5E8 15%, #E8E6F0 30%, #F2F0EB 50%, #F8F5EE 70%, #FFFDF8 100%)" }} />
           {/* Sun glow — warm light from upper right */}
           <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 60% 50% at 75% 5%, rgba(255,210,160,0.25) 0%, transparent 55%)", animationDuration: "25s" }} />
           {/* Secondary warm light */}
           <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 40% 30% at 25% 15%, rgba(255,200,170,0.1) 0%, transparent 50%)", animationDuration: "40s", animationDirection: "reverse" }} />
-          {/* Cloud layer below — the "above the clouds" floor */}
+          {/* Cloud layer below */}
           <div className="absolute inset-x-0 bottom-0 h-[55%]" style={{ background: "linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.15) 30%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.7) 85%, rgba(255,255,255,0.85) 100%)" }} />
-          {/* Depth haze — makes the bottom feel infinitely deep */}
           <div className="absolute inset-x-0 bottom-0 h-[30%]" style={{ background: "linear-gradient(180deg, transparent, rgba(242,240,235,0.5))" }} />
           <CloudCanvas />
+          {/* Helmet vignette — light */}
+          <div className="absolute inset-0 z-[2] helmet-vignette-light" />
         </div>
       )}
 

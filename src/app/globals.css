@@ -79,6 +79,47 @@ body {
   75% { transform: translateX(-8px) translateY(-4px); }
   100% { transform: translateX(0) translateY(0); }
 }
+/* Breathing sway — organic, irregular feel */
+@keyframes breatheSway {
+  0%   { transform: scale(1.02) translate(0px, 0px) rotate(0deg); }
+  20%  { transform: scale(1.025) translate(3px, -2px) rotate(0.2deg); }
+  40%  { transform: scale(1.03) translate(-2px, 3px) rotate(-0.15deg); }
+  60%  { transform: scale(1.025) translate(2px, 1px) rotate(0.1deg); }
+  80%  { transform: scale(1.02) translate(-3px, -1px) rotate(-0.2deg); }
+  100% { transform: scale(1.02) translate(0px, 0px) rotate(0deg); }
+}
+
+.animate-breatheSway {
+  animation: breatheSway 12s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Helmet vignette — heavier at edges, rounded like looking through a visor */
+.helmet-vignette {
+  background: radial-gradient(
+    ellipse 75% 70% at 50% 48%,
+    transparent 40%,
+    rgba(0,0,0,0.08) 60%,
+    rgba(0,0,0,0.25) 78%,
+    rgba(0,0,0,0.5) 92%,
+    rgba(0,0,0,0.7) 100%
+  );
+  pointer-events: none;
+}
+
+/* Light helmet vignette for cloud theme */
+.helmet-vignette-light {
+  background: radial-gradient(
+    ellipse 75% 70% at 50% 48%,
+    transparent 45%,
+    rgba(200,195,210,0.06) 60%,
+    rgba(180,175,195,0.15) 78%,
+    rgba(160,155,180,0.3) 92%,
+    rgba(140,135,165,0.4) 100%
+  );
+  pointer-events: none;
+}
+
 @keyframes shimmer {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }

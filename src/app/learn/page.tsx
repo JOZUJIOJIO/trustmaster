@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useLocale } from "@/lib/LocaleContext";
+import { useTheme } from "@/lib/ThemeContext";
+import { themeTokens } from "@/lib/theme-tokens";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
@@ -53,35 +55,33 @@ const sections = [
 
 export default function LearnPage() {
   const { locale } = useLocale();
+  const { theme } = useTheme();
+  const tk = themeTokens[theme];
   const isChinese = locale === "zh" || locale === "th";
   const [expanded, setExpanded] = useState<number | null>(0);
 
   return (
-    <div className="min-h-screen bg-[#12101c]">
-      <header className="flex items-center justify-between px-4 lg:px-12 py-4 border-b border-white/5">
+    <div className={`min-h-screen ${tk.bg}`}>
+      <header className={`flex items-center justify-between px-4 lg:px-12 py-4 border-b ${tk.border}`}>
         <div className="flex items-center gap-3">
-          <Link href="/" className="text-amber-200/60 hover:text-amber-200 text-lg">←</Link>
-          <span className="text-sm text-amber-200/60">{isChinese ? "了解八字" : "Learn BaZi"}</span>
+          <Link href="/" className={`${tk.accent} hover:opacity-80 text-lg`}>←</Link>
+          <span className={`text-sm ${tk.text2}`}>{isChinese ? "了解八字" : "Learn BaZi"}</span>
         </div>
         <LanguageSwitcher />
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-10 pb-24">
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-2 text-amber-400/30 text-xs mb-4">
+          <div className={`flex items-center justify-center gap-2 ${tk.accentMuted} text-xs mb-4`}>
             <span>☸</span><span>Ancient Eastern Wisdom</span><span>☸</span>
           </div>
           <h1 className="text-3xl font-bold text-gradient-gold">
             {isChinese ? "了解四柱八字" : "Understanding BaZi"}
           </h1>
-          <p className="text-amber-200/40 text-sm mt-3">
+          <p className={`${tk.text2} text-sm mt-3`}>
             {isChinese ? "3000 年东方智慧，六分钟读懂" : "3,000 years of Eastern wisdom in 6 minutes"}
           </p>
         </div>
-
-        <p className="text-amber-200/30 text-xs text-center mb-6">
-          {isChinese ? "3000 年东方智慧，六分钟读懂" : "3,000 years of Eastern wisdom, 6 minutes to understand"}
-        </p>
 
         <div className="space-y-4">
           {sections.map((s, i) => {
@@ -92,29 +92,29 @@ export default function LearnPage() {
             return (
               <div
                 key={i}
-                className="bg-white/[0.03] border border-amber-400/10 rounded-2xl overflow-hidden hover-glow transition-all cursor-pointer"
+                className={`${tk.card} border ${tk.accentBorder} rounded-2xl overflow-hidden hover-glow transition-all cursor-pointer`}
                 onClick={() => setExpanded(isOpen ? null : i)}
               >
                 <div className="flex items-center justify-between px-6 py-4">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{s.icon}</span>
-                    <h2 className="text-base font-bold text-amber-200">
+                    <h2 className={`text-base font-bold ${tk.accent}`}>
                       {isChinese ? s.titleZh : s.title}
                     </h2>
                   </div>
-                  <span className="text-amber-400/40 text-xs transition-transform duration-200" style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}>
+                  <span className={`${tk.accentMuted} text-xs transition-transform duration-200`} style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}>
                     ▾
                   </span>
                 </div>
 
                 {!isOpen && (
                   <div className="px-6 pb-4">
-                    <p className="text-xs text-amber-100/30 leading-relaxed">{preview}</p>
+                    <p className={`text-xs ${tk.text3} leading-relaxed`}>{preview}</p>
                   </div>
                 )}
 
                 {isOpen && (
-                  <div className="px-6 pb-5 border-t border-amber-400/5 pt-3">
+                  <div className={`px-6 pb-5 border-t ${tk.divider} pt-3`}>
                     {i === 1 && (
                       <>
                         <div className="flex justify-center my-4">
@@ -148,10 +148,10 @@ export default function LearnPage() {
                             </defs>
                           </svg>
                         </div>
-                        <p className="text-center text-amber-200/30 text-[10px] mb-3">{isChinese ? "外圈 → 相生（滋养）" : "Outer → Generation (nurture)"}</p>
+                        <p className={`text-center ${tk.accentMuted} text-[10px] mb-3`}>{isChinese ? "外圈 → 相生（滋养）" : "Outer → Generation (nurture)"}</p>
                       </>
                     )}
-                    <p className="text-sm text-amber-100/50 leading-relaxed">{text}</p>
+                    <p className={`text-sm ${tk.text2} leading-relaxed`}>{text}</p>
                   </div>
                 )}
               </div>
@@ -161,12 +161,12 @@ export default function LearnPage() {
 
         {/* CTA */}
         <div className="text-center mt-10 space-y-3">
-          <p className="text-amber-200/40 text-xs">
+          <p className={`${tk.text2} text-xs`}>
             {isChinese ? "理论已就绪，现在来看看你的命盘" : "Theory complete — now see your own chart"}
           </p>
           <Link
             href="/fortune"
-            className="inline-block px-8 py-3.5 rounded-2xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
+            className={`inline-block px-8 py-3.5 rounded-2xl font-semibold cursor-pointer ${tk.ctaPrimary} hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all`}
           >
             {isChinese ? "生成我的命盘 →" : "Generate My Chart →"}
           </Link>

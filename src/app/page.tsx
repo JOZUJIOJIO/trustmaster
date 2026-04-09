@@ -13,38 +13,7 @@ import TaijiSvg from "@/components/TaijiSvg";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { calculateBazi, ELEMENT_EMOJI, ELEMENT_COLORS, type BaziChart } from "@/lib/bazi";
-
-// Theme-aware color tokens
-const c = {
-  cosmic: {
-    bg: "bg-[#060410]",
-    text1: "text-[#F2F0EB]",           // title
-    text2: "text-[#F2F0EB]/50",         // body
-    text3: "text-[#F2F0EB]/20",         // aux
-    border: "border-[#F2F0EB]/[0.08]",
-    borderHover: "hover:border-[#F2F0EB]/20",
-    card: "bg-[#F2F0EB]/[0.02] border-[#F2F0EB]/[0.06]",
-    input: "bg-[#F2F0EB]/[0.03] border-[#F2F0EB]/[0.08] text-[#F2F0EB]/80",
-    cta: "border-[#F2F0EB]/12 text-[#F2F0EB]/50 hover:bg-[#F2F0EB]/[0.04] hover:text-[#F2F0EB]/70",
-    ctaGold: "border-amber-400/20 text-amber-200/70 hover:bg-amber-400/[0.05] hover:text-amber-200/90",
-    footerText: "text-[#F2F0EB]/15",
-    footerDot: "text-[#F2F0EB]/[0.06]",
-  },
-  cloud: {
-    bg: "bg-[#F5F3EE]",
-    text1: "text-[#1a1520]",            // title — deep plum-black
-    text2: "text-[#1a1520]/50",          // body
-    text3: "text-[#1a1520]/25",          // aux
-    border: "border-[#1a1520]/[0.06]",
-    borderHover: "hover:border-[#1a1520]/15",
-    card: "bg-white/60 border-[#1a1520]/[0.06]",
-    input: "bg-white/70 border-[#1a1520]/[0.08] text-[#1a1520]/80",
-    cta: "border-[#1a1520]/10 text-[#1a1520]/50 hover:bg-[#1a1520]/[0.04] hover:text-[#1a1520]/70",
-    ctaGold: "border-amber-600/25 text-amber-700/70 hover:bg-amber-600/[0.06] hover:text-amber-700/90",
-    footerText: "text-[#1a1520]/20",
-    footerDot: "text-[#1a1520]/[0.08]",
-  },
-};
+import { themeTokens } from "@/lib/theme-tokens";
 
 export default function Home() {
   const [quickDate, setQuickDate] = useState("");
@@ -56,7 +25,7 @@ export default function Home() {
   const { user } = useAuth();
   const { theme } = useTheme();
   const router = useRouter();
-  const tk = c[theme];
+  const tk = themeTokens[theme];
 
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY);

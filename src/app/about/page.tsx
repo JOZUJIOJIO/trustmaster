@@ -4,12 +4,23 @@ import Link from "next/link";
 import { useLocale } from "@/lib/LocaleContext";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
+import { useTheme } from "@/lib/ThemeContext";
+import { themeTokens } from "@/lib/theme-tokens";
 
 export default function AboutPage() {
   const { isChinese } = useLocale();
+  const { theme } = useTheme();
+  const tk = themeTokens[theme];
 
   return (
-    <div className="min-h-screen bg-[#12101c]">
+    <div
+      className="min-h-screen"
+      style={{
+        background: theme === "cosmic"
+          ? "#12101c"
+          : "linear-gradient(180deg, #E8E6F0 0%, #F2F0EB 40%, #F8F5EE 100%)",
+      }}
+    >
       <PageHeader title={isChinese ? "关于" : "About"} href="/" />
 
       <main className="max-w-2xl lg:max-w-5xl mx-auto px-4 lg:px-8 py-10 lg:py-16 pb-24">
@@ -17,7 +28,7 @@ export default function AboutPage() {
         <section className="text-center mb-16 lg:mb-20">
           <div className="text-5xl mb-5">🔮</div>
           <h1 className="font-display text-4xl lg:text-6xl font-bold text-gradient-gold mb-6">Kairós</h1>
-          <p className="font-display text-lg lg:text-xl text-amber-200/50 italic max-w-xl mx-auto leading-relaxed">
+          <p className={`font-display text-lg lg:text-xl ${tk.text2} italic max-w-xl mx-auto leading-relaxed`}>
             {isChinese
               ? "「Kairós — 命运转折的那一刻」"
               : '"Kairós — The Moment That Changes Everything"'}
@@ -26,11 +37,11 @@ export default function AboutPage() {
 
         {/* Brand Story — wide prose */}
         <section className="mb-16 lg:mb-20">
-          <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-6 lg:p-10">
-            <h2 className="font-display text-xl lg:text-2xl font-bold text-amber-200 mb-6">
+          <div className={`${tk.card} border ${tk.accentBorder} rounded-2xl p-6 lg:p-10`}>
+            <h2 className={`font-display text-xl lg:text-2xl font-bold ${tk.accent} mb-6`}>
               {isChinese ? "名字的由来" : "The Name"}
             </h2>
-            <div className="space-y-4 text-sm lg:text-base text-amber-100/50 leading-relaxed">
+            <div className={`space-y-4 text-sm lg:text-base ${tk.text2} leading-relaxed`}>
               <p>
                 {isChinese
                   ? "在古希腊，有两种关于时间的概念。Chronos（χρόνος）是线性流逝的时间——分秒、日月、年岁。而 Kairós（καιρός）是完全不同的东西：它是那个「恰到好处的时刻」，命运的缝隙，万事万物交汇的瞬间。"
@@ -53,8 +64,8 @@ export default function AboutPage() {
         {/* Philosophy + Method — 2 column on desktop */}
         <section className="lg:grid lg:grid-cols-2 lg:gap-6 space-y-6 lg:space-y-0 mb-16 lg:mb-20">
           {/* Philosophy */}
-          <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-6 lg:p-8">
-            <h2 className="font-display text-lg lg:text-xl font-bold text-amber-200 mb-4">
+          <div className={`${tk.card} border ${tk.accentBorder} rounded-2xl p-6 lg:p-8`}>
+            <h2 className={`font-display text-lg lg:text-xl font-bold ${tk.accent} mb-4`}>
               {isChinese ? "我们的哲学" : "Our Philosophy"}
             </h2>
             <div className="space-y-3">
@@ -78,17 +89,17 @@ export default function AboutPage() {
                   descEn: "The depth of classical metaphysics, with AI making it accessible. Turning 3,000-year-old insight into today's action guide.",
                 },
               ].map((item) => (
-                <div key={item.en} className="bg-white/[0.02] rounded-xl p-4 border border-white/5">
-                  <div className="text-sm font-semibold text-amber-200/70 mb-1">{isChinese ? item.zh : item.en}</div>
-                  <p className="text-xs text-amber-100/40 leading-relaxed">{isChinese ? item.descZh : item.descEn}</p>
+                <div key={item.en} className={`${tk.sectionBg} rounded-xl p-4 border ${tk.divider}`}>
+                  <div className={`text-sm font-semibold ${tk.accent} mb-1`}>{isChinese ? item.zh : item.en}</div>
+                  <p className={`text-xs ${tk.label} leading-relaxed`}>{isChinese ? item.descZh : item.descEn}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Methodology */}
-          <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-6 lg:p-8">
-            <h2 className="font-display text-lg lg:text-xl font-bold text-amber-200 mb-4">
+          <div className={`${tk.card} border ${tk.accentBorder} rounded-2xl p-6 lg:p-8`}>
+            <h2 className={`font-display text-lg lg:text-xl font-bold ${tk.accent} mb-4`}>
               {isChinese ? "方法论基础" : "Built On Classics"}
             </h2>
             <div className="space-y-3">
@@ -98,18 +109,18 @@ export default function AboutPage() {
                 { name: isChinese ? "《穷通宝鉴》" : "Qiong Tong Bao Jian", desc: isChinese ? "五行调候的权威参考" : "Authoritative reference for Five Elements" },
                 { name: isChinese ? "《神峰通考》" : "Shen Feng Tong Kao", desc: isChinese ? "命理实战的集大成之作" : "Comprehensive practical metaphysics guide" },
               ].map((item) => (
-                <div key={item.name} className="flex items-start gap-3 bg-white/[0.02] rounded-xl p-4 border border-white/5">
-                  <span className="text-amber-400/30 text-sm mt-0.5">📖</span>
+                <div key={item.name} className={`flex items-start gap-3 ${tk.sectionBg} rounded-xl p-4 border ${tk.divider}`}>
+                  <span className={`${tk.accentMuted} text-sm mt-0.5`}>📖</span>
                   <div>
-                    <div className="text-sm font-semibold text-amber-200/70">{item.name}</div>
-                    <div className="text-xs text-amber-100/40">{item.desc}</div>
+                    <div className={`text-sm font-semibold ${tk.accent}`}>{item.name}</div>
+                    <div className={`text-xs ${tk.label}`}>{item.desc}</div>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Tech stack */}
-            <div className="mt-6 pt-6 border-t border-white/5">
+            <div className={`mt-6 pt-6 border-t ${tk.divider}`}>
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { icon: "⚙️", label: isChinese ? "确定性引擎" : "Precise Engine" },
@@ -119,7 +130,7 @@ export default function AboutPage() {
                 ].map((item) => (
                   <div key={item.label} className="text-center py-2">
                     <div className="text-lg mb-1">{item.icon}</div>
-                    <div className="text-xs text-amber-200/50">{item.label}</div>
+                    <div className={`text-xs ${tk.text2}`}>{item.label}</div>
                   </div>
                 ))}
               </div>
@@ -129,11 +140,11 @@ export default function AboutPage() {
 
         {/* Founder Story */}
         <section className="mb-16 lg:mb-20">
-          <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-6 lg:p-10">
-            <h2 className="font-display text-xl lg:text-2xl font-bold text-amber-200 mb-6">
+          <div className={`${tk.card} border ${tk.accentBorder} rounded-2xl p-6 lg:p-10`}>
+            <h2 className={`font-display text-xl lg:text-2xl font-bold ${tk.accent} mb-6`}>
               {isChinese ? "创造者的话" : "From the Creator"}
             </h2>
-            <div className="space-y-4 text-sm lg:text-base text-amber-100/50 leading-relaxed">
+            <div className={`space-y-4 text-sm lg:text-base ${tk.text2} leading-relaxed`}>
               <p>
                 {isChinese
                   ? "我在硅谷做了多年技术工作，对数据和逻辑有天然的信仰。命理？那不过是玄学罢了——至少我曾经这样认为。"
@@ -149,7 +160,7 @@ export default function AboutPage() {
                   ? "我不相信「算命」，但我开始相信这套三千年的分析框架蕴含着深刻的智慧。问题是：它被锁在古文和少数人的圈子里。于是我决定用技术打开它——让每个人都能理解自己的「Kairós」。"
                   : "I don't believe in fortune-telling. But I started believing that this 3,000-year-old analytical framework holds profound wisdom. The problem: it was locked behind classical texts and closed circles. So I decided to use technology to unlock it — to help everyone find their 'Kairós'."}
               </p>
-              <p className="text-amber-200/30 italic">
+              <p className={`${tk.text3} italic`}>
                 {isChinese
                   ? "—— Kairós 创始人，一个被八字说服的工程师"
                   : "— The Kairós founder, an engineer convinced by BaZi"}
@@ -160,11 +171,11 @@ export default function AboutPage() {
 
         {/* Disclaimer — full width */}
         <section className="mb-10">
-          <div className="bg-white/[0.02] border border-amber-400/8 rounded-2xl p-6 lg:p-8">
-            <h2 className="font-display text-lg font-bold text-amber-200/60 mb-3">
+          <div className={`${tk.sectionBg} border ${tk.accentBorder} rounded-2xl p-6 lg:p-8`}>
+            <h2 className={`font-display text-lg font-bold ${tk.label} mb-3`}>
               {isChinese ? "重要声明" : "Disclaimer"}
             </h2>
-            <p className="text-sm text-amber-100/40 leading-relaxed">
+            <p className={`text-sm ${tk.label} leading-relaxed`}>
               {isChinese
                 ? "Kairós 提供的所有分析和洞察均由 AI 生成，仅供自我探索、个人成长和娱乐参考。我们不提供医疗、法律或财务建议。重大人生决策请咨询专业人士。"
                 : "All analysis provided by Kairós is AI-generated for self-exploration, personal growth, and entertainment. We do not provide medical, legal, or financial advice. Consult professionals for major life decisions."}
@@ -174,16 +185,16 @@ export default function AboutPage() {
 
         {/* Contact — minimal */}
         <section className="text-center">
-          <p className="text-sm text-amber-200/30 mb-3">hello@kairos.app</p>
+          <p className={`text-sm ${tk.text3} mb-3`}>hello@kairos.app</p>
           <div className="flex justify-center gap-6">
-            <Link href="/terms" className="text-xs text-amber-200/20 hover:text-amber-200/40 transition-colors underline underline-offset-2">
+            <Link href="/terms" className={`text-xs ${tk.text3} hover:opacity-70 transition-colors underline underline-offset-2`}>
               {isChinese ? "服务条款" : "Terms"}
             </Link>
-            <Link href="/privacy" className="text-xs text-amber-200/20 hover:text-amber-200/40 transition-colors underline underline-offset-2">
+            <Link href="/privacy" className={`text-xs ${tk.text3} hover:opacity-70 transition-colors underline underline-offset-2`}>
               {isChinese ? "隐私政策" : "Privacy"}
             </Link>
           </div>
-          <p className="text-xs text-amber-200/10 mt-6">© 2026 Kairós</p>
+          <p className={`text-xs ${tk.footerText} mt-6`}>© 2026 Kairós</p>
         </section>
       </main>
 

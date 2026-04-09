@@ -10,6 +10,8 @@ import RadarChart from "@/components/RadarChart";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import { useToast } from "@/components/Toast";
+import { useTheme } from "@/lib/ThemeContext";
+import { themeTokens } from "@/lib/theme-tokens";
 
 type Step = "input" | "result";
 
@@ -73,7 +75,7 @@ function calcDimensionScores(a: BaziChart, b: BaziChart) {
   };
 }
 
-function ScoreCircle({ score, size = 120 }: { score: number; size?: number }) {
+function ScoreCircle({ score, size = 120, theme }: { score: number; size?: number; theme: "cosmic" | "cloud" }) {
   const color = score >= 80 ? "#22c55e" : score >= 60 ? "#f59e0b" : "#ef4444";
   const r = size * 0.4;
   const circumference = 2 * Math.PI * r;
@@ -82,7 +84,7 @@ function ScoreCircle({ score, size = 120 }: { score: number; size?: number }) {
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg className="w-full h-full -rotate-90" viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6" />
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={theme === "cosmic" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)"} strokeWidth="6" />
         <circle
           cx={size/2} cy={size/2} r={r} fill="none"
           stroke={color} strokeWidth="6" strokeLinecap="round"
@@ -92,22 +94,23 @@ function ScoreCircle({ score, size = 120 }: { score: number; size?: number }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="text-2xl font-bold text-amber-300">{score}</div>
-        <div className="text-[9px] text-amber-200/30">兼容度</div>
+        <div className={`text-2xl font-bold ${theme === "cosmic" ? "text-amber-300" : "text-amber-700"}`}>{score}</div>
+        <div className={`text-[9px] ${theme === "cosmic" ? "text-amber-200/30" : "text-[#1a1520]/30"}`}>兼容度</div>
       </div>
     </div>
   );
 }
 
-function DimensionBar({ label, score, icon }: { label: string; score: number; icon: string }) {
+function DimensionBar({ label, score, icon, theme }: { label: string; score: number; icon: string; theme: "cosmic" | "cloud" }) {
   const color = score >= 80 ? "#22c55e" : score >= 60 ? "#f59e0b" : "#ef4444";
+  const tk = themeTokens[theme];
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-amber-200/60 flex items-center gap-1"><span>{icon}</span>{label}</span>
-        <span className="text-xs text-amber-200/40">{score}/100</span>
+        <span className={`text-xs ${tk.label} flex items-center gap-1`}><span>{icon}</span>{label}</span>
+        <span className={`text-xs ${tk.label}`}>{score}/100</span>
       </div>
-      <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+      <div className={`h-2 ${theme === "cosmic" ? "bg-white/5" : "bg-[#1a1520]/5"} rounded-full overflow-hidden`}>
         <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${score}%`, backgroundColor: color }} />
       </div>
     </div>
@@ -192,9 +195,41 @@ function CompatibilityContent() {
   const { isChinese, t } = useLocale();
   const { toast } = useToast();
   const searchParams = useSearchParams();
+  const { theme } = useTheme();
+  const tk = themeTokens[theme];
   const [step, setStep] = useState<Step>("input");
   const [inviteCopied, setInviteCopied] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+
+  // Person-specific color helpers
+  const p1 = {
+    accent: theme === "cosmic" ? "text-amber-200/70" : "text-amber-800/70",
+    text: theme === "cosmic" ? "text-amber-100" : "text-amber-900",
+    placeholder: theme === "cosmic" ? "placeholder:text-amber-200/20" : "placeholder:text-[#1a1520]/20",
+    border: theme === "cosmic" ? "border-amber-400/15" : "border-amber-600/20",
+    borderFocus: theme === "cosmic" ? "focus:border-amber-400/30" : "focus:border-amber-600/40",
+    inputBg: theme === "cosmic" ? "bg-white/5" : "bg-white/50",
+    cardBorder: theme === "cosmic" ? "border-amber-400/10" : "border-amber-600/15",
+    avatarBg: theme === "cosmic" ? "bg-amber-700/20" : "bg-amber-600/15",
+    avatarBorder: theme === "cosmic" ? "border-amber-400/20" : "border-amber-600/25",
+    nameText: theme === "cosmic" ? "text-amber-200/70" : "text-amber-800/70",
+    subText: theme === "cosmic" ? "text-amber-200/30" : "text-amber-800/30",
+    labelText: theme === "cosmic" ? "text-amber-200/40" : "text-amber-800/40",
+  };
+  const p2 = {
+    accent: theme === "cosmic" ? "text-purple-200/70" : "text-purple-800/70",
+    text: theme === "cosmic" ? "text-purple-100" : "text-purple-900",
+    placeholder: theme === "cosmic" ? "placeholder:text-purple-200/20" : "placeholder:text-purple-800/20",
+    border: theme === "cosmic" ? "border-purple-400/15" : "border-purple-600/20",
+    borderFocus: theme === "cosmic" ? "focus:border-purple-400/30" : "focus:border-purple-600/40",
+    inputBg: theme === "cosmic" ? "bg-white/5" : "bg-white/50",
+    cardBorder: theme === "cosmic" ? "border-purple-400/10" : "border-purple-600/15",
+    avatarBg: theme === "cosmic" ? "bg-purple-700/20" : "bg-purple-600/15",
+    avatarBorder: theme === "cosmic" ? "border-purple-400/20" : "border-purple-600/25",
+    nameText: theme === "cosmic" ? "text-purple-200/70" : "text-purple-800/70",
+    subText: theme === "cosmic" ? "text-purple-200/30" : "text-purple-800/30",
+    labelText: theme === "cosmic" ? "text-purple-200/40" : "text-purple-800/40",
+  };
 
   // Person A
   const [dateA, setDateA] = useState("");
@@ -226,36 +261,47 @@ function CompatibilityContent() {
   const overall = chartA && chartB ? calcCompatibility(chartA, chartB) : 0;
   const dimensions = chartA && chartB ? calcDimensionScores(chartA, chartB) : null;
 
+  // Shared section heading style
+  const sectionHeading = `text-center text-xs ${tk.accentMuted} tracking-widest mb-2`;
+
   return (
-    <div className="min-h-screen bg-[#12101c]">
+    <div
+      className="min-h-screen"
+      style={{
+        background: theme === "cosmic"
+          ? "#12101c"
+          : "linear-gradient(180deg, #E8E6F0 0%, #F2F0EB 40%, #F8F5EE 100%)",
+      }}
+    >
       <PageHeader title={isChinese ? "双人合盘" : "Compatibility"} />
 
       <main className="max-w-lg lg:max-w-4xl mx-auto px-4 py-8 pb-24">
         {step === "input" ? (
           <div className="space-y-8 lg:space-y-10">
             <div className="text-center">
-              <div className="flex items-center justify-center gap-2 text-amber-400/30 text-xs mb-3">
+              <div className={`flex items-center justify-center gap-2 ${tk.accentMuted} text-xs mb-3`}>
                 <span>☸</span><span>Compatibility Analysis</span><span>☸</span>
               </div>
               <h1 className="font-display text-2xl font-bold text-gradient-gold">{isChinese ? "双人合盘分析" : "Compatibility Analysis"}</h1>
-              <p className="text-amber-200/40 text-sm mt-2">{isChinese ? "输入两人出生日期，分析五行互补与性格兼容" : "Enter two birth dates to analyze Five Elements compatibility"}</p>
+              <p className={`${tk.label} text-sm mt-2`}>{isChinese ? "输入两人出生日期，分析五行互补与性格兼容" : "Enter two birth dates to analyze Five Elements compatibility"}</p>
             </div>
 
             {/* Two person cards — side by side on desktop */}
             <div className="lg:flex lg:gap-6 lg:items-start space-y-8 lg:space-y-0">
 
             {/* Person A */}
-            <div className="lg:flex-1 bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5 space-y-3">
+            <div className={`lg:flex-1 ${tk.card} border ${p1.cardBorder} rounded-2xl p-5 space-y-3`}>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-lg">👤</span>
-                <span className="text-sm font-semibold text-amber-200/70">{isChinese ? "第一个人" : "Person 1"}</span>
+                <span className={`text-sm font-semibold ${p1.accent}`}>{isChinese ? "第一个人" : "Person 1"}</span>
               </div>
               <input
                 type="text"
                 value={nameA}
                 onChange={(e) => setNameA(e.target.value)}
                 placeholder={isChinese ? "姓名（可选）" : "Name (optional)"}
-                className="w-full bg-white/5 border border-amber-400/15 rounded-xl px-4 py-2.5 text-amber-100 text-sm placeholder:text-amber-200/20 focus:outline-none focus:border-amber-400/30"
+                className={`w-full ${p1.inputBg} border ${p1.border} rounded-xl px-4 py-2.5 ${p1.text} text-sm ${p1.placeholder} focus:outline-none ${p1.borderFocus}`}
+                style={{ colorScheme: tk.colorScheme }}
               />
               <input
                 type="date"
@@ -263,30 +309,31 @@ function CompatibilityContent() {
                 onChange={(e) => setDateA(e.target.value)}
                 max={new Date().toISOString().split("T")[0]}
                 min="1940-01-01"
-                className="w-full bg-white/5 border border-amber-400/15 rounded-xl px-4 py-2.5 text-amber-100 text-sm focus:outline-none focus:border-amber-400/30 [color-scheme:dark]"
-                style={{ colorScheme: "dark" }}
+                className={`w-full ${p1.inputBg} border ${p1.border} rounded-xl px-4 py-2.5 ${p1.text} text-sm focus:outline-none ${p1.borderFocus}`}
+                style={{ colorScheme: tk.colorScheme }}
               />
             </div>
 
             {/* VS divider */}
             <div className="flex lg:flex-col items-center justify-center gap-3 lg:py-8">
-              <div className="w-16 lg:w-px lg:h-16 h-px bg-amber-400/15" />
-              <span className="text-amber-400/30 text-xs font-bold tracking-widest">VS</span>
-              <div className="w-16 lg:w-px lg:h-16 h-px bg-amber-400/15" />
+              <div className={`w-16 lg:w-px lg:h-16 h-px ${theme === "cosmic" ? "bg-amber-400/15" : "bg-amber-600/15"}`} />
+              <span className={`${tk.accentMuted} text-xs font-bold tracking-widest`}>VS</span>
+              <div className={`w-16 lg:w-px lg:h-16 h-px ${theme === "cosmic" ? "bg-amber-400/15" : "bg-amber-600/15"}`} />
             </div>
 
             {/* Person B */}
-            <div className="lg:flex-1 bg-white/[0.03] border border-purple-400/10 rounded-2xl p-5 space-y-3">
+            <div className={`lg:flex-1 ${tk.card} border ${p2.cardBorder} rounded-2xl p-5 space-y-3`}>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-lg">👤</span>
-                <span className="text-sm font-semibold text-purple-200/70">{isChinese ? "第二个人" : "Person 2"}</span>
+                <span className={`text-sm font-semibold ${p2.accent}`}>{isChinese ? "第二个人" : "Person 2"}</span>
               </div>
               <input
                 type="text"
                 value={nameB}
                 onChange={(e) => setNameB(e.target.value)}
                 placeholder={isChinese ? "姓名（可选）" : "Name (optional)"}
-                className="w-full bg-white/5 border border-purple-400/15 rounded-xl px-4 py-2.5 text-purple-100 text-sm placeholder:text-purple-200/20 focus:outline-none focus:border-purple-400/30"
+                className={`w-full ${p2.inputBg} border ${p2.border} rounded-xl px-4 py-2.5 ${p2.text} text-sm ${p2.placeholder} focus:outline-none ${p2.borderFocus}`}
+                style={{ colorScheme: tk.colorScheme }}
               />
               <input
                 type="date"
@@ -294,8 +341,8 @@ function CompatibilityContent() {
                 onChange={(e) => setDateB(e.target.value)}
                 max={new Date().toISOString().split("T")[0]}
                 min="1940-01-01"
-                className="w-full bg-white/5 border border-purple-400/15 rounded-xl px-4 py-2.5 text-purple-100 text-sm focus:outline-none focus:border-purple-400/30 [color-scheme:dark]"
-                style={{ colorScheme: "dark" }}
+                className={`w-full ${p2.inputBg} border ${p2.border} rounded-xl px-4 py-2.5 ${p2.text} text-sm focus:outline-none ${p2.borderFocus}`}
+                style={{ colorScheme: tk.colorScheme }}
               />
             </div>
 
@@ -304,7 +351,7 @@ function CompatibilityContent() {
             <button
               onClick={handleAnalyze}
               disabled={!dateA || !dateB}
-              className="w-full lg:max-w-md lg:mx-auto py-4 rounded-2xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
+              className={`w-full lg:max-w-md lg:mx-auto py-4 rounded-2xl font-semibold cursor-pointer ${tk.ctaPrimary} disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all`}
             >
               {isChinese ? "开始分析兼容度" : "Analyze Compatibility"}
             </button>
@@ -324,7 +371,7 @@ function CompatibilityContent() {
                     setTimeout(() => setInviteCopied(false), 2000);
                   });
                 }}
-                className="w-full py-3 rounded-xl text-sm font-medium cursor-pointer bg-purple-800/30 hover:bg-purple-700/30 text-purple-200/70 border border-purple-400/15 transition-all"
+                className={`w-full py-3 rounded-xl text-sm font-medium cursor-pointer ${theme === "cosmic" ? "bg-purple-800/30 hover:bg-purple-700/30 text-purple-200/70 border-purple-400/15" : "bg-purple-100/60 hover:bg-purple-100/80 text-purple-800/70 border-purple-600/20"} border transition-all`}
               >
                 {inviteCopied
                   ? (isChinese ? "✓ 链接已复制" : "✓ Link copied")
@@ -336,7 +383,7 @@ function CompatibilityContent() {
           <div className="space-y-5">
             {/* Header */}
             <div className="text-center">
-              <div className="flex items-center justify-center gap-2 text-amber-400/30 text-xs mb-3">
+              <div className={`flex items-center justify-center gap-2 ${tk.accentMuted} text-xs mb-3`}>
                 <span>☸</span><span>Compatibility Result</span><span>☸</span>
               </div>
             </div>
@@ -344,17 +391,17 @@ function CompatibilityContent() {
             {/* Two people + score */}
             <div className="flex items-center justify-center gap-4">
               <div className="text-center">
-                <div className="w-14 h-14 rounded-full bg-amber-700/20 border border-amber-400/20 flex items-center justify-center text-2xl">{chartA.zodiacEmoji}</div>
-                <div className="text-xs text-amber-200/70 mt-1.5 font-semibold">{nameA || "A"}</div>
-                <div className="text-[10px] text-amber-200/30">{chartA.dayMaster}{chartA.dayMasterElement}</div>
+                <div className={`w-14 h-14 rounded-full ${p1.avatarBg} border ${p1.avatarBorder} flex items-center justify-center text-2xl`}>{chartA.zodiacEmoji}</div>
+                <div className={`text-xs ${p1.nameText} mt-1.5 font-semibold`}>{nameA || "A"}</div>
+                <div className={`text-[10px] ${p1.subText}`}>{chartA.dayMaster}{chartA.dayMasterElement}</div>
               </div>
 
-              <ScoreCircle score={overall} />
+              <ScoreCircle score={overall} theme={theme} />
 
               <div className="text-center">
-                <div className="w-14 h-14 rounded-full bg-purple-700/20 border border-purple-400/20 flex items-center justify-center text-2xl">{chartB.zodiacEmoji}</div>
-                <div className="text-xs text-purple-200/70 mt-1.5 font-semibold">{nameB || "B"}</div>
-                <div className="text-[10px] text-purple-200/30">{chartB.dayMaster}{chartB.dayMasterElement}</div>
+                <div className={`w-14 h-14 rounded-full ${p2.avatarBg} border ${p2.avatarBorder} flex items-center justify-center text-2xl`}>{chartB.zodiacEmoji}</div>
+                <div className={`text-xs ${p2.nameText} mt-1.5 font-semibold`}>{nameB || "B"}</div>
+                <div className={`text-[10px] ${p2.subText}`}>{chartB.dayMaster}{chartB.dayMasterElement}</div>
               </div>
             </div>
 
@@ -363,7 +410,7 @@ function CompatibilityContent() {
               <div className="text-sm font-semibold" style={{ color: overall >= 80 ? "#22c55e" : overall >= 60 ? "#f59e0b" : "#ef4444" }}>
                 {overall >= 85 ? "天作之合" : overall >= 75 ? "非常契合" : overall >= 60 ? "良好搭配" : overall >= 45 ? "需要磨合" : "差异较大"}
               </div>
-              <p className="text-[10px] text-amber-200/30 mt-1">
+              <p className={`text-[10px] ${tk.text3} mt-1`}>
                 {chartA.dayMasterElement}（{nameA || "A"}）{
                   (() => {
                     const generates: Record<string, string> = { 木: "火", 火: "土", 土: "金", 金: "水", 水: "木" };
@@ -377,20 +424,20 @@ function CompatibilityContent() {
             </div>
 
             {/* Dimension scores */}
-            <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5 space-y-3">
-              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-2">多 维 兼 容</h3>
-              <DimensionBar label="恋爱关系" score={dimensions.love} icon="❤️" />
-              <DimensionBar label="事业搭档" score={dimensions.career} icon="💼" />
-              <DimensionBar label="朋友默契" score={dimensions.friendship} icon="🤝" />
-              <DimensionBar label="沟通理解" score={dimensions.communication} icon="💬" />
+            <div className={`${tk.card} border ${p1.cardBorder} rounded-2xl p-5 space-y-3`}>
+              <h3 className={sectionHeading}>多 维 兼 容</h3>
+              <DimensionBar label="恋爱关系" score={dimensions.love} icon="❤️" theme={theme} />
+              <DimensionBar label="事业搭档" score={dimensions.career} icon="💼" theme={theme} />
+              <DimensionBar label="朋友默契" score={dimensions.friendship} icon="🤝" theme={theme} />
+              <DimensionBar label="沟通理解" score={dimensions.communication} icon="💬" theme={theme} />
             </div>
 
             {/* Five Elements comparison */}
-            <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
-              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-3">五 行 对 比</h3>
+            <div className={`${tk.card} border ${p1.cardBorder} rounded-2xl p-5`}>
+              <h3 className={sectionHeading}>五 行 对 比</h3>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <div className="text-center text-[10px] text-amber-200/40 mb-1">{nameA || "A"}</div>
+                  <div className={`text-center text-[10px] ${p1.labelText} mb-1`}>{nameA || "A"}</div>
                   <RadarChart
                     size={140}
                     maxValue={Math.max(...Object.values(chartA.fiveElements), 3)}
@@ -404,7 +451,7 @@ function CompatibilityContent() {
                   />
                 </div>
                 <div>
-                  <div className="text-center text-[10px] text-purple-200/40 mb-1">{nameB || "B"}</div>
+                  <div className={`text-center text-[10px] ${p2.labelText} mb-1`}>{nameB || "B"}</div>
                   <RadarChart
                     size={140}
                     maxValue={Math.max(...Object.values(chartB.fiveElements), 3)}
@@ -421,12 +468,12 @@ function CompatibilityContent() {
             </div>
 
             {/* Analysis text */}
-            <div className="bg-white/[0.03] border border-amber-400/10 rounded-2xl p-5">
-              <h3 className="text-center text-xs text-amber-400/40 tracking-widest mb-3">关 系 洞 察</h3>
+            <div className={`${tk.card} border ${p1.cardBorder} rounded-2xl p-5`}>
+              <h3 className={sectionHeading}>关 系 洞 察</h3>
               <div className="space-y-3">
-                <div className="bg-white/[0.02] rounded-xl p-3.5 border border-white/5">
-                  <div className="text-xs font-semibold text-amber-200/70 mb-1">✨ 互补优势</div>
-                  <p className="text-[11px] text-amber-100/50 leading-relaxed">
+                <div className={`${tk.sectionBg} rounded-xl p-3.5 border ${tk.divider}`}>
+                  <div className={`text-xs font-semibold ${tk.accent} mb-1`}>✨ 互补优势</div>
+                  <p className={`text-[11px] ${tk.text2} leading-relaxed`}>
                     {(() => {
                       const weakA = (Object.entries(chartA.fiveElements) as [string, number][]).filter(([,v]) => v <= 1).map(([k]) => k);
                       const strongB = (Object.entries(chartB.fiveElements) as [string, number][]).filter(([,v]) => v >= 3).map(([k]) => k);
@@ -436,23 +483,23 @@ function CompatibilityContent() {
                     })()}
                   </p>
                 </div>
-                <div className="bg-white/[0.02] rounded-xl p-3.5 border border-white/5">
-                  <div className="text-xs font-semibold text-amber-200/70 mb-1">⚠️ 需要注意</div>
-                  <p className="text-[11px] text-amber-100/50 leading-relaxed">
+                <div className={`${tk.sectionBg} rounded-xl p-3.5 border ${tk.divider}`}>
+                  <div className={`text-xs font-semibold ${tk.accent} mb-1`}>⚠️ 需要注意</div>
+                  <p className={`text-[11px] ${tk.text2} leading-relaxed`}>
                     {chartA.dayMasterElement === chartB.dayMasterElement
                       ? "两人日主五行相同，性格相似，容易产生共鸣但也可能因为太像而产生摩擦。建议在分歧时学会退让，给对方空间。"
                       : `${nameA || "A"}属${chartA.dayMasterElement}，${nameB || "B"}属${chartB.dayMasterElement}。不同五行带来不同视角，沟通时要理解对方的思维方式，避免用自己的标准要求对方。`}
                   </p>
                 </div>
                 {getRelationshipAdvice(chartA, chartB, nameA, nameB, isChinese).map((item, i) => (
-                  <div key={i} className="bg-white/[0.02] rounded-xl p-3.5 border border-white/5">
-                    <div className="text-xs font-semibold text-amber-200/70 mb-1">{item.title}</div>
-                    <p className="text-[11px] text-amber-100/50 leading-relaxed">{item.content}</p>
+                  <div key={i} className={`${tk.sectionBg} rounded-xl p-3.5 border ${tk.divider}`}>
+                    <div className={`text-xs font-semibold ${tk.accent} mb-1`}>{item.title}</div>
+                    <p className={`text-[11px] ${tk.text2} leading-relaxed`}>{item.content}</p>
                   </div>
                 ))}
-                <div className="bg-white/[0.02] rounded-xl p-3.5 border border-white/5">
-                  <div className="text-xs font-semibold text-amber-200/70 mb-1">💡 相处建议</div>
-                  <p className="text-[11px] text-amber-100/50 leading-relaxed">
+                <div className={`${tk.sectionBg} rounded-xl p-3.5 border ${tk.divider}`}>
+                  <div className={`text-xs font-semibold ${tk.accent} mb-1`}>💡 相处建议</div>
+                  <p className={`text-[11px] ${tk.text2} leading-relaxed`}>
                     {(() => {
                       const rec = ELEMENT_RECOMMENDATIONS[chartA.luckyElement];
                       return rec ? `共同活动建议：可以多去${rec.directions.split("、")[0]}方向出游；约会时选择${rec.colors.split("、")[0]}系的餐厅或环境，有助于增进感情。` : "多创造共同体验的机会，在合作中增进了解。";
@@ -478,18 +525,18 @@ function CompatibilityContent() {
                   });
                 }
               }}
-              className="w-full py-3.5 rounded-2xl font-semibold text-sm cursor-pointer bg-gradient-to-r from-purple-800/50 via-purple-700/50 to-purple-800/50 hover:from-purple-700/50 hover:via-purple-600/50 hover:to-purple-700/50 text-purple-200/80 border border-purple-400/15 transition-all"
+              className={`w-full py-3.5 rounded-2xl font-semibold text-sm cursor-pointer ${theme === "cosmic" ? "bg-gradient-to-r from-purple-800/50 via-purple-700/50 to-purple-800/50 hover:from-purple-700/50 hover:via-purple-600/50 hover:to-purple-700/50 text-purple-200/80 border-purple-400/15" : "bg-gradient-to-r from-purple-200/60 via-purple-100/60 to-purple-200/60 hover:from-purple-200/80 hover:via-purple-100/80 hover:to-purple-200/80 text-purple-800/80 border-purple-600/20"} border transition-all`}
             >
               {shareCopied ? (isChinese ? "✓ 已复制" : "✓ Copied") : (isChinese ? "📤 分享结果" : "📤 Share Result")}
             </button>
 
             {/* Viral referral CTA */}
-            <div className="bg-gradient-to-r from-purple-900/20 via-purple-800/15 to-amber-900/20 border border-purple-400/10 rounded-2xl p-5 text-center space-y-3">
+            <div className={`${theme === "cosmic" ? "bg-gradient-to-r from-purple-900/20 via-purple-800/15 to-amber-900/20 border-purple-400/10" : "bg-gradient-to-r from-purple-100/40 via-purple-50/30 to-amber-100/40 border-purple-600/10"} border rounded-2xl p-5 text-center space-y-3`}>
               <div className="text-2xl">🔮</div>
-              <p className="text-amber-100 text-sm font-semibold">
+              <p className={`${tk.text1} text-sm font-semibold`}>
                 {isChinese ? "想看 TA 眼中的你？" : "Want to see yourself through their eyes?"}
               </p>
-              <p className="text-amber-200/40 text-xs leading-relaxed">
+              <p className={`${tk.label} text-xs leading-relaxed`}>
                 {isChinese
                   ? `让${nameB || "对方"}也生成自己的命盘，解锁双向合盘视角`
                   : `Have ${nameB || "them"} generate their own chart for a two-way compatibility view`}
@@ -502,21 +549,21 @@ function CompatibilityContent() {
                     toast(isChinese ? "链接已复制！发送给 TA 吧" : "Link copied! Send it to them", "success");
                   });
                 }}
-                className="inline-block px-6 py-2.5 rounded-xl font-semibold text-sm cursor-pointer bg-gradient-to-r from-purple-700 via-purple-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(139,92,246,0.2)] transition-all"
+                className={`inline-block px-6 py-2.5 rounded-xl font-semibold text-sm cursor-pointer ${theme === "cosmic" ? "bg-gradient-to-r from-purple-700 via-purple-600 to-amber-700" : "bg-gradient-to-r from-purple-600 via-purple-500 to-amber-600"} text-white hover:shadow-[0_0_30px_rgba(139,92,246,0.2)] transition-all`}
               >
                 {isChinese ? "复制邀请链接" : "Copy Invite Link"}
               </button>
-              <p className="text-amber-200/20 text-[10px]">
+              <p className={`${tk.text3} text-[10px]`}>
                 {isChinese ? "对方注册后你们都将获得一次免费深度解读" : "You both get a free deep reading when they sign up"}
               </p>
             </div>
 
             {/* Actions */}
             <div className="flex gap-3">
-              <button onClick={() => { setStep("input"); setChartA(null); setChartB(null); }} className="flex-1 py-3 rounded-xl text-sm font-medium cursor-pointer bg-white/5 text-amber-200/60 hover:bg-white/10 transition-colors border border-white/5">
+              <button onClick={() => { setStep("input"); setChartA(null); setChartB(null); }} className={`flex-1 py-3 rounded-xl text-sm font-medium cursor-pointer ${tk.selectBg} ${tk.label} hover:opacity-80 transition-colors border ${tk.divider}`}>
                 {isChinese ? "重新分析" : "Start Over"}
               </button>
-              <Link href="/fortune" className="flex-1 py-3 rounded-xl text-sm font-medium text-center bg-white/5 text-amber-200/60 hover:bg-white/10 transition-colors border border-white/5">
+              <Link href="/fortune" className={`flex-1 py-3 rounded-xl text-sm font-medium text-center ${tk.selectBg} ${tk.label} hover:opacity-80 transition-colors border ${tk.divider}`}>
                 {isChinese ? "个人分析" : "My Analysis"}
               </Link>
             </div>

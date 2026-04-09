@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     mode: "payment",
     success_url: `${origin}/health/report/${assessmentId}?paid=true&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/health/quiz?paid=false`,
-    metadata: { assessmentId, userId: user.id, product: "health" },
+    metadata: { assessmentId, userId: user.id, tier: "health", product: "health" },
   });
 
   return NextResponse.json({ url: session.url });

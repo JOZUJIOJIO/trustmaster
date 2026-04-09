@@ -31,16 +31,24 @@ export async function POST(request: Request) {
     return NextResponse.json(cached.reading);
   }
 
-  // Check payment
-  const { data: orders } = await supabase
-    .from("orders")
-    .select("id")
-    .eq("user_id", user.id)
-    .eq("product", "health")
-    .eq("status", "paid")
-    .limit(1);
+  // Check payment: health report purchase OR active subscription
+  const [orderResult, subResult] = await Promise.all([
+    supabase
+      .from("orders")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("tier", "health")
+      .eq("status", "paid")
+      .limit(1),
+    supabase
+      .from("subscriptions")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .limit(1),
+  ]);
 
-  if (!orders?.length) {
+  if (!orderResult.data?.length && !subResult.data?.length) {
     return NextResponse.json({ error: "Payment required" }, { status: 402 });
   }
 

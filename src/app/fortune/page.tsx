@@ -99,16 +99,27 @@ function FortuneContent() {
       })
       .catch(() => {});
 
-    // Check free readings from referrals
-    fetch(`/api/referral?userId=${user.id}`)
+    // Check free readings (signup bonus + referral rewards)
+    fetch("/api/referral")
       .then((r) => r.json())
       .then((data) => {
         if (data.freeReadings > 0) {
           setFreeReadings(data.freeReadings);
+          // Notify user about their free reading on first check
+          const notified = sessionStorage.getItem("kairos_free_notified");
+          if (!notified) {
+            sessionStorage.setItem("kairos_free_notified", "1");
+            toast(
+              isChinese
+                ? `🎁 你有 ${data.freeReadings} 次免费 AI 深度解读！`
+                : `🎁 You have ${data.freeReadings} free AI reading(s)!`,
+              "success"
+            );
+          }
         }
       })
       .catch(() => {});
-  }, [user]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // BaZi inputs
   const [birthDate, setBirthDate] = useState("");

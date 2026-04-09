@@ -5,9 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { useLocale } from "@/lib/LocaleContext";
-import { createClient } from "@/lib/supabase/client";
-import { getMasters } from "@/lib/db";
-import type { Review, Master } from "@/lib/types";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
@@ -15,8 +12,6 @@ export default function ProfilePage() {
   const { user, loading: authLoading, signOut } = useAuth();
   const { isChinese, t } = useLocale();
   const router = useRouter();
-  const [myReviews, setMyReviews] = useState<Review[]>([]);
-  const [masterNames, setMasterNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [subscription, setSubscription] = useState<{
     subscribed: boolean;
@@ -38,15 +33,7 @@ export default function ProfilePage() {
       return;
     }
 
-    const supabase = createClient();
     Promise.all([
-      supabase
-        .from("reviews")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .then(({ data }: { data: Review[] | null }) => data ?? []),
-      getMasters(),
       fetch("/api/subscription/status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -55,11 +42,7 @@ export default function ProfilePage() {
       fetch(`/api/referral?userId=${user.id}`)
         .then((r) => r.json())
         .catch(() => ({ referralCode: null, freeReadings: 0, stats: { signups: 0, converted: 0 } })),
-    ]).then(([reviews, masters, sub, ref]: [Review[], Master[], typeof subscription, typeof referral]) => {
-      setMyReviews(reviews);
-      const names: Record<string, string> = {};
-      masters.forEach((m) => { names[m.id] = m.name_th || m.name; });
-      setMasterNames(names);
+    ]).then(([sub, ref]) => {
       setSubscription(sub);
       setReferral(ref);
       if (ref.referralCode) {
@@ -265,30 +248,6 @@ export default function ProfilePage() {
                 </div>
               </div>
             )}
-
-            {/* My Reviews */}
-            <div className="bg-white/[0.03] rounded-2xl border border-amber-400/10 p-6">
-              <h3 className="font-semibold text-amber-200/80 mb-3">{t("profile.myReviews")}</h3>
-              {myReviews.length > 0 ? (
-                <div className="space-y-3">
-                  {myReviews.map((review) => (
-                    <div key={review.id} className="bg-white/[0.03] rounded-xl p-3 border border-white/5">
-                      <div className="flex items-center justify-between">
-                        <Link href={`/master/${review.master_id}`} className="text-sm font-medium text-amber-300">
-                          {masterNames[review.master_id] || review.master_id}
-                        </Link>
-                        <span className="text-amber-500 text-sm">
-                          {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
-                        </span>
-                      </div>
-                      <p className="text-[13px] text-amber-200/60 mt-1">{review.comment}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-amber-200/30">{t("profile.noReviews")}</p>
-              )}
-            </div>
 
             {/* Sign Out */}
             <button

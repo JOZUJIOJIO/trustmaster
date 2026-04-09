@@ -1,20 +1,9 @@
 import type { MetadataRoute } from "next";
-import { createClient } from "@/lib/supabase/client";
 
 const TEN_STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const supabase = createClient();
-  const { data: masters } = await supabase.from("masters").select("id");
-
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://kairos.app";
-
-  const masterPages = (masters ?? []).map((master: { id: string }) => ({
-    url: `${baseUrl}/master/${master.id}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
-  }));
 
   // Personality pages for each of the 10 Heavenly Stems (high SEO value)
   const personalityPages = TEN_STEMS.map((stem) => ({
@@ -86,6 +75,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.3,
     },
     ...personalityPages,
-    ...masterPages,
   ];
 }

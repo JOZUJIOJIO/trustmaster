@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(1)
-      .single() as any;
+      .single();
 
     if (!sub?.stripe_customer_id) {
       return NextResponse.json({ error: "No subscription found" }, { status: 404 });

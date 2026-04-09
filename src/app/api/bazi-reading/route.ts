@@ -75,7 +75,7 @@ export async function POST(request: Request) {
         .from("readings_cache")
         .select("reading")
         .eq("chart_hash", chartHash)
-        .single() as any;
+        .single();
 
       if (cached?.reading) {
         return NextResponse.json(cached.reading);
@@ -96,7 +96,7 @@ export async function POST(request: Request) {
         .from("profiles")
         .select("free_readings")
         .eq("id", user.id)
-        .single() as any;
+        .single();
       const hasFreeReading = (profile?.free_readings ?? 0) > 0;
 
       if (!hasPaidOrder && !hasActiveSub && !hasFreeReading) {
@@ -105,8 +105,7 @@ export async function POST(request: Request) {
 
       // Deduct free reading if that's what they're using
       if (!hasPaidOrder && !hasActiveSub && hasFreeReading) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (supabase as any)
+        await supabase
           .from("profiles")
           .update({ free_readings: (profile?.free_readings ?? 1) - 1 })
           .eq("id", user.id);
@@ -240,8 +239,7 @@ ${currentLuckCycle ? `当前大运：${currentLuckCycle.stem}${currentLuckCycle.
 
     // === Save to cache (non-blocking) ===
     if (supabase && !parsed.error) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (supabase as any)
+      supabase
         .from("readings_cache")
         .upsert(
           {

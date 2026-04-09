@@ -14,8 +14,7 @@ export async function GET() {
   if (!supabaseRaw) {
     return NextResponse.json({ referralCode: null, stats: null });
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = supabaseRaw as any;
+  const supabase = supabaseRaw!;
 
   // Get user's referral code and free readings
   const { data: profile } = await supabase
@@ -54,8 +53,7 @@ export async function POST(request: Request) {
   if (!supabaseRaw) {
     return NextResponse.json({ error: "Not configured" }, { status: 500 });
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = supabaseRaw as any;
+  const supabase = supabaseRaw!;
 
   // Look up referrer by code
   const { data: referrer } = await supabase
@@ -108,8 +106,7 @@ export async function PATCH() {
   if (!supabaseRaw) {
     return NextResponse.json({ error: "Not configured" }, { status: 500 });
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = supabaseRaw as any;
+  const supabase = supabaseRaw!;
 
   // Find the referral
   const { data: referral } = await supabase

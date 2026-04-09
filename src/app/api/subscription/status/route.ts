@@ -21,7 +21,7 @@ export async function POST() {
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .limit(1)
-      .single() as any;
+      .single();
 
     if (data) {
       return NextResponse.json({

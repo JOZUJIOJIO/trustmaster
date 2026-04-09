@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
         .eq("sign", sign)
         .eq("locale", locale)
         .eq("date", today)
-        .single() as any;
+        .single();
 
       if (cached?.data) {
         return NextResponse.json(cached.data);
@@ -91,13 +91,13 @@ The rating is 1-5 stars for overall fortune. Be specific, positive but honest, a
 
     // === Save to cache (non-blocking) ===
     if (supabase) {
-      (supabase as any)
+      supabase
         .from("horoscope_cache")
         .upsert(
           { sign, locale, date: today, data: result },
           { onConflict: "sign,locale,date" }
         )
-        .then(({ error }: any) => {
+        .then(({ error }: { error: unknown }) => {
           if (error) console.error("Failed to cache horoscope:", error);
         });
     }

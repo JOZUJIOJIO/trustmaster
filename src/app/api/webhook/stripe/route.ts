@@ -26,9 +26,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  const supabaseRaw = getSupabaseAdmin();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = supabaseRaw as any;
+  const supabase = getSupabaseAdmin();
 
   // === One-time payment completed ===
   if (event.type === "checkout.session.completed") {

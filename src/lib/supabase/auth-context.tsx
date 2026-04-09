@@ -35,20 +35,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const supabase = supabaseRef.current;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    supabase.auth.getSession().then(({ data }: any) => {
+    supabase.auth.getSession().then(({ data }) => {
       setUser(data?.session?.user ?? null);
       setLoading(false);
     }).catch(() => {
       setLoading(false);
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event: string, session: any) => {
+      (_event, session) => {
         setUser(session?.user ?? null);
       }
-    ) as any;
+    );
 
     return () => subscription.unsubscribe();
   }, []);

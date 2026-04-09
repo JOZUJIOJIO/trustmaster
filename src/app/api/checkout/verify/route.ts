@@ -37,8 +37,7 @@ export async function POST(request: Request) {
 
     // If paid but not in DB yet (webhook race condition), write it now
     if (paid && supabase) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any).from("orders").upsert(
+      await supabase.from("orders").upsert(
         {
           stripe_session_id: session.id,
           stripe_payment_intent:

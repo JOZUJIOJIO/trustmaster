@@ -111,16 +111,17 @@ export default function Home() {
         <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
           {/* Taiji */}
           <div
-            className={`mb-14 lg:mb-16 animate-materialize ${taijiSpin ? "animate-compassSpin" : ""}`}
+            className={`mb-8 sm:mb-14 lg:mb-16 animate-materialize ${taijiSpin ? "animate-compassSpin" : ""}`}
             style={{ animationDelay: taijiSpin ? "0s" : "0.3s", transform: `translateY(${scrollY * 0.15}px)` }}
           >
-            <TaijiSvg size={160} />
+            <div className="sm:hidden"><TaijiSvg size={100} /></div>
+            <div className="hidden sm:block"><TaijiSvg size={160} /></div>
           </div>
 
           {/* Title */}
           <div>
             <h1
-              className={`font-display text-4xl sm:text-5xl lg:text-7xl font-bold tracking-[0.1em] max-w-4xl leading-[1.2] animate-riseIn ${tk.text1}`}
+              className={`font-display text-3xl sm:text-5xl lg:text-7xl font-bold tracking-[0.1em] max-w-4xl leading-[1.2] animate-riseIn ${tk.text1}`}
               style={{ animationDelay: "1.2s", animationDuration: "0.8s" }}
             >
               {t("hero.title")}
@@ -134,7 +135,7 @@ export default function Home() {
           </div>
 
           {/* Date input */}
-          <div className="mt-12 w-full max-w-xs mx-auto animate-riseIn" style={{ animationDelay: "2.4s" }}>
+          <div className="mt-8 sm:mt-12 w-full max-w-xs mx-auto animate-riseIn" style={{ animationDelay: "2.4s" }}>
             <p className={`text-[10px] mb-3 tracking-[0.2em] uppercase ${tk.text3}`}>
               {locale === "zh" ? "输入出生日期" : "Birth date"}
             </p>

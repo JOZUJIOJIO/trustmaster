@@ -66,22 +66,33 @@ export default function Home() {
       {theme === "cosmic" ? (
         <div className="fixed inset-0 z-0 animate-breatheSway">
           <div className="absolute inset-0 bg-[#060410]" />
-          <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 90% 70% at 25% 35%, rgba(60,20,120,0.18) 0%, transparent 55%)", animationDuration: "40s" }} />
-          <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 70% 55% at 75% 55%, rgba(100,60,30,0.08) 0%, transparent 50%)", animationDuration: "55s", animationDirection: "reverse" }} />
-          <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 60% 40% at 50% 70%, rgba(20,40,100,0.1) 0%, transparent 50%)", animationDuration: "70s" }} />
-          <div className="absolute inset-0 opacity-[0.03]" style={{ background: "linear-gradient(135deg, transparent 20%, rgba(242,240,235,1) 45%, rgba(242,240,235,0.5) 50%, rgba(242,240,235,1) 55%, transparent 80%)" }} />
+          <div className="absolute inset-0 animate-drift" style={{ background: "linear-gradient(180deg, rgba(9,8,14,0.35) 0%, rgba(14,12,10,0.74) 48%, rgba(5,4,8,0.98) 100%)", animationDuration: "40s" }} />
+          <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 75% 58% at 50% 34%, rgba(53,132,113,0.18) 0%, transparent 62%)", animationDuration: "55s", animationDirection: "reverse" }} />
+          <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 58% 42% at 55% 58%, rgba(164,101,42,0.16) 0%, transparent 58%)", animationDuration: "70s" }} />
+          {/* Wikimedia Commons CC0 sources: Sanxingdui bronze mask and sacred tree by Gary Todd. */}
+          <div className="absolute inset-0 sanxingdui-bronze-field sanxingdui-bronze-field-cosmic" aria-hidden="true">
+            <img src="/images/sanxingdui-bronze-tree.jpg" alt="" className="sanxingdui-sacred-tree sanxingdui-sacred-tree-cosmic" />
+            <img src="/images/sanxingdui-bronze-mask.jpg" alt="" className="sanxingdui-artifact-mask sanxingdui-artifact-mask-cosmic" />
+            <div className="sanxingdui-ritual-lines" />
+            <div className="sanxingdui-ritual-grain" />
+          </div>
           <StarfieldCanvas />
           {/* Helmet vignette — dark */}
           <div className="absolute inset-0 z-[2] helmet-vignette" />
         </div>
       ) : (
         <div className="fixed inset-0 z-0 animate-breatheSway">
-          {/* Sky — gradient from deep blue-lavender at top to warm white below */}
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, #C8CBE0 0%, #D8D5E8 15%, #E8E6F0 30%, #F2F0EB 50%, #F8F5EE 70%, #FFFDF8 100%)" }} />
-          {/* Sun glow — warm light from upper right */}
-          <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 60% 50% at 75% 5%, rgba(255,210,160,0.25) 0%, transparent 55%)", animationDuration: "25s" }} />
-          {/* Secondary warm light */}
-          <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 40% 30% at 25% 15%, rgba(255,200,170,0.1) 0%, transparent 50%)", animationDuration: "40s", animationDirection: "reverse" }} />
+          {/* Stone-bronze sky for the Sanxingdui artifact treatment. */}
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, #D6D1C0 0%, #E5DED0 28%, #F2EDE3 58%, #FFFDF8 100%)" }} />
+          <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 64% 48% at 50% 20%, rgba(159,113,63,0.18) 0%, transparent 58%)", animationDuration: "25s" }} />
+          <div className="absolute inset-0 animate-drift" style={{ background: "radial-gradient(ellipse 48% 36% at 24% 18%, rgba(50,126,111,0.12) 0%, transparent 54%)", animationDuration: "40s", animationDirection: "reverse" }} />
+          {/* Wikimedia Commons CC0 sources: Sanxingdui bronze mask and sacred tree by Gary Todd. */}
+          <div className="absolute inset-0 sanxingdui-bronze-field sanxingdui-bronze-field-cloud" aria-hidden="true">
+            <img src="/images/sanxingdui-bronze-tree.jpg" alt="" className="sanxingdui-sacred-tree sanxingdui-sacred-tree-cloud" />
+            <img src="/images/sanxingdui-bronze-mask.jpg" alt="" className="sanxingdui-artifact-mask sanxingdui-artifact-mask-cloud" />
+            <div className="sanxingdui-ritual-lines" />
+            <div className="sanxingdui-ritual-grain" />
+          </div>
           {/* Cloud layer below */}
           <div className="absolute inset-x-0 bottom-0 h-[55%]" style={{ background: "linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.15) 30%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.7) 85%, rgba(255,255,255,0.85) 100%)" }} />
           <div className="absolute inset-x-0 bottom-0 h-[30%]" style={{ background: "linear-gradient(180deg, transparent, rgba(242,240,235,0.5))" }} />

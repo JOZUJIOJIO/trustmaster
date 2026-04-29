@@ -120,6 +120,142 @@ body {
   pointer-events: none;
 }
 
+/* Sanxingdui homepage artifact treatment */
+.sanxingdui-bronze-field {
+  overflow: hidden;
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+.sanxingdui-bronze-field::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.72)),
+    radial-gradient(ellipse 72% 58% at 50% 40%, transparent 0%, rgba(0, 0, 0, 0.2) 58%, rgba(0, 0, 0, 0.58) 100%);
+  z-index: 3;
+}
+
+.sanxingdui-bronze-field-cloud::before {
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, 0.12), rgba(255, 253, 248, 0.62)),
+    radial-gradient(ellipse 72% 58% at 50% 40%, transparent 0%, rgba(255, 253, 248, 0.18) 58%, rgba(255, 253, 248, 0.74) 100%);
+}
+
+.sanxingdui-artifact-mask,
+.sanxingdui-sacred-tree {
+  position: absolute;
+  display: block;
+  max-width: none;
+  user-select: none;
+  pointer-events: none;
+  object-fit: cover;
+}
+
+.sanxingdui-artifact-mask {
+  left: 50%;
+  top: 38%;
+  width: min(1020px, 118vw);
+  height: auto;
+  transform: translate(-50%, -50%) scale(1.04);
+  mask-image: radial-gradient(ellipse 55% 44% at 50% 48%, black 0%, rgba(0, 0, 0, 0.72) 52%, transparent 76%);
+  -webkit-mask-image: radial-gradient(ellipse 55% 44% at 50% 48%, black 0%, rgba(0, 0, 0, 0.72) 52%, transparent 76%);
+  z-index: 1;
+}
+
+.sanxingdui-artifact-mask-cosmic {
+  opacity: 0.34;
+  filter: sepia(0.78) saturate(1.16) hue-rotate(342deg) brightness(0.62) contrast(1.2);
+  mix-blend-mode: screen;
+}
+
+.sanxingdui-artifact-mask-cloud {
+  opacity: 0.22;
+  filter: sepia(0.72) saturate(0.82) hue-rotate(338deg) brightness(0.98) contrast(0.92);
+  mix-blend-mode: multiply;
+}
+
+.sanxingdui-sacred-tree {
+  right: max(-80px, -6vw);
+  top: 3%;
+  width: min(360px, 44vw);
+  height: 82%;
+  transform: rotate(5deg);
+  mask-image: linear-gradient(180deg, transparent 0%, black 18%, black 74%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 18%, black 74%, transparent 100%);
+  z-index: 2;
+}
+
+.sanxingdui-sacred-tree-cosmic {
+  opacity: 0.2;
+  filter: sepia(0.84) saturate(1.1) hue-rotate(350deg) brightness(0.72) contrast(1.25);
+  mix-blend-mode: lighten;
+}
+
+.sanxingdui-sacred-tree-cloud {
+  opacity: 0.18;
+  filter: sepia(0.86) saturate(0.78) hue-rotate(350deg) brightness(1.05) contrast(0.88);
+  mix-blend-mode: multiply;
+}
+
+.sanxingdui-ritual-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, transparent 0 49%, rgba(217, 169, 106, 0.08) 49.5% 50.5%, transparent 51%),
+    repeating-linear-gradient(90deg, transparent 0 25px, rgba(242, 240, 235, 0.03) 26px, transparent 27px);
+  mask-image: radial-gradient(ellipse 62% 48% at 50% 38%, black 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 62% 48% at 50% 38%, black 0%, transparent 70%);
+  opacity: 0.55;
+  z-index: 2;
+}
+
+.sanxingdui-ritual-grain {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mix-blend-mode: overlay;
+  opacity: 0.16;
+  z-index: 4;
+}
+
+.sanxingdui-bronze-field-cloud .sanxingdui-ritual-lines {
+  opacity: 0.32;
+}
+
+.sanxingdui-bronze-field-cloud .sanxingdui-ritual-grain {
+  opacity: 0.1;
+  mix-blend-mode: multiply;
+}
+
+@media (max-width: 640px) {
+  .sanxingdui-artifact-mask {
+    top: 27%;
+    width: 172vw;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .sanxingdui-sacred-tree {
+    right: -32vw;
+    top: 7%;
+    width: 74vw;
+    height: 68%;
+    opacity: 0.13;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sanxingdui-bronze-field .animate-drift,
+  .sanxingdui-artifact-mask,
+  .sanxingdui-sacred-tree {
+    animation: none;
+  }
+}
+
 @keyframes shimmer {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }

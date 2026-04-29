@@ -8,6 +8,7 @@ import { useLocale } from "@/lib/LocaleContext";
 import { createClient } from "@/lib/supabase/client";
 import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
+import { PageArtworkBackdrop } from "@/components/PageArtwork";
 
 export default function LoginPage() {
   return (
@@ -47,8 +48,9 @@ function LoginContent() {
       });
       if (error) throw error;
       setResetSent(true);
-    } catch (err: any) {
-      setError(err.message || (isChinese ? "发送失败，请重试" : "Failed to send, please try again"));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "";
+      setError(message || (isChinese ? "发送失败，请重试" : "Failed to send, please try again"));
     }
     setResetLoading(false);
   };
@@ -73,14 +75,15 @@ function LoginContent() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden px-4"
       style={{
         background: theme === "cosmic"
           ? "#0a0814"
           : "linear-gradient(180deg, #E8E6F0 0%, #F2F0EB 40%, #F8F5EE 100%)",
       }}
     >
-      <div className="w-full max-w-sm">
+      <PageArtworkBackdrop art="login" className={theme === "cosmic" ? "" : "opacity-30"} />
+      <div className="relative z-10 w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
             <span className="text-4xl">🔮</span>

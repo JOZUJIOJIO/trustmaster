@@ -6,6 +6,7 @@ import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
+import { PageArtworkBand } from "@/components/PageArtwork";
 
 export default function AboutPage() {
   const { isChinese } = useLocale();
@@ -23,9 +24,8 @@ export default function AboutPage() {
     >
       <PageHeader title={isChinese ? "关于" : "About"} href="/" />
 
-      <main className="max-w-2xl lg:max-w-5xl mx-auto px-4 lg:px-8 py-10 lg:py-16 pb-24">
-        {/* Brand Hero — full width, cinematic */}
-        <section className="text-center mb-16 lg:mb-20">
+      <PageArtworkBand art="about" className="px-4 py-14 lg:py-24 text-center border-b border-amber-400/10">
+        <div className="max-w-2xl mx-auto">
           <div className="text-5xl mb-5">🔮</div>
           <h1 className="font-display text-4xl lg:text-6xl font-bold text-gradient-gold mb-6">Kairós</h1>
           <p className={`font-display text-lg lg:text-xl ${tk.text2} italic max-w-xl mx-auto leading-relaxed`}>
@@ -33,7 +33,10 @@ export default function AboutPage() {
               ? "「Kairós — 命运转折的那一刻」"
               : '"Kairós — The Moment That Changes Everything"'}
           </p>
-        </section>
+        </div>
+      </PageArtworkBand>
+
+      <main className="max-w-2xl lg:max-w-5xl mx-auto px-4 lg:px-8 py-10 lg:py-16 pb-24">
 
         {/* Brand Story — wide prose */}
         <section className="mb-16 lg:mb-20">

@@ -7,6 +7,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import TiltCard from "@/components/TiltCard";
 import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
+import { PageArtworkBand } from "@/components/PageArtwork";
 
 export default function HealthPage() {
   const { locale, t } = useLocale();
@@ -58,7 +59,8 @@ export default function HealthPage() {
       </header>
 
       {/* Hero */}
-      <section className="px-4 lg:px-6 py-12 lg:py-20 text-center max-w-2xl mx-auto">
+      <PageArtworkBand art="health" className="px-4 lg:px-6 py-12 lg:py-20 text-center">
+        <div className="max-w-2xl mx-auto">
         <div className="text-5xl mb-4">🌿</div>
         <div className="flex items-center gap-3 justify-center mb-4">
           <div className={`w-12 h-px ${theme === "cosmic" ? "bg-amber-400/30" : "bg-amber-600/30"}`} />
@@ -83,7 +85,8 @@ export default function HealthPage() {
           {t("health.cta")} →
         </Link>
         <p className={`${tk.text3} text-[10px] mt-3`}>{t("health.ctaDesc")}</p>
-      </section>
+        </div>
+      </PageArtworkBand>
 
       {/* Features */}
       <section className="px-4 lg:px-6 pb-12 max-w-4xl mx-auto">

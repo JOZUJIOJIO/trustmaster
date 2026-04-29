@@ -7,6 +7,7 @@ import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { PageArtworkBand } from "@/components/PageArtwork";
 
 const sections = [
   {
@@ -70,8 +71,8 @@ export default function LearnPage() {
         <LanguageSwitcher />
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-10 pb-24">
-        <div className="text-center mb-12">
+      <PageArtworkBand art="learn" className="px-4 py-12 lg:py-16 text-center border-b border-amber-400/10">
+        <div className="max-w-2xl mx-auto">
           <div className={`flex items-center justify-center gap-2 ${tk.accentMuted} text-xs mb-4`}>
             <span>☸</span><span>Ancient Eastern Wisdom</span><span>☸</span>
           </div>
@@ -82,6 +83,9 @@ export default function LearnPage() {
             {isChinese ? "3000 年东方智慧，六分钟读懂" : "3,000 years of Eastern wisdom in 6 minutes"}
           </p>
         </div>
+      </PageArtworkBand>
+
+      <main className="max-w-2xl mx-auto px-4 py-10 pb-24">
 
         <div className="space-y-4">
           {sections.map((s, i) => {

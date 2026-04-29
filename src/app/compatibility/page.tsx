@@ -12,6 +12,7 @@ import PageHeader from "@/components/PageHeader";
 import { useToast } from "@/components/Toast";
 import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
+import { PageArtworkBand } from "@/components/PageArtwork";
 
 type Step = "input" | "result";
 
@@ -274,6 +275,7 @@ function CompatibilityContent() {
       }}
     >
       <PageHeader title={isChinese ? "双人合盘" : "Compatibility"} />
+      <PageArtworkBand art="compatibility" className="h-40 lg:h-60 border-b border-amber-400/10" />
 
       <main className="max-w-lg lg:max-w-4xl mx-auto px-4 py-8 pb-24">
         {step === "input" ? (

@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/supabase/auth-context";
 import { useLocale } from "@/lib/LocaleContext";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { PageArtworkBand, PageArtworkBackdrop } from "@/components/PageArtwork";
 
 export default function ProfilePage() {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -59,13 +60,14 @@ export default function ProfilePage() {
 
   if (!authLoading && !user) {
     return (
-      <div className="min-h-screen bg-[#0a0814]">
+      <div className="relative min-h-screen overflow-hidden bg-[#0a0814]">
+        <PageArtworkBackdrop art="profile" />
         <div className="lg:hidden flex items-center h-11 px-4 border-b border-amber-400/10 sticky top-0 bg-[#0a0814] z-10">
           <Link href="/" className="text-amber-200/60 hover:text-amber-200 mr-3 text-lg">←</Link>
           <span className="font-semibold text-[15px] text-amber-100">{t("nav.profile")}</span>
         </div>
         {/* Non-logged-in state */}
-        <div className="text-center space-y-6 py-8">
+        <div className="relative z-10 text-center space-y-6 py-8">
           <div className="text-5xl mb-2">🔮</div>
           <h2 className="text-xl font-bold text-amber-100">
             {isChinese ? "解锁你的专属命盘" : "Unlock Your Personal Chart"}
@@ -128,6 +130,8 @@ export default function ProfilePage() {
         </div>
         <LanguageSwitcher />
       </div>
+
+      <PageArtworkBand art="profile" className="h-36 lg:h-56 border-b border-amber-400/10" />
 
       <main className="lg:max-w-3xl lg:mx-auto lg:px-6 lg:py-10 pb-24">
         {loading ? (

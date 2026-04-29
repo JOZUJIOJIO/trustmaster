@@ -31,6 +31,7 @@ import { RevealSection } from "@/components/fortune/RevealSection";
 import { StrengthGauge } from "@/components/fortune/StrengthGauge";
 import { PaywallSection } from "@/components/fortune/PaywallSection";
 import { ShareCard } from "@/components/fortune/ShareCard";
+import { PageArtworkBand } from "@/components/PageArtwork";
 
 // Generate a stable hash for a chart to use as cache/order key
 function getChartHash(chart: BaziChart): string {
@@ -551,6 +552,8 @@ function FortuneContent() {
         </div>
         <LanguageSwitcher />
       </header>
+
+      <PageArtworkBand art="fortune" className="relative z-10 h-40 lg:h-60 border-b border-amber-400/10" />
 
       <main className="relative z-10 max-w-lg lg:max-w-4xl mx-auto px-4 py-8 lg:py-16 pb-24">
         {/* ===== Unified Input ===== */}

@@ -8,12 +8,29 @@ import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { calculateBazi, STEM_ELEMENTS, getTenGod, type BaziChart } from "@/lib/bazi";
-import { ELEMENT_RECOMMENDATIONS, DAY_MASTER_DESC } from "@/lib/bazi-glossary";
+import { ELEMENT_RECOMMENDATIONS } from "@/lib/bazi-glossary";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
+import { PageArtworkBand } from "@/components/PageArtwork";
 
 // @ts-expect-error lunar-javascript has no type declarations
 import { Solar } from "lunar-javascript";
+
+type ThemeTokenSet = (typeof themeTokens)[keyof typeof themeTokens];
+
+function getValidDateParam(value: string | null) {
+  return value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : "";
+}
+
+function getStoredBirthDate() {
+  if (typeof window === "undefined") return "";
+  return localStorage.getItem("kairos_birth_date") ?? "";
+}
+
+function calculateDefaultDailyChart(date: string) {
+  const [y, m, d] = date.split("-").map(Number);
+  return calculateBazi(y, m, d, "午", "male");
+}
 
 // Daily fortune score based on day master vs today's stem/branch
 function calcDailyScores(chart: BaziChart) {
@@ -94,7 +111,7 @@ function getDailyGuidance(chart: BaziChart, tenGod: string) {
   };
 }
 
-function ScoreBar({ label, score, icon, color, tk }: { label: string; score: number; icon: string; color: string; tk: (typeof themeTokens)["cosmic"] }) {
+function ScoreBar({ label, score, icon, color, tk }: { label: string; score: number; icon: string; color: string; tk: ThemeTokenSet }) {
   const level = score >= 80 ? "极佳" : score >= 65 ? "良好" : score >= 50 ? "平稳" : "注意";
   return (
     <div className="space-y-1.5">
@@ -162,13 +179,14 @@ function getPersonalizedInsight(chart: BaziChart, scores: ReturnType<typeof calc
 }
 
 function DailyContent() {
-  const { isChinese, t } = useLocale();
+  const { isChinese } = useLocale();
   const { theme } = useTheme();
   const tk = themeTokens[theme];
   const { user } = useAuth();
   const searchParams = useSearchParams();
-  const [chart, setChart] = useState<BaziChart | null>(null);
-  const [birthDate, setBirthDate] = useState("");
+  const dateParam = getValidDateParam(searchParams.get("date"));
+  const [birthDate, setBirthDate] = useState(() => dateParam || getStoredBirthDate());
+  const [chart, setChart] = useState<BaziChart | null>(() => (dateParam ? calculateDefaultDailyChart(dateParam) : null));
   const [isSubscriber, setIsSubscriber] = useState(false);
 
   // Check subscription
@@ -184,28 +202,9 @@ function DailyContent() {
       .catch(() => {});
   }, [user]);
 
-  // Auto-fill from localStorage saved birth date
-  useEffect(() => {
-    const saved = localStorage.getItem("kairos_birth_date");
-    if (saved && !birthDate) {
-      setBirthDate(saved);
-    }
-  }, []);
-
-  // Check URL for pre-filled date
-  useEffect(() => {
-    const dateParam = searchParams.get("date");
-    if (dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
-      setBirthDate(dateParam);
-      const [y, m, d] = dateParam.split("-").map(Number);
-      setChart(calculateBazi(y, m, d, "午", "male")); // default hour/gender for daily
-    }
-  }, [searchParams]);
-
   const handleGenerate = () => {
     if (!birthDate) return;
-    const [y, m, d] = birthDate.split("-").map(Number);
-    setChart(calculateBazi(y, m, d, "午", "male"));
+    setChart(calculateDefaultDailyChart(birthDate));
   };
 
   const today = new Date();
@@ -235,6 +234,7 @@ function DailyContent() {
       )}
       <div className="relative z-10">
       <PageHeader title={isChinese ? "每日运势" : "Daily Insights"} />
+      <PageArtworkBand art="daily" className="h-40 lg:h-80 border-b border-amber-400/10" />
 
       <main className="max-w-lg lg:max-w-4xl mx-auto px-4 py-8 pb-24">
         {/* Date header */}

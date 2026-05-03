@@ -1,5 +1,5 @@
 /**
- * Generate a stable hash string for a BaZi chart, used as cache/order key.
+ * Generate a stable hash string for a Four Pillars chart, used as cache/order key.
  */
 export function getChartHash(chart: Record<string, unknown>): string {
   const p = (pillar: Record<string, string>) =>

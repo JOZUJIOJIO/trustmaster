@@ -14,12 +14,12 @@ export default async function AdminReadingsPage() {
   ]);
 
   return (
-    <AdminShell title="内容缓存" description="查看 AI 命理解读缓存和每日运势缓存，判断内容生成和复用情况。">
+    <AdminShell title="内容缓存" description="查看 AI 图谱洞察缓存和每日趋势缓存，判断内容生成和复用情况。">
       {[readings.error, horoscope.error].filter(Boolean).map((error) => (
         <div key={error} className="mb-3 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">{error}</div>
       ))}
       <div className="grid gap-5 xl:grid-cols-2">
-        <AdminPanel title={`命理解读缓存 · ${readings.count}`}>
+        <AdminPanel title={`图谱洞察缓存 · ${readings.count}`}>
           <div className="space-y-3">
             {readings.rows.map((item) => (
               <div key={item.id} className="rounded-lg border border-stone-200 p-3">
@@ -31,10 +31,10 @@ export default async function AdminReadingsPage() {
                 <p className="mt-2 text-xs text-stone-400">{formatDate(item.created_at)}</p>
               </div>
             ))}
-            {readings.rows.length === 0 && <p className="py-8 text-center text-sm text-stone-500">暂无命理解读缓存</p>}
+            {readings.rows.length === 0 && <p className="py-8 text-center text-sm text-stone-500">暂无图谱洞察缓存</p>}
           </div>
         </AdminPanel>
-        <AdminPanel title={`每日运势缓存 · ${horoscope.count}`}>
+        <AdminPanel title={`每日趋势缓存 · ${horoscope.count}`}>
           <div className="space-y-3">
             {horoscope.rows.map((item) => (
               <div key={item.id} className="rounded-lg border border-stone-200 p-3">
@@ -46,7 +46,7 @@ export default async function AdminReadingsPage() {
                 <p className="mt-2 text-xs text-stone-400">{formatDate(item.created_at)}</p>
               </div>
             ))}
-            {horoscope.rows.length === 0 && <p className="py-8 text-center text-sm text-stone-500">暂无每日运势缓存</p>}
+            {horoscope.rows.length === 0 && <p className="py-8 text-center text-sm text-stone-500">暂无每日趋势缓存</p>}
           </div>
         </AdminPanel>
       </div>

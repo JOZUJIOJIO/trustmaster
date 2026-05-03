@@ -77,7 +77,7 @@ export function ShareCard({ chart, userName, isChinese }: ShareCardProps) {
     // Day Master — big
     boldText(chart.dayMaster, w / 2, 530, 120, "rgba(255,230,180,0.95)");
     text(
-      `${chart.dayMasterElement}${isChinese ? "命" : ""} · ${chart.dayMasterStrength === "strong" ? (isChinese ? "身强" : "Strong") : (isChinese ? "身弱" : "Gentle")}`,
+      `${chart.dayMasterElement}${isChinese ? "图谱" : ""} · ${chart.dayMasterStrength === "strong" ? (isChinese ? "结构偏强" : "Strong") : (isChinese ? "结构偏柔" : "Gentle")}`,
       w / 2, 580, 24, "rgba(217,169,106,0.6)"
     );
 
@@ -182,7 +182,7 @@ export function ShareCard({ chart, userName, isChinese }: ShareCardProps) {
     ctx.roundRect(w * 0.25, 1300, w * 0.5, 50, 25);
     ctx.fill();
     text(
-      isChinese ? "扫码查看你的命盘" : "Scan to get your reading",
+      isChinese ? "扫码查看你的图谱" : "Scan to get your reading",
       w / 2, 1332, 18, "rgba(217,169,106,0.4)"
     );
 
@@ -216,7 +216,7 @@ export function ShareCard({ chart, userName, isChinese }: ShareCardProps) {
         <polyline points="16 6 12 2 8 6" />
         <line x1="12" y1="2" x2="12" y2="15" />
       </svg>
-      {isChinese ? "分享命盘" : "Share Chart"}
+      {isChinese ? "分享图谱" : "Share Map"}
     </button>
   );
 }

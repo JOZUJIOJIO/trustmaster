@@ -1,5 +1,5 @@
 /**
- * Unit tests for the BaZi calculation engine.
+ * Unit tests for the Four Pillars calculation engine.
  *
  * Reference values computed via lunar-javascript directly and cross-checked
  * against the implementation in src/lib/bazi.ts.

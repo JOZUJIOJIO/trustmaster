@@ -5,28 +5,41 @@ import type { BaziChart } from "@/lib/bazi";
 import { STEM_ELEMENTS } from "@/lib/bazi";
 
 /**
- * 十神力量分布图 + 命格倾向标签
- * Groups: 比劫 / 食伤 / 财星 / 官杀 / 印星
+ * 十神结构分布图 + 性格倾向标签
+ * Groups: 比劫 / 食伤 / 资源 / 官杀 / 印星
  */
 
 const GOD_GROUPS = [
   { name: "比劫", gods: ["比肩", "劫财"], color: "#8b5cf6", emoji: "🤝", desc: "自我/社交力量", archetype: "独立自主型" },
   { name: "食伤", gods: ["食神", "伤官"], color: "#ec4899", emoji: "✨", desc: "才华/表达力量", archetype: "创意才华型" },
-  { name: "财星", gods: ["正财", "偏财"], color: "#f59e0b", emoji: "💰", desc: "财富/务实力量", archetype: "务实理财型" },
-  { name: "官杀", gods: ["正官", "七杀"], color: "#ef4444", emoji: "👑", desc: "事业/权力力量", archetype: "事业领袖型" },
-  { name: "印星", gods: ["正印", "偏印"], color: "#3b82f6", emoji: "📚", desc: "学识/贵人力量", archetype: "智慧学者型" },
+  { name: "资源", gods: ["正财", "偏财"], color: "#f59e0b", emoji: "◆", desc: "资源/务实力量", archetype: "资源管理型" },
+  { name: "官杀", gods: ["正官", "七杀"], color: "#ef4444", emoji: "◇", desc: "责任/规则力量", archetype: "责任管理型" },
+  { name: "印星", gods: ["正印", "偏印"], color: "#3b82f6", emoji: "✦", desc: "学习/支持力量", archetype: "智慧学习型" },
 ];
+
+const GOD_DISPLAY: Record<string, string> = {
+  比肩: "自我",
+  劫财: "协作",
+  食神: "表达",
+  伤官: "创造",
+  正财: "稳定资源",
+  偏财: "机会资源",
+  正官: "规则",
+  七杀: "挑战",
+  正印: "学习",
+  偏印: "洞察",
+};
 
 const GOD_DETAILS: Record<string, { meaning: string; positive: string; negative: string }> = {
   比肩: { meaning: "与日主同类同性", positive: "独立自强、团队合作", negative: "固执己见、竞争意识过强" },
   劫财: { meaning: "与日主同类异性", positive: "行动力强、社交广泛", negative: "冲动消费、容易争执" },
-  食神: { meaning: "日主所生同性", positive: "才华横溢、性情温和、福气深厚", negative: "安逸怠惰、缺乏进取心" },
+  食神: { meaning: "日主所生同性", positive: "表达稳定、性情温和、生活感受力强", negative: "安逸怠惰、缺乏进取心" },
   伤官: { meaning: "日主所生异性", positive: "创新能力强、口才出众、思维敏捷", negative: "叛逆不羁、目中无人" },
-  正财: { meaning: "日主所克异性", positive: "勤劳务实、理财能力强、感情专一", negative: "过于保守、吝啬" },
-  偏财: { meaning: "日主所克同性", positive: "人缘好、投资眼光准、大方豪爽", negative: "贪心不足、理财冒进" },
-  正官: { meaning: "克日主的异性", positive: "正直守法、领导能力强、事业稳定", negative: "刻板保守、压力过大" },
+  正财: { meaning: "日主所克异性", positive: "勤劳务实、资源管理能力强、关系稳定", negative: "过于保守、边界紧绷" },
+  偏财: { meaning: "日主所克同性", positive: "人缘好、机会感敏锐、大方豪爽", negative: "节奏冒进、资源分散" },
+  正官: { meaning: "克日主的异性", positive: "正直守序、组织能力强、节奏稳定", negative: "刻板保守、压力过大" },
   七杀: { meaning: "克日主的同性", positive: "魄力十足、敢于挑战、威严霸气", negative: "霸道专横、疑心重" },
-  正印: { meaning: "生日主的异性", positive: "善良仁慈、贵人运好、学业优异", negative: "依赖心强、优柔寡断" },
+  正印: { meaning: "生日主的异性", positive: "善良仁慈、支持资源多、学习能力强", negative: "依赖心强、优柔寡断" },
   偏印: { meaning: "生日主的同性", positive: "悟性高、技术能力强、独特思维", negative: "多疑孤僻、不切实际" },
 };
 
@@ -103,7 +116,7 @@ export default function TenGodChart({ chart }: { chart: BaziChart }) {
           <span className="text-sm font-bold text-amber-200">{dominantGroup.archetype}</span>
         </div>
         <p className="text-[10px] text-amber-200/25 mt-2">
-          基于十神分布 · {dominantGroup.name}力量最强
+          基于结构分布 · {dominantGroup.name}力量最强
         </p>
       </div>
 
@@ -124,7 +137,7 @@ export default function TenGodChart({ chart }: { chart: BaziChart }) {
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs text-amber-200/60 group-hover:text-amber-200/80 transition-colors">
                         {g.name}
-                        <span className="text-amber-200/25 ml-1.5">({g.gods.join("·")})</span>
+                        <span className="text-amber-200/25 ml-1.5">({g.gods.map((god) => GOD_DISPLAY[god] || god).join("·")})</span>
                       </span>
                       <span className="text-xs font-mono" style={{ color: `${g.color}99` }}>
                         {g.total.toFixed(1)}
@@ -153,7 +166,7 @@ export default function TenGodChart({ chart }: { chart: BaziChart }) {
                     return (
                       <div key={god} className="bg-white/[0.02] border border-white/5 rounded-lg p-3">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-bold" style={{ color: g.color }}>{god}</span>
+                          <span className="text-xs font-bold" style={{ color: g.color }}>{GOD_DISPLAY[god] || god}</span>
                           <span className="text-[10px] text-amber-200/30">×{count.toFixed(1)}</span>
                         </div>
                         <p className="text-[10px] text-amber-200/25 mb-1">{detail?.meaning}</p>

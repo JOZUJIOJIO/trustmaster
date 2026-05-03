@@ -8,6 +8,7 @@ import { DAY_MASTER_DESC, ELEMENT_RECOMMENDATIONS, GLOSSARY } from "@/lib/bazi-g
 import RadarChart from "@/components/RadarChart";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import BrandMark from "@/components/BrandMark";
 
 const STEM_DATA: Record<string, {
   stem: string; element: string; emoji: string; yinYang: string; yinYangEn: string;
@@ -24,7 +25,7 @@ const STEM_DATA: Record<string, {
   己: { stem: "己", element: "土", emoji: "🌾", yinYang: "阴", yinYangEn: "Yin", careers: "人力资源、营养师、社工、陶艺家、园艺师", careersEn: "HR, Nutritionist, Social Worker, Potter, Gardener", love: "温润如玉，善于照顾人，但容易委屈自己。适合与甲木、丙火的人搭配。", loveEn: "Nurturing and caring, but may sacrifice own needs. Best matched with Jia Wood or Bing Fire.", celebrities: "特蕾莎修女、宫崎骏（己土日主代表）", celebritiesEn: "Mother Teresa, Hayao Miyazaki (representative Ji Earth Day Masters)", elementStrengths: { 木: 1, 火: 2, 土: 3, 金: 2, 水: 2 } },
   庚: { stem: "庚", element: "金", emoji: "⚔️", yinYang: "阳", yinYangEn: "Yang", careers: "律师、军人、外科医生、机械工程师、运动员", careersEn: "Lawyer, Military, Surgeon, Mechanical Engineer, Athlete", love: "果断直接，讲究原则，一旦认定非常专一。适合与乙木、丁火的人搭配。", loveEn: "Decisive and principled, extremely loyal once committed. Best matched with Yi Wood or Ding Fire.", celebrities: "拿破仑、李小龙（庚金日主代表）", celebritiesEn: "Napoleon, Bruce Lee (representative Geng Metal Day Masters)", elementStrengths: { 木: 1, 火: 1, 土: 2, 金: 4, 水: 2 } },
   辛: { stem: "辛", element: "金", emoji: "💎", yinYang: "阴", yinYangEn: "Yin", careers: "珠宝设计、品酒师、审计师、编辑、品牌顾问", careersEn: "Jewelry Design, Sommelier, Auditor, Editor, Brand Consultant", love: "精致优雅，追求完美的爱情。品味高但可能过于挑剔。适合与丙火、壬水的人搭配。", loveEn: "Refined and elegant, seeks perfect love. Has high taste but may be too picky. Best matched with Bing Fire or Ren Water.", celebrities: "奥黛丽·赫本、安娜·温图尔（辛金日主代表）", celebritiesEn: "Audrey Hepburn, Anna Wintour (representative Xin Metal Day Masters)", elementStrengths: { 木: 1, 火: 1, 土: 2, 金: 3, 水: 3 } },
-  壬: { stem: "壬", element: "水", emoji: "🌊", yinYang: "阳", yinYangEn: "Yang", careers: "投资人、贸易商、航海家、IT工程师、哲学家", careersEn: "Investor, Trader, Navigator, IT Engineer, Philosopher", love: "智慧包容，视野开阔，但可能不够脚踏实地。适合与丁火、甲木的人搭配。", loveEn: "Wise and broad-minded, but may lack grounding. Best matched with Ding Fire or Jia Wood.", celebrities: "比尔·盖茨、爱因斯坦（壬水日主代表）", celebritiesEn: "Bill Gates, Einstein (representative Ren Water Day Masters)", elementStrengths: { 木: 2, 火: 1, 土: 1, 金: 2, 水: 4 } },
+  壬: { stem: "壬", element: "水", emoji: "🌊", yinYang: "阳", yinYangEn: "Yang", careers: "资源配置、贸易商、航海家、IT工程师、哲学家", careersEn: "Resource Strategist, Trader, Navigator, IT Engineer, Philosopher", love: "智慧包容，视野开阔，但可能不够脚踏实地。适合与丁火、甲木的人搭配。", loveEn: "Wise and broad-minded, but may lack grounding. Best matched with Ding Fire or Jia Wood.", celebrities: "比尔·盖茨、爱因斯坦（壬水日主代表）", celebritiesEn: "Bill Gates, Einstein (representative Ren Water Day Masters)", elementStrengths: { 木: 2, 火: 1, 土: 1, 金: 2, 水: 4 } },
   癸: { stem: "癸", element: "水", emoji: "💧", yinYang: "阴", yinYangEn: "Yin", careers: "心理学家、占星师、瑜伽导师、诗人、灵性导师", careersEn: "Psychologist, Astrologer, Yoga Teacher, Poet, Spiritual Guide", love: "温柔滋润，直觉敏锐，善解人意。但可能过于多愁善感。适合与戊土、庚金的人搭配。", loveEn: "Gentle and intuitive, deeply empathetic. But may be too sentimental. Best matched with Wu Earth or Geng Metal.", celebrities: "达芬奇、泰勒·斯威夫特（癸水日主代表）", celebritiesEn: "Leonardo da Vinci, Taylor Swift (representative Gui Water Day Masters)", elementStrengths: { 木: 2, 火: 1, 土: 1, 金: 2, 水: 4 } },
 };
 
@@ -42,7 +43,7 @@ export default function PersonalityPage({ params }: { params: Promise<{ stem: st
     return (
       <div className="min-h-screen bg-[#12101c] flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl mb-4">🔮</div>
+          <div className="mb-4 flex justify-center"><BrandMark size="md" /></div>
           <p className="text-amber-200/50">Page not found</p>
           <Link href="/fortune" className="text-amber-400/50 text-sm mt-2 block underline">Go to Analysis</Link>
         </div>
@@ -142,7 +143,7 @@ export default function PersonalityPage({ params }: { params: Promise<{ stem: st
         {/* CTA */}
         <div className="mt-10 text-center space-y-3">
           <Link href="/fortune" className="block w-full py-3.5 rounded-2xl font-semibold bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all text-sm">
-            {isChinese ? "分析我的完整命盘 →" : "Get My Full Analysis →"}
+            {isChinese ? "分析我的完整图谱 →" : "Get My Full Analysis →"}
           </Link>
           <div className="flex flex-wrap justify-center gap-2">
             {VALID_STEMS.filter(s => s !== decodedStem).map(s => (

@@ -4,6 +4,21 @@ import type { BaziChart } from "@/lib/bazi";
 import { getTenGod, STEM_ELEMENTS } from "@/lib/bazi";
 import { ELEMENT_RECOMMENDATIONS } from "@/lib/bazi-glossary";
 
+const TEN_GOD_LABELS: Record<string, string> = {
+  比肩: "自我",
+  劫财: "协作",
+  食神: "表达",
+  伤官: "创造",
+  正财: "稳定资源",
+  偏财: "机会资源",
+  正官: "规则",
+  七杀: "挑战",
+  正印: "学习",
+  偏印: "洞察",
+};
+
+const displayTenGod = (god: string) => TEN_GOD_LABELS[god] || god;
+
 // ===== Common: Animated Score Ring =====
 function ScoreRing({ score, size = 56, color, label }: { score: number; size?: number; color: string; label: string }) {
   const r = (size - 8) / 2;
@@ -127,16 +142,16 @@ function CareerDashboard({ chart }: { chart: BaziChart }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-4">
-        <ScoreRing score={careerScore} color={levelColor} label="事业运" />
+      <ScoreRing score={careerScore} color={levelColor} label="事业节奏" />
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-sm font-bold" style={{ color: levelColor }}>{level}</span>
-            <span className="text-[10px] text-amber-200/30">今年流年{yearGod}</span>
+            <span className="text-[10px] text-amber-200/30">今年主题{displayTenGod(yearGod)}</span>
           </div>
           <p className="text-[10px] text-amber-200/40 leading-relaxed">
-            {careerScore >= 80 ? "今年事业运势强劲，适合积极争取晋升和拓展。" :
-             careerScore >= 65 ? "事业运稳中有升，把握机遇，稳扎稳打。" :
-             "事业运势需沉淀，宜守不宜攻，多积累实力。"}
+            {careerScore >= 80 ? "今年事业节奏强劲，适合积极争取晋升和拓展。" :
+             careerScore >= 65 ? "事业节奏稳中有升，把握机遇，稳扎稳打。" :
+             "事业节奏需要沉淀，宜守不宜攻，多积累实力。"}
           </p>
         </div>
       </div>
@@ -162,7 +177,7 @@ function CareerDashboard({ chart }: { chart: BaziChart }) {
   );
 }
 
-// ===== 3. Wealth Trend Mini Chart =====
+// ===== 3. Resource Trend Mini Chart =====
 function WealthTrend({ chart }: { chart: BaziChart }) {
   const birthYear = parseInt(chart.solarDate);
   const currentYear = new Date().getFullYear();
@@ -216,18 +231,18 @@ function WealthTrend({ chart }: { chart: BaziChart }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span>{trendIcon}</span>
-          <span className="text-xs" style={{ color: trendColor }}>未来两年财运{trend}</span>
+          <span className="text-xs" style={{ color: trendColor }}>未来两年资源趋势{trend}</span>
         </div>
         <span className="text-[10px] text-amber-200/20">基于大运周期推算</span>
       </div>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="w-full">
-        <defs>
-          <linearGradient id="wealthGrad" x1="0" y1="0" x2="0" y2="1">
+    <defs>
+          <linearGradient id="resourceGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={`${trendColor}33`} />
             <stop offset="100%" stopColor={`${trendColor}00`} />
           </linearGradient>
         </defs>
-        <path d={areaD} fill="url(#wealthGrad)" />
+        <path d={areaD} fill="url(#resourceGrad)" />
         <path d={pathD} fill="none" stroke={trendColor} strokeWidth="2" strokeLinecap="round" />
         {points.map((p, i) => (
           <g key={i}>
@@ -246,14 +261,14 @@ function WealthTrend({ chart }: { chart: BaziChart }) {
   );
 }
 
-// ===== 4. Love & Peach Blossom Index =====
+// ===== 4. Relationship Index =====
 function LoveIndex({ chart }: { chart: BaziChart }) {
-  // Peach blossom stars (桃花星): 子午卯酉 in branches
+  // Social charm markers: 子午卯酉 in branches
   const peachBlossomBranches = ["子", "午", "卯", "酉"];
   const branches = [chart.yearPillar.branch, chart.monthPillar.branch, chart.dayPillar.branch, chart.hourPillar.branch];
   const peachCount = branches.filter(b => peachBlossomBranches.includes(b)).length;
 
-  // Love score based on peach blossom + ten gods
+  // Relationship score based on social charm + ten symbols
   const hasZhengCai = [chart.tenGods.year, chart.tenGods.month, chart.tenGods.hour].includes("正财");
   const hasZhengGuan = [chart.tenGods.year, chart.tenGods.month, chart.tenGods.hour].includes("正官");
   const loveBase = 40 + peachCount * 15 + (hasZhengCai || hasZhengGuan ? 10 : 0);
@@ -261,8 +276,8 @@ function LoveIndex({ chart }: { chart: BaziChart }) {
 
   // Best match elements (相生)
   const matchMap: Record<string, string[]> = {
-    木: ["水命", "火命"], 火: ["木命", "土命"], 土: ["火命", "金命"],
-    金: ["土命", "水命"], 水: ["金命", "木命"],
+    木: ["水型", "火型"], 火: ["木型", "土型"], 土: ["火型", "金型"],
+    金: ["土型", "水型"], 水: ["金型", "木型"],
   };
   const matches = matchMap[chart.dayMasterElement] || [];
 
@@ -277,25 +292,25 @@ function LoveIndex({ chart }: { chart: BaziChart }) {
     <div className="space-y-3">
       <div className="flex items-center gap-4">
         <div className="relative">
-          <ScoreRing score={loveScore} size={56} color="#ec4899" label="桃花指数" />
+          <ScoreRing score={loveScore} size={56} color="#ec4899" label="关系指数" />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             {Array.from({ length: 5 }).map((_, i) => (
               <span key={i} className={`text-sm ${i < peachCount ? "text-pink-400" : "text-pink-400/15"}`}>❤</span>
             ))}
-            <span className="text-[10px] text-amber-200/20 ml-1">桃花星 ×{peachCount}</span>
+            <span className="text-[10px] text-amber-200/20 ml-1">社交信号 ×{peachCount}</span>
           </div>
           <p className="text-[10px] text-amber-200/40">
-            {peachCount >= 3 ? "桃花旺盛，异性缘极佳，需注意专一。" :
-             peachCount >= 1 ? "桃花运中等，主动出击更有机会。" :
-             "桃花较少，但感情质量高，适合深层次关系。"}
+            {peachCount >= 3 ? "社交吸引力强，关系机会较多，需注意稳定边界。" :
+             peachCount >= 1 ? "关系信号中等，主动表达更容易建立连接。" :
+             "关系信号较少，但更适合深层次沟通。"}
           </p>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div className="bg-pink-500/5 border border-pink-500/10 rounded-lg p-2.5">
-          <div className="text-[10px] text-pink-400/40 mb-1">💕 最佳命理配对</div>
+          <div className="text-[10px] text-pink-400/40 mb-1">💕 最佳沟通配对</div>
           <div className="flex gap-1.5">
             {matches.map(m => (
               <span key={m} className="text-xs text-pink-200/60 px-2 py-0.5 rounded-full bg-pink-500/10">{m}</span>
@@ -364,7 +379,7 @@ function HealthOrganMap({ chart }: { chart: BaziChart }) {
             const min = organs.reduce((a, b) =>
               chart.fiveElements[a.element as keyof typeof chart.fiveElements] <= chart.fiveElements[b.element as keyof typeof chart.fiveElements] ? a : b
             );
-            return `${min.element}行最弱，${min.organ}系统相对薄弱，日常注意调养。五行较为均衡，整体健康运势良好。`;
+            return `${min.element}行最弱，${min.organ}系统相对薄弱，日常注意调养。五行较为均衡，整体身心节奏较稳定。`;
           })()}
         </p>
       </div>

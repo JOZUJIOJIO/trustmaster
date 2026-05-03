@@ -24,7 +24,7 @@ body {
   font-family: var(--font-display), var(--font-chinese), 'PingFang SC', serif;
 }
 
-/* Chinese serif for BaZi pillar labels, fortune text */
+/* Chinese serif for Four Pillars labels and insight text */
 .font-chinese {
   font-family: var(--font-chinese), 'PingFang SC', 'Songti SC', serif;
 }

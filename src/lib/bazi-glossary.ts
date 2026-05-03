@@ -1,5 +1,5 @@
 /**
- * BaZi Glossary — tooltip explanations for all terms
+ * Four Pillars glossary — tooltip explanations for all terms
  * Bilingual: Chinese primary, English secondary
  */
 
@@ -14,27 +14,27 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   // Core concepts
   天干: { term: "天干", termEn: "Heavenly Stems", desc: "十个天干：甲乙丙丁戊己庚辛壬癸，代表天的能量变化，对应五行阴阳。", descEn: "The 10 Heavenly Stems represent celestial energy cycles, each mapped to a Yin/Yang polarity and one of the Five Elements." },
   地支: { term: "地支", termEn: "Earthly Branches", desc: "十二个地支：子丑寅卯辰巳午未申酉戌亥，对应十二生肖和时辰，代表地的能量。", descEn: "The 12 Earthly Branches correspond to the 12 Chinese zodiac animals and time periods." },
-  四柱: { term: "四柱", termEn: "Four Pillars", desc: "由年柱、月柱、日柱、时柱组成，每柱一天干一地支，共八个字，故称「八字」。", descEn: "Year, Month, Day, and Hour Pillars — each with one Heavenly Stem and one Earthly Branch, forming the '8 Characters'." },
-  日主: { term: "日主", termEn: "Day Master", desc: "日柱的天干，代表「自己」，是整个命盘分析的核心参照点。日主的五行属性决定了你的基本性格特征。", descEn: "The Heavenly Stem of the Day Pillar — it represents YOU. All other elements are analyzed in relation to the Day Master." },
-  喜用神: { term: "喜用神", termEn: "Favorable Element", desc: "命盘中最需要补充的五行元素。通过佩戴对应颜色、选择对应方位和行业，可以增强运势。", descEn: "The element your chart needs most for balance. Wearing its colors, facing its direction, or working in related industries enhances fortune." },
-  纳音: { term: "纳音", termEn: "Nayin Sound", desc: "六十甲子各有纳音，如「海中金」「炉中火」。纳音是天干地支组合后产生的五行特质，提供更细腻的命理信息。", descEn: "Each of the 60 Stem-Branch pairs has a poetic Nayin name describing its elemental quality, adding nuance to the reading." },
+  四柱: { term: "四柱", termEn: "Four Pillars", desc: "由年柱、月柱、日柱、时柱组成，每柱一天干一地支，共同构成个人图谱。", descEn: "Year, Month, Day, and Hour Pillars — each with one Heavenly Stem and one Earthly Branch, forming a personal map." },
+  日主: { term: "日主", termEn: "Day Master", desc: "日柱的天干，代表「自己」，是整个图谱分析的核心参照点。日主的五行属性决定了你的基本性格特征。", descEn: "The Heavenly Stem of the Day Pillar — it represents YOU. All other elements are analyzed in relation to the Day Master." },
+  喜用神: { term: "喜用神", termEn: "Favorable Element", desc: "图谱中最需要补充的五行元素。可作为颜色、方位和行业偏好的文化参考。", descEn: "The element your chart needs most for balance. It can be used as a cultural reference for colors, direction, and work preferences." },
+  纳音: { term: "纳音", termEn: "Nayin Sound", desc: "六十甲子各有纳音，如「海中金」「炉中火」。纳音是天干地支组合后产生的五行特质，提供更细腻的图谱信息。", descEn: "Each of the 60 Stem-Branch pairs has a poetic Nayin name describing its elemental quality, adding nuance to the reading." },
   藏干: { term: "藏干", termEn: "Hidden Stems", desc: "每个地支中暗藏1-3个天干。藏干代表内在的、隐藏的能量，影响深层性格和潜在机遇。", descEn: "Each Earthly Branch contains 1-3 hidden Heavenly Stems representing latent energies and hidden personality traits." },
   身强: { term: "身强", termEn: "Strong Day Master", desc: "日主得到较多生扶（同类五行或生我的五行多），精力充沛，适合主动出击、创业开拓。", descEn: "The Day Master has strong support — indicating vitality, assertiveness, and suitability for leadership roles." },
   身弱: { term: "身弱", termEn: "Weak Day Master", desc: "日主缺乏生扶，需要借助外力。适合合作、借势，选择喜用神对应的行业和方位发展。", descEn: "The Day Master lacks support — indicating need for partnerships, strategic alliances, and favorable element alignment." },
 
   // Pillars
-  年柱: { term: "年柱", termEn: "Year Pillar", desc: "代表祖辈、家族根基、早年运势（1-16岁）。也反映一个人的社会形象和外在表现。", descEn: "Represents ancestry, family foundation, and early life (ages 1-16). Also reflects social image." },
-  月柱: { term: "月柱", termEn: "Month Pillar", desc: "代表父母、成长环境、青年运势（17-32岁）。月柱是判断格局的关键依据。", descEn: "Represents parents, upbringing, and young adulthood (ages 17-32). Key pillar for determining chart patterns." },
-  日柱: { term: "日柱", termEn: "Day Pillar", desc: "代表自己和配偶。日干是「我」，日支是「婚姻宫」。是命盘的核心。", descEn: "Represents self and spouse. The Day Stem is 'you', the Day Branch is the 'marriage palace'." },
-  时柱: { term: "时柱", termEn: "Hour Pillar", desc: "代表子女、晚年运势（49岁以后）。也反映内心世界和潜意识。", descEn: "Represents children and later life (ages 49+). Also reflects inner world and subconscious." },
+  年柱: { term: "年柱", termEn: "Year Pillar", desc: "代表家族根基和早年阶段（1-16岁）。也反映一个人的社会形象和外在表现。", descEn: "Represents ancestry, family foundation, and early life (ages 1-16). Also reflects social image." },
+  月柱: { term: "月柱", termEn: "Month Pillar", desc: "代表成长环境和青年阶段（17-32岁）。月柱是判断格局的关键依据。", descEn: "Represents parents, upbringing, and young adulthood (ages 17-32). Key pillar for determining chart patterns." },
+  日柱: { term: "日柱", termEn: "Day Pillar", desc: "代表自己和亲密关系偏好。日干是「我」，是图谱的核心。", descEn: "Represents self and close relationship preferences. The Day Stem is 'you'." },
+  时柱: { term: "时柱", termEn: "Hour Pillar", desc: "代表内心世界、长期愿景和潜意识倾向。", descEn: "Represents inner world, long-term vision, and subconscious tendencies." },
 
   // Ten Gods
   比肩: { term: "比肩", termEn: "Companion", desc: "与日主同五行同阴阳。代表朋友、同辈、竞争对手。性格独立自主，有主见。", descEn: "Same element, same polarity as Day Master. Represents friends, peers, competitors. Independent personality." },
-  劫财: { term: "劫财", termEn: "Rob Wealth", desc: "与日主同五行异阴阳。代表兄弟姐妹、合作伙伴。有魄力但也有争夺之象。", descEn: "Same element, opposite polarity. Represents siblings, partners. Bold but competitive energy." },
+  劫财: { term: "协作", termEn: "Collaboration", desc: "与日主同五行异阴阳。代表同伴、合作伙伴与行动魄力，也提醒保持边界。", descEn: "Same element, opposite polarity. Represents partners, collaboration, boldness, and the need for boundaries." },
   食神: { term: "食神", termEn: "Eating God", desc: "日主所生、同阴阳。代表才华、口福、表达能力。性格温和、有艺术天赋。", descEn: "Element generated by Day Master, same polarity. Represents talent, creativity, and eloquence." },
   伤官: { term: "伤官", termEn: "Hurting Officer", desc: "日主所生、异阴阳。代表叛逆、创新、技术。聪明但可能言辞犀利。", descEn: "Element generated by Day Master, opposite polarity. Represents innovation, rebellion, and sharp intellect." },
-  偏财: { term: "偏财", termEn: "Indirect Wealth", desc: "日主所克、同阴阳。代表意外之财、投资收益、父亲。善于交际、慷慨大方。", descEn: "Element controlled by Day Master, same polarity. Represents windfall profits, investments, and social charm." },
-  正财: { term: "正财", termEn: "Direct Wealth", desc: "日主所克、异阴阳。代表正当收入、妻子（男命）。勤恳踏实、理财有方。", descEn: "Element controlled by Day Master, opposite polarity. Represents salary income and financial prudence." },
+  偏财: { term: "机会资源", termEn: "Opportunity Resources", desc: "日主所克、同阴阳。代表机会感、资源流动、外部协作与大方的社交风格。", descEn: "Element controlled by Day Master, same polarity. Represents opportunity sense, resource flow, external collaboration, and social generosity." },
+  正财: { term: "稳定资源", termEn: "Stable Resources", desc: "日主所克、异阴阳。代表稳定积累、预算意识、责任边界与务实的资源管理方式。", descEn: "Element controlled by Day Master, opposite polarity. Represents stable accumulation, budgeting, responsibility boundaries, and practical resource management." },
   七杀: { term: "七杀", termEn: "Seven Killings", desc: "克日主、同阴阳。代表压力、权力、魄力。有领导力但也有攻击性。", descEn: "Element that controls Day Master, same polarity. Represents authority, pressure, and decisive power." },
   正官: { term: "正官", termEn: "Direct Officer", desc: "克日主、异阴阳。代表上司、法律、规则、丈夫（女命）。正直守规矩。", descEn: "Element that controls Day Master, opposite polarity. Represents authority figures, rules, and integrity." },
   偏印: { term: "偏印", termEn: "Indirect Seal", desc: "生日主、同阴阳。代表偏门学问、灵感、孤独。思维独特，适合研究和创作。", descEn: "Element that generates Day Master, same polarity. Represents unconventional knowledge and creative inspiration." },
@@ -50,7 +50,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   // Relationships
   五行相生: { term: "五行相生", termEn: "Generation Cycle", desc: "木生火、火生土、土生金、金生水、水生木。相生代表滋养和促进的关系。", descEn: "Wood feeds Fire, Fire creates Earth, Earth bears Metal, Metal collects Water, Water nourishes Wood." },
   五行相克: { term: "五行相克", termEn: "Control Cycle", desc: "木克土、土克水、水克火、火克金、金克木。相克代表制约和控制的关系。", descEn: "Wood parts Earth, Earth dams Water, Water quenches Fire, Fire melts Metal, Metal chops Wood." },
-  流年: { term: "流年", termEn: "Annual Influence", desc: "当前年份的天干地支对命盘的影响。每年的运势变化都由流年与原局的生克关系决定。", descEn: "The current year's Stem-Branch influence on your natal chart, determining this year's fortune trends." },
+  流年: { term: "流年", termEn: "Annual Influence", desc: "当前年份的天干地支对图谱的影响。每年的趋势变化由流年与原局的生克关系推导。", descEn: "The current year's Stem-Branch influence on your natal chart, shaping this year's trend signals." },
 };
 
 // Nayin (纳音) table — 60 Jiazi cycle

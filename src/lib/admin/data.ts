@@ -1,6 +1,7 @@
 import "server-only";
 
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { buildAdminInsights } from "@/lib/admin/insights";
 import type { Database } from "@/lib/supabase/database.types";
 
 type TableName = keyof Database["public"]["Tables"];
@@ -70,26 +71,75 @@ export async function getAdminDashboardData() {
       } satisfies AdminStats,
       recentOrders: [] as Database["public"]["Tables"]["orders"]["Row"][],
       recentUsers: [] as Database["public"]["Tables"]["profiles"]["Row"][],
+      insights: buildAdminInsights({
+        profiles: [],
+        orders: [],
+        subscriptions: [],
+        healthAssessments: [],
+        healthConversations: [],
+        referrals: [],
+        readings: [],
+        horoscope: [],
+        telegramAccounts: [],
+        telegramEvents: [],
+      }),
     };
   }
 
-  const [users, orders, subscriptions, health, referrals, readings] = await Promise.all([
-    listAdminTable<Database["public"]["Tables"]["profiles"]["Row"]>("profiles", 8),
-    listAdminTable<Database["public"]["Tables"]["orders"]["Row"]>("orders", 8),
-    listAdminTable<Database["public"]["Tables"]["subscriptions"]["Row"]>("subscriptions", 8),
-    listAdminTable<Database["public"]["Tables"]["health_assessments"]["Row"]>("health_assessments", 8),
-    listAdminTable<Database["public"]["Tables"]["referrals"]["Row"]>("referrals", 8),
-    listAdminTable<Database["public"]["Tables"]["readings_cache"]["Row"]>("readings_cache", 8),
+  const [
+    users,
+    orders,
+    subscriptions,
+    health,
+    healthConversations,
+    referrals,
+    readings,
+    horoscope,
+    telegramAccounts,
+    telegramEvents,
+  ] = await Promise.all([
+    listAdminTable<Database["public"]["Tables"]["profiles"]["Row"]>("profiles", 200),
+    listAdminTable<Database["public"]["Tables"]["orders"]["Row"]>("orders", 200),
+    listAdminTable<Database["public"]["Tables"]["subscriptions"]["Row"]>("subscriptions", 200),
+    listAdminTable<Database["public"]["Tables"]["health_assessments"]["Row"]>("health_assessments", 200),
+    listAdminTable<Database["public"]["Tables"]["health_conversations"]["Row"]>("health_conversations", 120),
+    listAdminTable<Database["public"]["Tables"]["referrals"]["Row"]>("referrals", 200),
+    listAdminTable<Database["public"]["Tables"]["readings_cache"]["Row"]>("readings_cache", 120),
+    listAdminTable<Database["public"]["Tables"]["horoscope_cache"]["Row"]>("horoscope_cache", 120),
+    listAdminTable<Database["public"]["Tables"]["telegram_accounts"]["Row"]>("telegram_accounts", 200),
+    listAdminTable<Database["public"]["Tables"]["telegram_events"]["Row"]>("telegram_events", 200),
   ]);
 
   const revenueUsd = orders.rows
     .filter((order) => order.status === "paid")
     .reduce((sum, order) => sum + (order.amount || 0), 0) / 100;
 
+  const insights = buildAdminInsights({
+    totals: {
+      profiles: users.count,
+      orders: orders.count,
+      healthAssessments: health.count,
+      referrals: referrals.count,
+      readings: readings.count,
+      horoscope: horoscope.count,
+      telegramAccounts: telegramAccounts.count,
+    },
+    profiles: users.rows,
+    orders: orders.rows,
+    subscriptions: subscriptions.rows,
+    healthAssessments: health.rows,
+    healthConversations: healthConversations.rows,
+    referrals: referrals.rows,
+    readings: readings.rows,
+    horoscope: horoscope.rows,
+    telegramAccounts: telegramAccounts.rows,
+    telegramEvents: telegramEvents.rows,
+  });
+
   return {
     status: {
       configured: true,
-      error: [users, orders, subscriptions, health, referrals, readings].find((r) => r.error)?.error,
+      error: [users, orders, subscriptions, health, healthConversations, referrals, readings, horoscope, telegramAccounts, telegramEvents].find((r) => r.error)?.error,
     } satisfies AdminDataStatus,
     stats: {
       users: users.count,
@@ -100,8 +150,9 @@ export async function getAdminDashboardData() {
       referrals: referrals.count,
       readings: readings.count,
     } satisfies AdminStats,
-    recentOrders: orders.rows,
-    recentUsers: users.rows,
+    recentOrders: orders.rows.slice(0, 8),
+    recentUsers: users.rows.slice(0, 8),
+    insights,
   };
 }
 

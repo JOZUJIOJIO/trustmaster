@@ -12,6 +12,7 @@ import { Term } from "@/components/Tooltip";
 import Accordion from "@/components/Accordion";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import BrandMark from "@/components/BrandMark";
 import BaziReveal from "@/components/BaziReveal";
 import FiveElementsCircle from "@/components/FiveElementsCircle";
 import TenGodChart from "@/components/TenGodChart";
@@ -126,7 +127,7 @@ function FortuneContent() {
       .catch(() => {});
   }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // BaZi inputs
+  // Four Pillars inputs
   const [birthDate, setBirthDate] = useState("");
   const [hourBranch, setHourBranch] = useState("");
   const [gender, setGender] = useState<"male" | "female" | "">("");
@@ -193,7 +194,7 @@ function FortuneContent() {
           if (data.paid) {
             setUnlocked(true);
             setShowPaywall(false);
-            toast(isChinese ? "支付成功！AI 大师正在为您解读..." : "Payment successful! AI reading starting...", "success");
+            toast(isChinese ? "支付成功！AI 正在生成洞察报告..." : "Payment successful! AI insight starting...", "success");
             // Persist payment status to both storages
             sessionStorage.setItem("kairos_paid", "true");
             localStorage.setItem("kairos_order_session", sessionId);
@@ -223,29 +224,44 @@ function FortuneContent() {
 
   const [checkoutError, setCheckoutError] = useState("");
   const inputValueCards = [
-    { title: isChinese ? "四柱命盘" : "Four Pillars", value: "8", sub: isChinese ? "天干地支" : "stems/branches" },
+    { title: isChinese ? "四柱图谱" : "Four Pillars", value: "8", sub: isChinese ? "天干地支" : "stems/branches" },
     { title: isChinese ? "五行分布" : "Elements", value: "5", sub: isChinese ? "能量图谱" : "energy map" },
     { title: isChinese ? "大运曲线" : "Luck Curve", value: "10y", sub: isChinese ? "十年周期" : "cycles" },
   ];
   const inputPreviewRows = [
-    { label: isChinese ? "命盘结构" : "Chart structure", value: 86 },
+    { label: isChinese ? "图谱结构" : "Map structure", value: 86 },
     { label: isChinese ? "性格蓝图" : "Personality blueprint", value: 74 },
-    { label: isChinese ? "事业财富" : "Career and wealth", value: 68 },
+    { label: isChinese ? "行动节奏" : "Action rhythm", value: 68 },
   ];
 
   // Dynamic day master personality snippets for blurred preview
   const previewPersonality: Record<string, { zh: string; en: string }> = {
-    "甲": { zh: "基于您的日主甲木和八字组合，您天生如同参天大树，正直向上，有领袖气质。您的思维敏捷，善于规划...", en: "Based on your Day Master Jia Wood, you are like a towering tree — upright, ambitious, with natural leadership..." },
-    "乙": { zh: "基于您的日主乙木和八字组合，您外柔内刚，如同藤蔓般善于借力攀升。您的适应力极强，温和中藏着韧性...", en: "Based on your Day Master Yi Wood, you are like a vine — flexible yet resilient, adapting and climbing with quiet strength..." },
-    "丙": { zh: "基于您的日主丙火和八字组合，您天生光明磊落，如同太阳般热情奔放。您的感染力极强，走到哪里都是焦点...", en: "Based on your Day Master Bing Fire, you radiate warmth like the sun — passionate, generous, and naturally magnetic..." },
-    "丁": { zh: "基于您的日主丁火和八字组合，您温暖内敛，如同烛光般照亮身边人。您的洞察力极强，能看穿表象...", en: "Based on your Day Master Ding Fire, you are like candlelight — warm, perceptive, illuminating truth in darkness..." },
-    "戊": { zh: "基于您的日主戊土和八字组合，您厚重可靠，如同高山般沉稳。您是团队中的定海神针，让人安心...", en: "Based on your Day Master Wu Earth, you are like a mountain — steady, reliable, the anchor everyone depends on..." },
-    "己": { zh: "基于您的日主己土和八字组合，您温润如田园沃土，善于滋养和培育他人。您的包容力极强...", en: "Based on your Day Master Ji Earth, you are like fertile soil — nurturing, inclusive, growing everything around you..." },
-    "庚": { zh: "基于您的日主庚金和八字组合，您果决刚毅，如同刀剑般锋利。您重义气，做事雷厉风行...", en: "Based on your Day Master Geng Metal, you are like a blade — decisive, principled, cutting through confusion..." },
-    "辛": { zh: "基于您的日主辛金和八字组合，您精致高雅，如同珠宝般内敛清贵。您追求完美，品味独到...", en: "Based on your Day Master Xin Metal, you are like a gemstone — refined, elegant, with exquisite taste..." },
-    "壬": { zh: "基于您的日主壬水和八字组合，您智慧深沉，如同江河般胸怀宽广。您志向远大，思维不受束缚...", en: "Based on your Day Master Ren Water, you are like a river — deep, wise, flowing toward grand ambitions..." },
-    "癸": { zh: "基于您的日主癸水和八字组合，您至柔至弱却能润泽万物，如同雨露。您的直觉极强，感应力敏锐...", en: "Based on your Day Master Gui Water, you are like morning dew — gentle yet penetrating, with powerful intuition..." },
+    "甲": { zh: "基于您的日主甲木和图谱组合，您如同参天大树，正直向上，有领袖气质。您的思维敏捷，善于规划...", en: "Based on your Day Master Jia Wood, you are like a towering tree — upright, ambitious, with natural leadership..." },
+    "乙": { zh: "基于您的日主乙木和图谱组合，您外柔内刚，如同藤蔓般善于借力攀升。您的适应力极强，温和中藏着韧性...", en: "Based on your Day Master Yi Wood, you are like a vine — flexible yet resilient, adapting and climbing with quiet strength..." },
+    "丙": { zh: "基于您的日主丙火和图谱组合，您光明磊落，如同太阳般热情奔放。您的感染力极强，走到哪里都是焦点...", en: "Based on your Day Master Bing Fire, you radiate warmth like the sun — passionate, generous, and naturally magnetic..." },
+    "丁": { zh: "基于您的日主丁火和图谱组合，您温暖内敛，如同烛光般照亮身边人。您的洞察力极强，能看穿表象...", en: "Based on your Day Master Ding Fire, you are like candlelight — warm, perceptive, illuminating truth in darkness..." },
+    "戊": { zh: "基于您的日主戊土和图谱组合，您厚重可靠，如同高山般沉稳。您是团队中的定海神针，让人安心...", en: "Based on your Day Master Wu Earth, you are like a mountain — steady, reliable, the anchor everyone depends on..." },
+    "己": { zh: "基于您的日主己土和图谱组合，您温润如田园沃土，善于滋养和培育他人。您的包容力极强...", en: "Based on your Day Master Ji Earth, you are like fertile soil — nurturing, inclusive, growing everything around you..." },
+    "庚": { zh: "基于您的日主庚金和图谱组合，您果决刚毅，如同刀剑般锋利。您重义气，做事雷厉风行...", en: "Based on your Day Master Geng Metal, you are like a blade — decisive, principled, cutting through confusion..." },
+    "辛": { zh: "基于您的日主辛金和图谱组合，您精致高雅，如同珠宝般内敛清贵。您追求完美，品味独到...", en: "Based on your Day Master Xin Metal, you are like a gemstone — refined, elegant, with exquisite taste..." },
+    "壬": { zh: "基于您的日主壬水和图谱组合，您智慧深沉，如同江河般胸怀宽广。您志向远大，思维不受束缚...", en: "Based on your Day Master Ren Water, you are like a river — deep, wise, flowing toward grand ambitions..." },
+    "癸": { zh: "基于您的日主癸水和图谱组合，您至柔至弱却能润泽万物，如同雨露。您的直觉极强，感应力敏锐...", en: "Based on your Day Master Gui Water, you are like morning dew — gentle yet penetrating, with powerful intuition..." },
   };
+
+  const tenGodLabels: Record<string, string> = {
+    比肩: "自我",
+    劫财: "协作",
+    食神: "表达",
+    伤官: "创造",
+    正财: "稳定资源",
+    偏财: "机会资源",
+    正官: "规则",
+    七杀: "挑战",
+    正印: "学习",
+    偏印: "洞察",
+    日主: "日主",
+  };
+  const displayTenGod = (god: string) => tenGodLabels[god] || god;
 
   const handleSubscribe = async (plan: "monthly" | "yearly" = "monthly") => {
     if (isTelegramMiniApp) {
@@ -370,21 +386,27 @@ function FortuneContent() {
   };
 
   const handleCalculate = () => {
-    if (!birthDate || !hourBranch || !gender) return;
+    if (!birthDate) return;
+    const resolvedHourBranch = hourBranch || "午";
+    const resolvedGender = (gender || "male") as "male" | "female";
+    const resolvedName = userName.trim() || "缘主";
     const [y, m, d] = birthDate.split("-").map(Number);
-    const result = calculateBazi(y, m, d, hourBranch, gender as "male" | "female");
+    const result = calculateBazi(y, m, d, resolvedHourBranch, resolvedGender);
     setChart(result);
+    setHourBranch(resolvedHourBranch);
+    setGender(resolvedGender);
+    setUserName(resolvedName);
     setStep("reveal"); // Go to reveal animation instead of result
     try {
       const chartJson = JSON.stringify(result);
       sessionStorage.setItem("kairos_chart", chartJson);
-      sessionStorage.setItem("kairos_userName", userName);
+      sessionStorage.setItem("kairos_userName", resolvedName);
       // Also persist to localStorage for cross-session durability
       localStorage.setItem("kairos_chart", chartJson);
-      localStorage.setItem("kairos_userName", userName);
-      localStorage.setItem("kairos_saved_chart", JSON.stringify({ chart: result, userName, date: new Date().toISOString() }));
+      localStorage.setItem("kairos_userName", resolvedName);
+      localStorage.setItem("kairos_saved_chart", JSON.stringify({ chart: result, userName: resolvedName, date: new Date().toISOString() }));
       localStorage.setItem("kairos_birth_date", birthDate);
-      localStorage.setItem("kairos_gender", gender);
+      localStorage.setItem("kairos_gender", resolvedGender);
     } catch { /* ignore */ }
   };
 
@@ -509,7 +531,7 @@ function FortuneContent() {
         <header className={`flex items-center justify-between px-4 lg:px-12 py-4 border-b ${tk.divider}`}>
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <span className="text-xl">🔮</span>
+              <BrandMark size="sm" />
               <span className={`text-lg font-bold ${tk.text2}`}>Kairós</span>
             </Link>
             <span className={`${tk.text3}`}>/</span>
@@ -522,7 +544,7 @@ function FortuneContent() {
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className={`w-8 h-px ${tk.accentMuted.replace("text-", "bg-")}`} />
-              <span className={`${tk.accentMuted} text-[10px] tracking-[0.3em] uppercase`}>Ancient Eastern Wisdom</span>
+              <span className={`${tk.accentMuted} text-[10px] tracking-[0.3em] uppercase`}>Eastern Insight System</span>
               <div className={`w-8 h-px ${tk.accentMuted.replace("text-", "bg-")}`} />
             </div>
             <h1 className="font-display text-3xl lg:text-4xl font-bold text-gradient-gold">{t("bazi.exploreTitle")}</h1>
@@ -547,7 +569,7 @@ function FortuneContent() {
                           <div className="flex-1">
                             <div className="text-sm font-bold text-amber-200">{isChinese ? "欢迎回来" : "Welcome Back"}{savedName ? `，${savedName}` : ""}</div>
                             <div className={`text-xs ${tk.text3} mt-0.5`}>
-                              {savedChart.dayMaster}{savedChart.dayMasterElement}{isChinese ? "命" : ""} · {savedChart.zodiacEmoji} {savedChart.zodiacAnimal} · {isChinese ? "查看上次的命盘" : "View your saved chart"}
+                              {savedChart.dayMaster}{savedChart.dayMasterElement}{isChinese ? "图谱" : ""} · {savedChart.zodiacEmoji} {savedChart.zodiacAnimal} · {isChinese ? "查看上次的图谱" : "View your saved map"}
                             </div>
                           </div>
                           <span className={`${tk.accentMuted} text-lg`}>→</span>
@@ -625,7 +647,7 @@ function FortuneContent() {
     );
   }
 
-  // ===== BaZi Flow =====
+  // ===== Four Pillars Flow =====
   return (
     <div className={`min-h-screen ${tk.bg} relative`}>
       {/* Theme background */}
@@ -644,6 +666,7 @@ function FortuneContent() {
       <header className={`relative z-10 flex items-center justify-between px-4 lg:px-12 py-4 border-b ${tk.divider}`}>
         <div className="flex items-center gap-3">
           <button onClick={goBack} className={`${tk.text3} hover:${tk.text2} text-lg cursor-pointer transition-colors`}>←</button>
+          <BrandMark size="xs" />
           <span className={`text-sm ${tk.text3}`}>{t("bazi.title")}</span>
         </div>
         <LanguageSwitcher />
@@ -660,7 +683,7 @@ function FortuneContent() {
                 {isChinese ? "输入你的出生信息" : "Enter Your Birth Info"}
               </h2>
               <p className={`${tk.label} text-sm mb-4 lg:mb-6`}>
-                {isChinese ? "生成一份包含命盘、五行、十神、大运和 AI 深度解读的可视化报告" : "Generate a visual report with pillars, elements, Ten Gods, cycles, and AI reading"}
+                {isChinese ? "生成一份包含四柱、五行、性格结构、周期趋势和 AI 行动建议的可视化报告" : "Generate a visual report with pillars, elements, traits, cycle trends, and AI action suggestions"}
               </p>
             </div>
 
@@ -685,6 +708,7 @@ function FortuneContent() {
                   type="date"
                   value={birthDate}
                   onChange={(e) => setBirthDate(e.target.value)}
+                  onInput={(e) => setBirthDate(e.currentTarget.value)}
                   max={new Date().toISOString().split("T")[0]}
                   min="1940-01-01"
                   className={`w-full px-4 py-3 rounded-xl ${tk.selectBg} ${tk.input.split(" ").filter(c => c.startsWith("border-") || c.startsWith("text-")).join(" ")} focus:outline-none ${tk.inputFocus} transition-all`}
@@ -715,7 +739,8 @@ function FortuneContent() {
               {/* Gender */}
               <div>
                 <label className={`block text-xs font-medium ${tk.label} mb-1.5`}>
-                  {isChinese ? "性别" : "Gender"} <span className="text-amber-500">*</span>
+                  {isChinese ? "性别" : "Gender"}
+                  <span className={`${tk.text3} ml-1`}>({isChinese ? "可选" : "optional"})</span>
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
@@ -765,7 +790,7 @@ function FortuneContent() {
                          disabled:opacity-20 disabled:cursor-not-allowed
                          transition-all duration-300 border`}
             >
-              {isChinese ? "生成命盘 →" : "Generate Chart →"}
+              {isChinese ? "生成图谱 →" : "Generate Map →"}
             </button>
 
             <p className={`${tk.text3} text-[10px] mt-3`}>
@@ -797,8 +822,8 @@ function FortuneContent() {
               <div className={`mt-4 rounded-xl border ${tk.border} p-3`}>
                 <p className={`${tk.text2} text-xs leading-relaxed`}>
                   {isChinese
-                    ? "基础命盘免费生成，深度报告会继续展开事业、财富、关系、健康和本月行动清单。"
-                    : "The base chart is free. The deep report expands into career, wealth, relationships, health, and action items."}
+                    ? "基础图谱免费生成，深度报告会继续展开优势、资源、关系、习惯和本月行动清单。"
+                    : "The base map is free. The deep report expands into strengths, resources, relationships, habits, and action items."}
                 </p>
               </div>
             </aside>
@@ -810,7 +835,7 @@ function FortuneContent() {
                 onClick={handleFastGenerate}
                 className={`pointer-events-auto w-full rounded-2xl py-3 text-sm font-semibold shadow-[0_18px_50px_rgba(0,0,0,0.45)] transition-all ${tk.ctaPrimary}`}
               >
-                {isChinese ? "生成命盘 →" : "Generate Chart →"}
+                {isChinese ? "生成图谱 →" : "Generate Map →"}
               </button>
             </div>
             )}
@@ -831,7 +856,7 @@ function FortuneContent() {
             {birthDate && (
               <div className="mt-4 animate-fadeIn text-center" style={{ animationDuration: "0.4s" }}>
                 <p className={`${tk.accentMuted} text-xs`}>
-                  {isChinese ? "✨ 出生日期已锁定，命盘轮廓正在浮现..." : "✨ Birth date locked — your chart is taking shape..."}
+                  {isChinese ? "✨ 出生日期已锁定，图谱轮廓正在浮现..." : "✨ Birth date locked — your map is taking shape..."}
                 </p>
               </div>
             )}
@@ -897,7 +922,7 @@ function FortuneContent() {
                 <p className={`${tk.accentMuted} text-xs`}>
                   {isChinese
                     ? `✨ ${gender === "male" ? "阳" : "阴"}性能量确认 — 大运流转方向已确定`
-                    : `✨ ${gender === "male" ? "Yang" : "Yin"} energy confirmed — destiny cycle direction set`}
+                    : `✨ ${gender === "male" ? "Yang" : "Yin"} energy confirmed — cycle direction set`}
                 </p>
               </div>
             )}
@@ -923,14 +948,14 @@ function FortuneContent() {
             <p className={`${tk.text3} text-sm mb-8`}>{t("bazi.nameHint")}</p>
             <MysticalNameInput value={userName} onChange={setUserName} placeholder={t("bazi.namePlaceholder")} />
             <button
-              onClick={() => { if (!userName.trim()) setUserName("缘主"); handleCalculate(); }}
+              onClick={handleCalculate}
               className={`mt-4 ${tk.text3} text-xs ${tk.label.replace("text-", "hover:text-")} cursor-pointer transition-colors`}
             >
               {t("bazi.skipName")}
             </button>
             <button
               onClick={handleCalculate}
-              disabled={!userName.trim()}
+              disabled={!birthDate}
               className="mt-6 w-full max-w-xs mx-auto block px-8 py-3.5 rounded-xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
             >
               {t("bazi.generate")}
@@ -945,9 +970,11 @@ function FortuneContent() {
             <RevealSection delay={0}>
               <div className="text-center lg:mb-4">
                 {/* Dramatic arrival */}
-                <div className="text-3xl mb-3 animate-float">🔮</div>
+                <div className="mb-3 flex justify-center animate-float">
+                  <BrandMark size="lg" />
+                </div>
                 <p className={`${tk.accent} text-[10px] tracking-[0.3em] mb-4 animate-fadeIn`} style={{ animationDuration: "1s" }}>
-                  {isChinese ? "命 盘 已 解 码" : "CHART DECODED"}
+                  {isChinese ? "图 谱 已 生 成" : "MAP GENERATED"}
                 </p>
                 {userName && userName !== "缘主" && <h2 className={`text-xl font-bold ${tk.text1} mb-1`}>{userName}</h2>}
                 <p className={`${theme === "cosmic" ? "text-amber-200/60" : "text-amber-700/60"} text-sm`}>{chart.solarDate}</p>
@@ -961,7 +988,7 @@ function FortuneContent() {
                 <div className={`mt-4 ${tk.sectionBg} rounded-xl px-4 py-2.5 border ${tk.accentBorder} inline-block`}>
                   <p className={`${tk.label} text-xs`}>
                     {isChinese
-                      ? `${chart.dayMaster}${chart.dayMasterElement}命 · ${chart.dayMasterStrength === "strong" ? "身强" : "身弱"} · 喜${chart.luckyElement}`
+                      ? `${chart.dayMaster}${chart.dayMasterElement}图谱 · ${chart.dayMasterStrength === "strong" ? "结构偏强" : "结构偏柔"} · 参考${chart.luckyElement}`
                       : `${chart.dayMaster} ${chart.dayMasterElement} · ${chart.dayMasterStrength === "strong" ? "Strong" : "Gentle"} · Lucky: ${chart.luckyElement}`}
                   </p>
                 </div>
@@ -975,7 +1002,7 @@ function FortuneContent() {
             {/* Section navigation hint */}
             <RevealSection delay={50}>
               <div className={`flex items-center justify-center gap-4 ${tk.text3} text-[10px] py-1`}>
-                <span>四柱</span><span>·</span><span>日主</span><span>·</span><span>五行</span><span>·</span><span>十神</span><span>·</span><span>大运</span><span>·</span><span>AI解读</span>
+                <span>图谱</span><span>·</span><span>日主</span><span>·</span><span>五行</span><span>·</span><span>结构</span><span>·</span><span>周期</span><span>·</span><span>AI洞察</span>
                 <span className={`animate-bounce ${tk.accentMuted}`}>↓</span>
               </div>
             </RevealSection>
@@ -987,7 +1014,7 @@ function FortuneContent() {
             <RevealSection delay={100} className="lg:col-span-2">
               <div className={`${tk.card} border rounded-2xl p-5`}>
                 <h3 className={`text-center text-xs ${tk.accentMuted} tracking-widest mb-4`}>
-                  <Term k="四柱">四 柱 八 字</Term>
+                  <Term k="四柱">四 柱 图 谱</Term>
                 </h3>
                 <div className="grid grid-cols-4 gap-2.5">
                   {[
@@ -998,7 +1025,9 @@ function FortuneContent() {
                   ].map(({ label, pillar, tenGod, nayin, termKey }) => (
                     <div key={label} className="text-center">
                       <div className={`text-[10px] ${tk.text3} mb-1`}><Term k={termKey}>{label}</Term></div>
-                      <div className={`text-[9px] ${tk.accent} mb-1`}><Term k={tenGod === "日主" ? "日主" : tenGod}>{tenGod}</Term></div>
+                      <div className={`text-[9px] ${tk.accent} mb-1`}>
+                        {tenGod === "日主" ? <Term k="日主">日主</Term> : displayTenGod(tenGod)}
+                      </div>
                       <div className={`${tk.sectionBg} border ${tk.border} rounded-xl p-2.5 space-y-0.5 ${tk.borderHover} transition-colors`}>
                         <div className={`font-chinese text-xl font-bold ${theme === "cosmic" ? "text-amber-300" : "text-amber-700"}`}>{pillar.stem}</div>
                         <div className={`text-[10px] ${tk.text3}`}>{pillar.stemElement}</div>
@@ -1041,7 +1070,7 @@ function FortuneContent() {
                 <div className="flex items-center justify-center gap-8">
                   <div className="text-center">
                     <div className={`font-chinese text-4xl font-bold ${theme === "cosmic" ? "text-amber-300" : "text-amber-700"}`}>{chart.dayMaster}</div>
-                    <div className={`text-sm ${tk.text3} mt-1`}>{chart.dayMasterElement}命</div>
+                    <div className={`text-sm ${tk.text3} mt-1`}>{chart.dayMasterElement}图谱</div>
                   </div>
                   <div className="relative">
                     <StrengthGauge
@@ -1160,7 +1189,7 @@ function FortuneContent() {
             <RevealSection delay={700}>
               <div className={`${tk.card} border rounded-2xl p-5`}>
                 <h3 className={`text-center text-xs ${tk.accentMuted} tracking-widest mb-4`}>
-                  <Term k="流年">{new Date().getFullYear()} 流 年 简 析</Term>
+                  {new Date().getFullYear()} 年 度 节 奏
                 </h3>
                 <div className="text-center space-y-2">
                   <div className="flex items-center justify-center gap-3">
@@ -1168,16 +1197,16 @@ function FortuneContent() {
                     {chart.currentYearNayin && <span className={`text-xs ${tk.text3}`}><Term k="纳音">{chart.currentYearNayin}</Term></span>}
                   </div>
                   <p className={`text-xs ${tk.text2} leading-relaxed`}>
-                    流年天干 <span className={`${theme === "cosmic" ? "text-amber-300" : "text-amber-700"}`}>{chart.currentYearStem}</span>（{STEM_ELEMENTS[chart.currentYearStem]}）
+                    年度天干 <span className={`${theme === "cosmic" ? "text-amber-300" : "text-amber-700"}`}>{chart.currentYearStem}</span>（{STEM_ELEMENTS[chart.currentYearStem]}）
                     对日主 <span className={`${theme === "cosmic" ? "text-amber-300" : "text-amber-700"}`}>{chart.dayMaster}</span>（{chart.dayMasterElement}）为
-                    <span className={`${theme === "cosmic" ? "text-amber-300" : "text-amber-700"} font-bold`}> {getTenGod(chart.dayMaster, chart.currentYearStem)}</span>，
+                    <span className={`${theme === "cosmic" ? "text-amber-300" : "text-amber-700"} font-bold`}> {displayTenGod(getTenGod(chart.dayMaster, chart.currentYearStem))}</span>，
                     {(() => {
                       const god = getTenGod(chart.dayMaster, chart.currentYearStem);
-                      if (["正财", "偏财"].includes(god)) return "今年财运活跃，宜把握机会。";
+                      if (["正财", "偏财"].includes(god)) return "今年资源流动更活跃，适合复盘预算、合作和长期配置。";
                       if (["正官", "七杀"].includes(god)) return "今年事业压力与机遇并存，宜谨慎行事。";
-                      if (["正印", "偏印"].includes(god)) return "今年有贵人相助，适合学习进修。";
+                      if (["正印", "偏印"].includes(god)) return "今年支持资源更明显，适合学习进修。";
                       if (["食神", "伤官"].includes(god)) return "今年才华展现，适合创作和表达。";
-                      return "今年运势平稳，宜稳中求进。";
+                      return "今年整体节奏平稳，宜稳中求进。";
                     })()}
                   </p>
                 </div>
@@ -1187,7 +1216,7 @@ function FortuneContent() {
             {/* ⑧ Luck Curve — SVG Life Trend (full width) */}
             <RevealSection delay={800} className="lg:col-span-2">
               {chart.luckCycles && chart.luckCycles.length > 0 && (
-                <Accordion title={isChinese ? "人 生 运 势 曲 线" : "LIFE LUCK CURVE"} icon="📈" defaultOpen={true}>
+                <Accordion title={isChinese ? "人 生 周 期 曲 线" : "LIFE CYCLE CURVE"} icon="📈" defaultOpen={true}>
                   <LuckCurve chart={chart} />
                   {/* Luck cycle interpretation */}
                   {chart.luckCycles && chart.luckCycles.length > 0 && (() => {
@@ -1202,24 +1231,24 @@ function FortuneContent() {
                     return (
                       <div className={`${tk.sectionBg} rounded-xl p-3.5 border ${tk.border} mt-3`}>
                         <div className={`text-xs font-semibold ${theme === "cosmic" ? "text-amber-200/70" : "text-amber-700/70"} mb-1.5`}>
-                          📍 {isChinese ? `当前大运：${currentCycle.stem}${currentCycle.branch}（${currentCycle.element}运 · ${currentCycle.tenGod}）` : `Current Cycle: ${currentCycle.stem}${currentCycle.branch} (${currentCycle.element} · ${currentCycle.tenGod})`}
+                          📍 {isChinese ? `当前周期：${currentCycle.stem}${currentCycle.branch}（${currentCycle.element}阶段 · ${displayTenGod(currentCycle.tenGod)}）` : `Current Cycle: ${currentCycle.stem}${currentCycle.branch} (${currentCycle.element} · ${displayTenGod(currentCycle.tenGod)})`}
                         </div>
                         <p className={`text-[11px] ${tk.text2} leading-relaxed`}>
                           {isChinese
-                            ? `您正处于${currentCycle.startAge}至${currentCycle.startAge + 10}岁的${currentCycle.element}运阶段，${currentCycle.tenGod}主事。${
-                                currentCycle.tenGod.includes("财") ? "此运财星当令，是积累财富、拓展事业的黄金时期。把握投资和合作机会。" :
-                                currentCycle.tenGod.includes("官") ? "此运官星当令，适合追求职位晋升、承担更大责任。纪律和自律是成功的关键。" :
-                                currentCycle.tenGod.includes("印") ? "此运印星当令，是学习深造、提升自我的最佳时期。多亲近贵人和师长。" :
-                                currentCycle.tenGod.includes("食") || currentCycle.tenGod.includes("伤") ? "此运食伤当令，创造力和表达力旺盛。适合创业、创作、发展个人品牌。" :
-                                "此运比劫当令，人际关系活跃。适合团队合作，但注意财务管理。"
-                              }${nextCycle ? `下一步将进入${nextCycle.element}运（${nextCycle.tenGod}），届时运势方向会有转变。` : ""}`
-                            : `You're in the ${currentCycle.element} phase (ages ${currentCycle.startAge}-${currentCycle.startAge + 10}), governed by ${currentCycle.tenGod}. ${
-                                currentCycle.tenGod.includes("财") ? "Wealth energy is strong — a golden period for building assets and expanding business." :
-                                currentCycle.tenGod.includes("官") ? "Authority energy peaks — ideal for career advancement and taking on greater responsibility." :
-                                currentCycle.tenGod.includes("印") ? "Wisdom energy flows — the best period for education, self-improvement, and mentorship." :
-                                currentCycle.tenGod.includes("食") || currentCycle.tenGod.includes("伤") ? "Creative energy surges — perfect for entrepreneurship, content creation, and personal branding." :
-                                "Social energy is active — great for teamwork, but watch your finances."
-                              }${nextCycle ? ` Next phase: ${nextCycle.element} (${nextCycle.tenGod}) — expect a shift in direction.` : ""}`
+                            ? `您正处于${currentCycle.startAge}至${currentCycle.startAge + 10}岁的${currentCycle.element}阶段，${displayTenGod(currentCycle.tenGod)}议题主事。${
+                                currentCycle.tenGod.includes("财") ? "这一阶段资源议题更突出，适合梳理资源结构、合作边界和长期积累方式。" :
+                                currentCycle.tenGod.includes("官") ? "这一阶段责任议题更突出，适合追求职位晋升、承担更大责任。纪律和自律是成功的关键。" :
+                                currentCycle.tenGod.includes("印") ? "这一阶段学习议题更突出，是学习深造、提升自我的好时期。多亲近可靠的老师和同伴。" :
+                                currentCycle.tenGod.includes("食") || currentCycle.tenGod.includes("伤") ? "这一阶段表达议题更突出，创造力和表达力旺盛。适合创业、创作、发展个人品牌。" :
+                                "此阶段人际关系活跃，适合团队合作，同时注意资源管理。"
+                              }${nextCycle ? `下一步将进入${nextCycle.element}阶段（${displayTenGod(nextCycle.tenGod)}），届时节奏方向会有转变。` : ""}`
+                            : `You're in the ${currentCycle.element} phase (ages ${currentCycle.startAge}-${currentCycle.startAge + 10}), governed by ${displayTenGod(currentCycle.tenGod)}. ${
+                                currentCycle.tenGod.includes("财") ? "Resource themes are active — a good period for reviewing budgets, boundaries, and long-term accumulation habits." :
+                                currentCycle.tenGod.includes("官") ? "Responsibility themes peak — useful for career growth and taking on clearer ownership." :
+                                currentCycle.tenGod.includes("印") ? "Learning themes flow — a good period for education, self-improvement, and mentorship." :
+                                currentCycle.tenGod.includes("食") || currentCycle.tenGod.includes("伤") ? "Creative themes surge — useful for entrepreneurship, content creation, and personal branding." :
+                                "Social energy is active — great for teamwork, with attention to resource management."
+                              }${nextCycle ? ` Next phase: ${nextCycle.element} (${displayTenGod(nextCycle.tenGod)}) — expect a shift in direction.` : ""}`
                           }
                         </p>
                       </div>
@@ -1275,7 +1304,7 @@ function FortuneContent() {
                     {
                       period: "2023-2024",
                       question: getTenGod(chart.dayMaster, chart.currentYearStem).includes("财")
-                        ? "最近两年你的收入或理财方式是否有明显变化？"
+                        ? "最近两年你的资源管理或预算方式是否有明显变化？"
                         : getTenGod(chart.dayMaster, chart.currentYearStem).includes("官")
                         ? "最近两年你的职位或社会角色是否有所转变？"
                         : "最近两年你是否感受到个人成长或思维方式的转变？",
@@ -1289,7 +1318,7 @@ function FortuneContent() {
                     </div>
                   ))}
                 </div>
-                <p className={`text-center ${tk.text3} text-[10px] mt-3`}>{isChinese ? "如果以上分析与您的经历吻合，说明命盘分析准确度较高" : "If the above matches your experience, the chart analysis has high accuracy"}</p>
+                <p className={`text-center ${tk.text3} text-[10px] mt-3`}>{isChinese ? "如果以上分析与您的经历吻合，说明图谱参考度较高" : "If the above matches your experience, the map has strong reference value"}</p>
                 {/* Accuracy feedback */}
                 <div className={`mt-4 pt-4 border-t ${tk.divider}`}>
                   <p className={`text-center ${tk.text3} text-xs mb-3`}>{isChinese ? "以上分析符合您的经历吗？" : "Does this match your experience?"}</p>
@@ -1324,7 +1353,7 @@ function FortuneContent() {
                   </div>
                   {accuracyVote && (
                     <p className={`text-center ${tk.text3} text-[10px] mt-2`}>
-                      {isChinese ? "87% 的用户验证了命盘分析的准确性" : "87% of users verified the accuracy of their chart analysis"}
+                      {isChinese ? "87% 的用户认为图谱描述具有参考价值" : "87% of users found the map personally relevant"}
                     </p>
                   )}
                 </div>
@@ -1356,7 +1385,7 @@ function FortuneContent() {
                   <div className="relative overflow-hidden rounded-2xl">
                     <div className="space-y-4 blur-sm pointer-events-none select-none">
                       <ReadingCard icon="🧠" title={isChinese ? "性格特质" : "Personality"} content={chart ? (isChinese ? (previewPersonality[chart.dayMaster]?.zh || "...") : (previewPersonality[chart.dayMaster]?.en || "...")) : "..."} />
-                      <ReadingCard icon="💼" title={isChinese ? "事业运势" : "Career"} content={isChinese ? `${chart?.currentYearStem || ""}${chart?.currentYearBranch || ""}年流年运势分析，结合您的十神格局，今年的事业发展方向将呈现新的机遇...` : `${chart?.currentYearStem || ""}${chart?.currentYearBranch || ""} year career analysis based on your Ten Gods pattern reveals new opportunities...`} />
+                      <ReadingCard icon="💼" title={isChinese ? "事业节奏" : "Career Rhythm"} content={isChinese ? `${chart?.currentYearStem || ""}${chart?.currentYearBranch || ""}年周期趋势分析，结合您的十神格局，今年的事业发展方向将呈现新的机会窗口...` : `${chart?.currentYearStem || ""}${chart?.currentYearBranch || ""} year cycle analysis based on your Ten Gods pattern reveals new opportunity windows...`} />
                     </div>
                     {/* Gradient overlay */}
                     <div className={`absolute inset-0 bg-gradient-to-t ${theme === "cosmic" ? "from-[#12101c] via-[#12101c]/80" : "from-[#F5F3EE] via-[#F5F3EE]/80"} to-transparent`} />
@@ -1418,10 +1447,12 @@ function FortuneContent() {
                     <div className={`absolute inset-0 rounded-full border-2 ${tk.border}`} />
                     <div className={`absolute inset-0 rounded-full border-2 border-transparent ${theme === "cosmic" ? "border-t-amber-400/60" : "border-t-amber-600/60"} animate-spin`} />
                     <div className={`absolute inset-2 rounded-full border border-transparent ${theme === "cosmic" ? "border-b-amber-400/30" : "border-b-amber-600/30"} animate-spin`} style={{ animationDirection: "reverse", animationDuration: "1.5s" }} />
-                    <span className="absolute inset-0 flex items-center justify-center text-2xl">🔮</span>
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <BrandMark size="sm" />
+                    </span>
                   </div>
-                  <p className={`${tk.label} text-sm`}>AI 大师正在解读您的命盘...</p>
-                  <p className={`${tk.text3} text-xs mt-1`}>基于真实八字数据，约需 5-10 秒</p>
+                  <p className={`${tk.label} text-sm`}>AI 正在生成你的洞察报告...</p>
+                  <p className={`${tk.text3} text-xs mt-1`}>基于出生日期与五行图谱，约需 5-10 秒</p>
                 </div>
               ) : aiReading?.error ? (
                 <div className="text-center py-4">
@@ -1432,11 +1463,11 @@ function FortuneContent() {
                 <div className="space-y-4">
                   <div className={`text-center text-xs ${tk.accentMuted} tracking-widest`}>✨ AI 深度解读 × 数据可视化</div>
                   {aiReading.personality && <EnhancedReadingCard icon="🧠" title="性格特质" content={aiReading.personality} chart={chart} dimension="personality" delay={0} />}
-                  {aiReading.career && <EnhancedReadingCard icon="💼" title="事业运势" content={aiReading.career} chart={chart} dimension="career" delay={100} />}
-                  {aiReading.wealth && <EnhancedReadingCard icon="💰" title="财运分析" content={aiReading.wealth} chart={chart} dimension="wealth" delay={200} />}
-                  {aiReading.love && <EnhancedReadingCard icon="❤️" title="感情运势" content={aiReading.love} chart={chart} dimension="love" delay={300} />}
+                  {aiReading.career && <EnhancedReadingCard icon="💼" title="事业节奏" content={aiReading.career} chart={chart} dimension="career" delay={100} />}
+                  {aiReading.wealth && <EnhancedReadingCard icon="◆" title="资源策略" content={aiReading.wealth} chart={chart} dimension="wealth" delay={200} />}
+                  {aiReading.love && <EnhancedReadingCard icon="❤️" title="关系沟通" content={aiReading.love} chart={chart} dimension="love" delay={300} />}
                   {aiReading.health && <EnhancedReadingCard icon="🏥" title="健康提醒" content={aiReading.health} chart={chart} dimension="health" delay={400} />}
-                  {aiReading.advice && <EnhancedReadingCard icon="🍀" title="开运指南" content={aiReading.advice} chart={chart} dimension="advice" delay={500} />}
+                  {aiReading.advice && <EnhancedReadingCard icon="🍀" title="行动建议" content={aiReading.advice} chart={chart} dimension="advice" delay={500} />}
                   {aiReading.actionItems && (
                     <div className={`${theme === "cosmic" ? "bg-gradient-to-br from-amber-900/15 via-transparent to-amber-900/10 border-amber-500/15" : "bg-gradient-to-br from-amber-100/50 via-transparent to-amber-50/30 border-amber-500/20"} border rounded-2xl p-5 animate-fadeIn`} style={{ animationDelay: "600ms", animationFillMode: "both" }}>
                       <div className="flex items-center gap-2 mb-4">
@@ -1462,7 +1493,7 @@ function FortuneContent() {
               <div className={`${theme === "cosmic" ? "bg-gradient-to-r from-purple-900/20 via-purple-800/20 to-purple-900/20 border-purple-400/15" : "bg-gradient-to-r from-purple-100/40 via-purple-50/40 to-purple-100/40 border-purple-400/20"} border rounded-2xl p-5 text-center space-y-3 animate-slideUp`} style={{ animationDuration: "0.6s" }}>
                 <div className="text-2xl">✨</div>
                 <p className={`${tk.text1} text-sm font-semibold`}>
-                  {isChinese ? "您的命盘已生成" : "Your chart is ready"}
+                  {isChinese ? "你的图谱已生成" : "Your map is ready"}
                 </p>
                 <p className={`${tk.text3} text-xs`}>
                   {isChinese ? "分享给朋友，看看你们的默契度" : "Share with friends to discover your compatibility"}

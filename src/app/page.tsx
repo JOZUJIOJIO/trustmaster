@@ -11,6 +11,7 @@ import StarfieldCanvas from "@/components/StarfieldCanvas";
 import CloudCanvas from "@/components/CloudCanvas";
 import TaijiSvg from "@/components/TaijiSvg";
 import ThemeToggle from "@/components/ThemeToggle";
+import BrandMark from "@/components/BrandMark";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { calculateBazi, ELEMENT_EMOJI, ELEMENT_COLORS, type BaziChart } from "@/lib/bazi";
 import { themeTokens } from "@/lib/theme-tokens";
@@ -32,9 +33,9 @@ export default function Home() {
     { value: "3min", label: locale === "zh" ? "生成报告" : "To report" },
   ];
   const productPaths = [
-    { href: "/fortune", title: locale === "zh" ? "命盘解读" : "BaZi Reading", desc: locale === "zh" ? "四柱、五行、十神、大运曲线" : "Four Pillars, elements, cycles", icon: "☯" },
+    { href: "/fortune", title: locale === "zh" ? "个人图谱" : "Personal Map", desc: locale === "zh" ? "四柱、五行、性格结构、行动建议" : "Pillars, elements, traits, actions", icon: "☯" },
     { href: "/health", title: locale === "zh" ? "体质测评" : "Health Map", desc: locale === "zh" ? "五行体质、脏腑地图、食疗建议" : "Constitution, organs, diet", icon: "⬠" },
-    { href: "/daily", title: locale === "zh" ? "每日运势" : "Daily Signal", desc: locale === "zh" ? "每天一张趋势卡，方便分享" : "Daily card, share-ready", icon: "◐" },
+    { href: "/daily", title: locale === "zh" ? "每日趋势" : "Daily Signal", desc: locale === "zh" ? "每天一张趋势卡，方便分享" : "Daily card, share-ready", icon: "◐" },
   ];
 
   useEffect(() => {
@@ -115,9 +116,12 @@ export default function Home() {
       {/* ===== Hero ===== */}
       <div className="relative z-10 min-h-screen flex flex-col pb-20">
         <nav className="flex items-center justify-between px-6 lg:px-12 py-4 animate-riseIn" style={{ animationDelay: "0.1s" }}>
-          <span className={`text-lg font-light tracking-[0.15em] ${theme === "cosmic" ? "text-[#F2F0EB]/60" : "text-[#1a1520]/50"}`}>
-            Kairós
-          </span>
+          <Link href="/" className="flex items-center gap-2">
+            <BrandMark size="sm" />
+            <span className={`text-lg font-light tracking-[0.15em] ${theme === "cosmic" ? "text-[#F2F0EB]/72" : "text-[#1a1520]/62"}`}>
+              Kairós
+            </span>
+          </Link>
           <div className="flex items-center gap-4">
             {user && (
               <Link href="/profile" className={`text-sm btn-haptic transition-colors ${tk.text3} hover:${tk.text2}`}>
@@ -144,7 +148,7 @@ export default function Home() {
               {/* Title */}
               <div>
                 <div className={`mb-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] tracking-[0.18em] ${theme === "cosmic" ? "border-amber-300/15 bg-amber-300/5 text-amber-200/55" : "border-amber-700/15 bg-white/50 text-amber-800/55"}`}>
-                  <span>{locale === "zh" ? "青铜神树 · AI 命理引擎" : "Bronze Oracle · AI Insight Engine"}</span>
+                  <span>{locale === "zh" ? "青铜神树 · AI 东方洞察" : "Bronze Tree · AI Insight Engine"}</span>
                 </div>
                 <h1
                   className={`font-display text-3xl sm:text-5xl lg:text-7xl font-bold tracking-[0.06em] max-w-4xl leading-[1.12] animate-riseIn ${tk.text1}`}
@@ -172,7 +176,7 @@ export default function Home() {
               {/* Date input */}
               <div className="mt-5 w-full max-w-md mx-auto lg:mx-0 animate-riseIn" style={{ animationDelay: "0.52s" }}>
                 <p className={`text-[10px] mb-3 tracking-[0.2em] uppercase ${tk.text3}`}>
-                  {locale === "zh" ? "输入出生日期，先看你的命盘轮廓" : "Enter birth date for a first chart signal"}
+                  {locale === "zh" ? "输入出生日期，先看你的个人图谱" : "Enter birth date for a first map signal"}
                 </p>
                 <div className={`flex flex-col gap-2 rounded-2xl border p-2 sm:flex-row ${theme === "cosmic" ? "border-amber-300/15 bg-[#090712]/80" : "border-amber-700/15 bg-white/70"} backdrop-blur-md`}>
                   <input
@@ -197,7 +201,7 @@ export default function Home() {
 
               {!quickPreview && (
                 <p className={`text-[10px] mt-3 tracking-[0.12em] animate-riseIn ${tk.text3}`} style={{ animationDelay: "0.62s" }}>
-                  {locale === "zh" ? "免费基础命盘 · 支付解锁 AI 深度报告 · 移动端可分享" : "Free chart · Paid AI report · Shareable on mobile"}
+                  {locale === "zh" ? "免费基础图谱 · 支付解锁 AI 深度报告 · 移动端可分享" : "Free map · Paid AI report · Shareable on mobile"}
                 </p>
               )}
             </section>
@@ -258,7 +262,7 @@ export default function Home() {
                       <span className="text-lg ml-1.5 opacity-70">{ELEMENT_EMOJI[quickPreview.dayMasterElement]}</span>
                     </div>
                     <div className={`text-[11px] mt-0.5 ${tk.text2}`}>
-                      {quickPreview.dayMasterElement}{locale === "zh" ? "命" : ""} · {quickPreview.dayMasterStrength === "strong" ? (locale === "zh" ? "身强" : "Strong") : (locale === "zh" ? "身弱" : "Gentle")}
+                      {quickPreview.dayMasterElement}{locale === "zh" ? "图谱" : ""} · {quickPreview.dayMasterStrength === "strong" ? (locale === "zh" ? "结构偏强" : "Strong") : (locale === "zh" ? "结构偏柔" : "Gentle")}
                     </div>
                   </div>
                   <div className="text-4xl opacity-80">{quickPreview.zodiacEmoji}</div>
@@ -305,7 +309,7 @@ export default function Home() {
           <div className={`flex items-center justify-center gap-4 text-[10px] ${tk.footerText}`}>
             <Link href="/about" className="hover:opacity-60 transition-opacity btn-haptic">{locale === "zh" ? "关于" : "About"}</Link>
             <span className={tk.footerDot}>·</span>
-            <Link href="/learn" className="hover:opacity-60 transition-opacity btn-haptic">{locale === "zh" ? "了解八字" : "Learn"}</Link>
+            <Link href="/learn" className="hover:opacity-60 transition-opacity btn-haptic">{locale === "zh" ? "了解体系" : "Learn"}</Link>
             <span className={tk.footerDot}>·</span>
             <Link href="/terms" className="hover:opacity-60 transition-opacity btn-haptic">{t("footer.terms")}</Link>
             <span className={tk.footerDot}>·</span>

@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
 import { PageArtworkBackdrop } from "@/components/PageArtwork";
+import BrandMark from "@/components/BrandMark";
 import { resolveTelegramRedirectPath } from "@/lib/telegram/navigation";
 
 type AuthSurface = "checking" | "telegram" | "web";
@@ -148,8 +149,8 @@ function LoginContent() {
       <PageArtworkBackdrop art="login" className={theme === "cosmic" ? "" : "opacity-30"} />
       <div className="relative z-10 w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block">
-            <span className="text-4xl">🔮</span>
+          <Link href="/" className="inline-flex flex-col items-center">
+            <BrandMark size="lg" />
             <h1 className={`text-2xl font-bold ${tk.accent} mt-2`}>{t("app.name")}</h1>
           </Link>
           <p className={`text-sm ${tk.label} mt-1`}>{t("app.tagline")}</p>

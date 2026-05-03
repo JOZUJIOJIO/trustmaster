@@ -6,6 +6,7 @@ import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
+import BrandMark from "@/components/BrandMark";
 import { PageArtworkBand } from "@/components/PageArtwork";
 
 export default function AboutPage() {
@@ -26,7 +27,7 @@ export default function AboutPage() {
 
       <PageArtworkBand art="about" className="px-4 py-14 lg:py-24 text-center border-b border-amber-400/10">
         <div className="max-w-2xl mx-auto">
-          <div className="text-5xl mb-5">🔮</div>
+          <div className="mb-5 flex justify-center"><BrandMark size="lg" /></div>
           <h1 className="font-display text-4xl lg:text-6xl font-bold text-gradient-gold mb-6">Kairós</h1>
           <p className={`font-display text-lg lg:text-xl ${tk.text2} italic max-w-xl mx-auto leading-relaxed`}>
             {isChinese
@@ -47,12 +48,12 @@ export default function AboutPage() {
             <div className={`space-y-4 text-sm lg:text-base ${tk.text2} leading-relaxed`}>
               <p>
                 {isChinese
-                  ? "在古希腊，有两种关于时间的概念。Chronos（χρόνος）是线性流逝的时间——分秒、日月、年岁。而 Kairós（καιρός）是完全不同的东西：它是那个「恰到好处的时刻」，命运的缝隙，万事万物交汇的瞬间。"
+                  ? "在古希腊，有两种关于时间的概念。Chronos（χρόνος）是线性流逝的时间——分秒、日月、年岁。而 Kairós（καιρός）是完全不同的东西：它是那个「恰到好处的时刻」，万事万物交汇的瞬间。"
                   : "In ancient Greece, there were two words for time. Chronos (χρόνος) is sequential time — seconds, months, years flowing past. But Kairós (καιρός) is something entirely different: it is the supreme moment, the crack in fate where everything converges."}
               </p>
               <p>
                 {isChinese
-                  ? "中国命理学的核心思想与此惊人地一致：你出生的那一刻——年、月、日、时——四柱八字精确地定义了你与宇宙的关系。那不是随机的一秒钟，那是你的 Kairós。"
+                  ? "东方四柱与五行体系的核心思想与此很接近：你出生的那一刻——年、月、日、时——为自我观察提供了一套稳定的文化坐标。那不是随机的一秒钟，那是你的 Kairós。"
                   : "The core insight of Chinese metaphysics aligns with this remarkably: the exact moment of your birth — year, month, day, hour — your Four Pillars precisely define your relationship with the universe. That wasn't a random second. That was your Kairós."}
               </p>
               <p>
@@ -82,13 +83,13 @@ export default function AboutPage() {
                 {
                   zh: "确定性计算，零随机",
                   en: "Deterministic calculation, zero randomness",
-                  descZh: "同一个出生时刻，永远生成同一张命盘。没有掷骰子，没有猜测。每一个结论都有据可查。",
+                  descZh: "同一个出生时刻，永远生成同一张图谱。没有掷骰子，没有猜测。每一个结论都有据可查。",
                   descEn: "The same birth moment always produces the same chart. No dice, no guessing. Every conclusion is traceable.",
                 },
                 {
                   zh: "东方智慧 × 现代理解",
                   en: "Eastern wisdom × modern understanding",
-                  descZh: "经典命理的深度，配合 AI 的通俗解读。让三千年的洞察力变成你今天就能用的行动指南。",
+                  descZh: "经典四柱与五行框架的深度，配合 AI 的通俗解读。让三千年的洞察力变成你今天就能用的行动指南。",
                   descEn: "The depth of classical metaphysics, with AI making it accessible. Turning 3,000-year-old insight into today's action guide.",
                 },
               ].map((item) => (
@@ -107,10 +108,10 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-3">
               {[
-                { name: isChinese ? "《子平真诠》" : "Zi Ping Zhen Quan", desc: isChinese ? "四柱命理的经典理论基础" : "The foundational classic of Four Pillars theory" },
-                { name: isChinese ? "《滴天髓》" : "Di Tian Sui", desc: isChinese ? "八字分析的核心推理框架" : "Core reasoning framework for BaZi analysis" },
+                { name: isChinese ? "《子平真诠》" : "Zi Ping Zhen Quan", desc: isChinese ? "四柱体系的经典理论基础" : "The foundational classic of Four Pillars theory" },
+                { name: isChinese ? "《滴天髓》" : "Di Tian Sui", desc: isChinese ? "四柱图谱的核心推理框架" : "Core reasoning framework for Four Pillars analysis" },
                 { name: isChinese ? "《穷通宝鉴》" : "Qiong Tong Bao Jian", desc: isChinese ? "五行调候的权威参考" : "Authoritative reference for Five Elements" },
-                { name: isChinese ? "《神峰通考》" : "Shen Feng Tong Kao", desc: isChinese ? "命理实战的集大成之作" : "Comprehensive practical metaphysics guide" },
+                { name: isChinese ? "《神峰通考》" : "Shen Feng Tong Kao", desc: isChinese ? "传统图谱分析的集大成之作" : "Comprehensive practical metaphysics guide" },
               ].map((item) => (
                 <div key={item.name} className={`flex items-start gap-3 ${tk.sectionBg} rounded-xl p-4 border ${tk.divider}`}>
                   <span className={`${tk.accentMuted} text-sm mt-0.5`}>📖</span>
@@ -150,23 +151,23 @@ export default function AboutPage() {
             <div className={`space-y-4 text-sm lg:text-base ${tk.text2} leading-relaxed`}>
               <p>
                 {isChinese
-                  ? "我在硅谷做了多年技术工作，对数据和逻辑有天然的信仰。命理？那不过是玄学罢了——至少我曾经这样认为。"
+                  ? "我在硅谷做了多年技术工作，对数据和逻辑有天然的信仰。传统四柱与五行？那不过是玄学罢了——至少我曾经这样认为。"
                   : "I spent years in tech, with a natural faith in data and logic. Metaphysics? Just superstition — or so I thought."}
               </p>
               <p>
                 {isChinese
-                  ? "2024年一次偶然的机会，一位老师帮我排了八字。他没有问我任何问题，却精准地描述了我过去十年的每一次重大转折——换行业、跨国搬迁、那次差点放弃一切的低谷。那一刻，我的世界观被动摇了。"
-                  : "In 2024, a master read my BaZi chart without asking a single question — yet precisely described every major turning point in my past decade: the career change, the cross-country move, that low point where I almost gave up everything. My worldview shifted."}
+                  ? "2024年一次偶然的机会，一位老师帮我排了一张四柱图谱。他没有问我太多问题，却用一种很古老的语言描述了我过去十年的几次重大转折——换行业、跨国搬迁、那次差点放弃一切的低谷。那一刻，我开始重新看待传统框架。"
+                  : "In 2024, a teacher read my Four Pillars map with very few questions — yet described several major turning points in my past decade: the career change, the cross-country move, that low point where I almost gave up everything. My view of traditional frameworks shifted."}
               </p>
               <p>
                 {isChinese
-                  ? "我不相信「算命」，但我开始相信这套三千年的分析框架蕴含着深刻的智慧。问题是：它被锁在古文和少数人的圈子里。于是我决定用技术打开它——让每个人都能理解自己的「Kairós」。"
+                  ? "我不相信决定论，但我开始相信这套三千年的分析框架蕴含着深刻的智慧。问题是：它被锁在古文和少数人的圈子里。于是我决定用技术打开它——让每个人都能理解自己的「Kairós」。"
                   : "I don't believe in fortune-telling. But I started believing that this 3,000-year-old analytical framework holds profound wisdom. The problem: it was locked behind classical texts and closed circles. So I decided to use technology to unlock it — to help everyone find their 'Kairós'."}
               </p>
               <p className={`${tk.text3} italic`}>
                 {isChinese
-                  ? "—— Kairós 创始人，一个被八字说服的工程师"
-                  : "— The Kairós founder, an engineer convinced by BaZi"}
+                  ? "—— Kairós 创始人，一个开始认真研究东方图谱的工程师"
+                  : "— The Kairós founder, an engineer who began taking Eastern maps seriously"}
               </p>
             </div>
           </div>

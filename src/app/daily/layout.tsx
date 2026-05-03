@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Daily BaZi Insights — Personalized Daily Fortune",
+  title: "Daily Trends — Personalized AI Insight",
   description:
-    "Get personalized daily fortune scores based on your BaZi birth chart. Career, wealth, love, and health scores updated daily with auspicious and inauspicious guidance.",
-  keywords: ["daily fortune", "daily horoscope", "BaZi daily", "每日运势", "八字运势", "daily insights"],
+    "Get personalized daily trend scores, focus windows, relationship cues, and wellbeing reminders based on your personal map.",
+  keywords: ["daily insights", "daily trends", "personal map", "AI self reflection", "每日趋势", "个人洞察"],
   alternates: { canonical: "/daily" },
   openGraph: {
-    title: "Daily BaZi Insights — Personalized Daily Fortune",
-    description: "Personalized daily fortune scores based on your birth chart. Updated every day.",
+    title: "Daily Trends — Personalized AI Insight",
+    description: "Personalized daily trend scores and action prompts updated every day.",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Kairós" }],
   },
 };

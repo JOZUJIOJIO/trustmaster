@@ -24,7 +24,7 @@ const PRODUCTS: Record<TelegramStarsProductId, TelegramStarsProduct> = {
   fortune_master: {
     id: "fortune_master",
     tier: "master",
-    title: "Kairós Master Insight",
+    title: "Kairós Complete Insight",
     description: "Unlock the full AI personal insight report with deeper planning layers.",
     amount: kairosPrices.fortune_master.stars,
     orderProduct: "telegram_stars_fortune_master",

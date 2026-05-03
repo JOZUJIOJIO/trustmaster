@@ -7,11 +7,11 @@ describe("t (translation lookup)", () => {
   });
 
   it("should return the correct string for English locale", () => {
-    expect(t("en", "app.tagline")).toBe("Ancient Eastern Wisdom Meets AI");
+    expect(t("en", "app.tagline")).toBe("Eastern Self-Reflection Meets AI");
   });
 
   it("should return the correct string for Chinese locale", () => {
-    expect(t("zh", "app.tagline")).toBe("探索神秘的东方力量");
+    expect(t("zh", "app.tagline")).toBe("青铜文明里的自我洞察");
   });
 
   it("should return the key itself when the key does not exist in any locale", () => {

@@ -7,7 +7,7 @@ type PageArtwork = {
 export const pageArtwork = {
   fortune: {
     src: "/images/kairos/fortune-hero.webp",
-    alt: "Bronze BaZi divination chart in a dark ritual chamber",
+    alt: "Bronze Four Pillars map in a dark ritual chamber",
   },
   compatibility: {
     src: "/images/kairos/compatibility-hero.webp",

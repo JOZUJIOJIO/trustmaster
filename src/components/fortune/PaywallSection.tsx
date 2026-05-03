@@ -86,8 +86,8 @@ export function PaywallSection({
             <h3 className="text-xl font-bold text-amber-100">{t("bazi.unlockTitle")}</h3>
             <p className="text-amber-200/40 text-sm mt-2">
               {isTelegramMiniApp
-                ? (isChinese ? "使用 Telegram Stars 原生支付，解锁您的 AI 深度解读" : "Use Telegram Stars native checkout to unlock your AI reading")
-                : (isChinese ? "基于您的真实八字，AI 大师将为您深度解读 6 大维度" : "AI will deeply analyze 6 dimensions based on your real birth chart")
+                ? (isChinese ? "使用 Telegram Stars 原生支付，解锁你的 AI 洞察报告" : "Use Telegram Stars native checkout to unlock your AI insight report")
+                : (isChinese ? "基于你的出生日期与五行结构，AI 将展开 6 大维度" : "AI expands 6 practical dimensions based on your personal map")
               }
             </p>
           </div>
@@ -95,11 +95,11 @@ export function PaywallSection({
           <div className="space-y-2">
             {[
               { icon: "🧠", text: isChinese ? "性格特质深度分析" : "Deep personality analysis" },
-              { icon: "💼", text: isChinese ? "事业运势与发展方向" : "Career & development" },
-              { icon: "💰", text: isChinese ? "财运分析与投资建议" : "Wealth & investment" },
-              { icon: "❤️", text: isChinese ? "感情运势与桃花分析" : "Love & relationships" },
-              { icon: "🏥", text: isChinese ? "健康提醒与养生建议" : "Health guidance" },
-              { icon: "🍀", text: isChinese ? "开运指南（颜色/方位/行业）" : "Lucky guidance" },
+              { icon: "💼", text: isChinese ? "事业节奏与发展方向" : "Career rhythm & development" },
+              { icon: "💰", text: isChinese ? "资源模式与决策建议" : "Resource patterns & decisions" },
+              { icon: "❤️", text: isChinese ? "关系沟通与协作倾向" : "Relationships & communication" },
+              { icon: "🏥", text: isChinese ? "身心习惯与调养参考" : "Wellbeing habits" },
+              { icon: "🍀", text: isChinese ? "本月行动清单" : "This month's action plan" },
             ].map((item) => (
               <div key={item.text} className="flex items-center gap-2.5 text-sm text-amber-200/60">
                 <span>{item.icon}</span>
@@ -138,7 +138,7 @@ export function PaywallSection({
               <span className="text-emerald-200/40 text-xs">/{isChinese ? "月" : "mo"}</span>
             </div>
             <p className="text-emerald-200/25 text-[10px] mt-1 mb-3">
-              {isChinese ? "无限 AI 解读 · 每日深度运势 · 优先支持" : "Unlimited readings · Daily insights · Priority support"}
+              {isChinese ? "无限 AI 洞察 · 每日趋势 · 优先支持" : "Unlimited insights · Daily trends · Priority support"}
             </p>
             <div className="grid grid-cols-2 gap-2">
               <button
@@ -182,18 +182,18 @@ export function PaywallSection({
                 {checkoutLoading ? "..." : (isTelegramMiniApp ? (isChinese ? "Stars 解锁" : "Pay Stars") : (isChinese ? "选择专业版" : "Choose Pro"))}
               </button>
             </div>
-            {/* Master */}
+            {/* Complete */}
             <div className="bg-purple-900/15 border border-purple-400/25 rounded-xl p-3.5 text-center relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-purple-500/80 text-white text-[8px] px-2 py-0.5 rounded-bl-lg font-bold">{isChinese ? "推荐" : "BEST"}</div>
-              <div className="text-[10px] text-purple-300/60 mb-1">👑 {isChinese ? "大师版" : "Master"}</div>
+              <div className="text-[10px] text-purple-300/60 mb-1">👑 {isChinese ? "完整版" : "Complete"}</div>
               <div className="text-2xl font-bold text-purple-200">{isTelegramMiniApp ? formatStarsPrice("fortune_master") : formatUsdPrice("fortune_master")}</div>
-              <p className="text-purple-200/25 text-[10px] mt-1 mb-3">{isChinese ? "宗师级全盘深度解析" : "Master-level deep reading"}</p>
+              <p className="text-purple-200/25 text-[10px] mt-1 mb-3">{isChinese ? "完整图谱深度解析" : "Complete deep insight"}</p>
               <button
                 onClick={() => handleStripeCheckout("master")}
                 disabled={checkoutLoading}
                 className="w-full py-3 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-purple-700 via-purple-600 to-purple-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-all"
               >
-                {checkoutLoading ? "..." : (isTelegramMiniApp ? (isChinese ? "Stars 解锁" : "Pay Stars") : (isChinese ? "选择大师版" : "Choose Master"))}
+                {checkoutLoading ? "..." : (isTelegramMiniApp ? (isChinese ? "Stars 解锁" : "Pay Stars") : (isChinese ? "选择完整版" : "Choose Complete"))}
               </button>
             </div>
           </div>

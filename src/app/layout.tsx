@@ -42,19 +42,19 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Kairós | AI-Powered BaZi & Eastern Personality Analysis",
+    default: "Kairós | AI-powered Eastern personal insight",
     template: "%s | Kairós",
   },
   description:
-    "Discover personalized life insights through ancient Eastern philosophical frameworks powered by AI. BaZi Four Pillars personality analysis, Five Elements balance, and cultural wellness guidance.",
-  keywords: ["BaZi", "Four Pillars analysis", "personality insights", "five elements", "Eastern philosophy", "AI life analysis", "self-discovery", "cultural wellness", "八字", "命理", "四柱", "五行"],
+    "AI-powered Eastern personal insight for self-reflection, Five Elements balance, cultural wellness, and daily action guidance.",
+  keywords: ["personal insights", "five elements", "Eastern philosophy", "AI self-reflection", "cultural wellness", "daily insights", "东方哲学", "个人洞察", "五行", "自我观察"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://kairos.app"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Kairós | AI-Powered BaZi & Eastern Personality Analysis",
-    description: "Personalized life insights through ancient Eastern philosophical frameworks, powered by AI",
+    title: "Kairós | AI-powered Eastern personal insight",
+    description: "Structured self-reflection and cultural wellness insights powered by AI",
     type: "website",
     locale: "zh_CN",
     alternateLocale: ["en_US", "th_TH", "vi_VN", "id_ID"],
@@ -62,8 +62,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kairós | AI-Powered Eastern Personality Analysis",
-    description: "BaZi Four Pillars + AI: Discover your destiny through 3,000 years of Eastern wisdom",
+    title: "Kairós | AI-powered Eastern personal insight",
+    description: "Five Elements, cultural self-reflection, and daily action guidance powered by AI",
   },
   robots: {
     index: true,
@@ -77,13 +77,13 @@ const jsonLd = {
   "@type": "WebApplication",
   name: "Kairós",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://kairos.app",
-  description: "AI-powered BaZi Four Pillars personality analysis platform combining 3,000 years of Eastern wisdom with modern AI.",
+  description: "AI-powered Eastern personal insight platform for cultural self-reflection, Five Elements balance, and daily action guidance.",
   applicationCategory: "LifestyleApplication",
   operatingSystem: "Web",
   offers: [
     {
       "@type": "Offer",
-      name: "Pro Analysis",
+      name: "Pro Insight Report",
       price: "9.90",
       priceCurrency: "USD",
     },

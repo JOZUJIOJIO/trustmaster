@@ -84,8 +84,8 @@ function getDailyGuidance(chart: BaziChart, tenGod: string) {
     劫财: ["竞标投标", "体育竞技", "社交聚会", "突破舒适区"],
     食神: ["创意写作", "美食聚餐", "演讲表达", "艺术创作"],
     伤官: ["技术研发", "革新方案", "独立思考", "打破常规"],
-    偏财: ["投资理财", "商务谈判", "社交拓展", "把握机会"],
-    正财: ["签约合同", "薪资谈判", "存钱理财", "务实工作"],
+    偏财: ["资源复盘", "商务谈判", "社交拓展", "把握机会"],
+    正财: ["签约合同", "预算整理", "稳定积累", "务实工作"],
     七杀: ["重大决策", "领导统筹", "面试竞聘", "挑战自我"],
     正官: ["拜见上级", "递交申请", "法律事务", "遵守规则"],
     偏印: ["冥想静修", "研究学术", "阅读思考", "独处充电"],
@@ -94,11 +94,11 @@ function getDailyGuidance(chart: BaziChart, tenGod: string) {
 
   const inauspicious: Record<string, string[]> = {
     比肩: ["借钱给人", "独断专行", "争强好胜"],
-    劫财: ["大额消费", "赌博投机", "轻信他人"],
+    劫财: ["大额消费", "高风险尝试", "轻信他人"],
     食神: ["节食减肥", "压抑情绪", "过度劳累"],
     伤官: ["顶撞上级", "口舌争执", "冲动消费"],
-    偏财: ["稳健投资变投机", "借贷担保", "夜间外出"],
-    正财: ["冒险投资", "铺张浪费", "借钱给人"],
+    偏财: ["机会判断过急", "借贷担保", "夜间外出"],
+    正财: ["冒进决策", "铺张浪费", "借钱给人"],
     七杀: ["逃避责任", "优柔寡断", "过度劳累"],
     正官: ["违规操作", "迟到早退", "说谎隐瞒"],
     偏印: ["社交应酬", "做重大决定", "暴饮暴食"],
@@ -154,7 +154,7 @@ function getPersonalizedInsight(chart: BaziChart, scores: ReturnType<typeof calc
       return `今日${scores.todayStem}${todayEl}克制你的${dm}${dmEl}，压力感较强。${strength === "strong" ? "身强逢克反成磨砺，适合迎接挑战、面试竞聘、做重大决策。" : "身弱逢克需谨慎，避免硬碰硬。今天适合退一步，观察局势，养精蓄锐。"}`;
     }
     if (dmControlsToday) {
-      return `今日你的${dm}${dmEl}克制${scores.todayStem}${todayEl}，财星当前。${strength === "strong" ? "身强克财，把控力强。适合谈判、签约、处理财务事项，主动争取。" : "身弱克财需量力而行，不宜大额支出或冒险投资。先稳住基本盘。"}`;
+      return `今日你的${dm}${dmEl}克制${scores.todayStem}${todayEl}，资源议题被点亮。${strength === "strong" ? "基础较稳，把控力强。适合谈判、签约、梳理预算，主动争取。" : "能量偏弱时需量力而行，不宜大额支出或冒险决策。先稳住基本盘。"}`;
     }
     if (dmGeneratesToday) {
       return `今日你的${dm}${dmEl}生助${scores.todayStem}${todayEl}，食伤泄秀。创意和表达力旺盛，${strength === "strong" ? "身强泄秀为美，适合创作、演讲、社交、展示才华。" : "身弱逢泄需控制输出节奏，表达想法但不要过度消耗自己。"}`;
@@ -233,14 +233,14 @@ function DailyContent() {
         </div>
       )}
       <div className="relative z-10">
-      <PageHeader title={isChinese ? "每日运势" : "Daily Insights"} />
+      <PageHeader title={isChinese ? "每日趋势" : "Daily Insights"} />
       <PageArtworkBand art="daily" className="h-40 lg:h-80 border-b border-amber-400/10" />
 
       <main className="max-w-lg lg:max-w-4xl mx-auto px-4 py-8 pb-24">
         {/* Date header */}
         <div className="text-center mb-8">
           <div className={`flex items-center justify-center gap-2 ${tk.accentMuted} text-xs mb-3`}>
-            <span>☸</span><span>Daily Fortune · 每日运势</span><span>☸</span>
+            <span>☸</span><span>Daily Signal · 每日趋势</span><span>☸</span>
           </div>
           <h1 className={`font-display text-2xl font-bold ${tk.text1}`}>{dateStr}</h1>
         </div>
@@ -249,7 +249,7 @@ function DailyContent() {
           /* Input state */
           <div className="text-center space-y-6">
             <div className="text-5xl mb-4 animate-float">☯</div>
-            <p className={`${tk.text2} text-sm`}>{isChinese ? "输入出生日期，获取专属每日运势" : "Enter your birth date for personalized daily insights"}</p>
+            <p className={`${tk.text2} text-sm`}>{isChinese ? "输入出生日期，获取专属每日趋势" : "Enter your birth date for personalized daily insights"}</p>
             <input
               type="date"
               value={birthDate}
@@ -264,7 +264,7 @@ function DailyContent() {
               disabled={!birthDate}
               className={`w-full max-w-xs mx-auto block py-3.5 rounded-xl font-semibold cursor-pointer ${tk.ctaPrimary} disabled:opacity-30 transition-all`}
             >
-              {isChinese ? "查看今日运势" : "View Today's Fortune"}
+              {isChinese ? "查看今日趋势" : "View Today's Signal"}
             </button>
           </div>
         ) : scores && guidance && rec ? (
@@ -285,14 +285,14 @@ function DailyContent() {
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <div className={`text-3xl font-bold ${tk.accent}`}>{scores.overall}</div>
-                  <div className={`text-[10px] ${tk.label}`}>{isChinese ? "综合运势" : "Overall"}</div>
+                  <div className={`text-[10px] ${tk.label}`}>{isChinese ? "综合趋势" : "Overall"}</div>
                 </div>
               </div>
             </div>
 
             {/* User info tag */}
             <div className={`text-center text-xs ${tk.label}`}>
-              <span>{chart.dayMaster}{chart.dayMasterElement}命</span>
+              <span>{chart.dayMaster}{chart.dayMasterElement}图谱</span>
               <span className="mx-2">·</span>
               <span>今日{scores.tenGod}当令</span>
               <span className="mx-2">·</span>
@@ -304,9 +304,9 @@ function DailyContent() {
 
             {/* Four dimension scores */}
             <div className={`${tk.sectionBg} border ${tk.accentBorder} rounded-2xl p-5 space-y-4`}>
-              <h3 className={`text-center text-xs ${tk.accentMuted} tracking-widest mb-1`}>{isChinese ? "四 维 运 势" : "FOUR DIMENSIONS"}</h3>
+              <h3 className={`text-center text-xs ${tk.accentMuted} tracking-widest mb-1`}>{isChinese ? "四 维 趋 势" : "FOUR DIMENSIONS"}</h3>
               <ScoreBar label={isChinese ? "事业" : "Career"} score={scores.career} icon="💼" color="#3b82f6" tk={tk} />
-              <ScoreBar label={isChinese ? "财运" : "Wealth"} score={scores.wealth} icon="💰" color="#f59e0b" tk={tk} />
+              <ScoreBar label={isChinese ? "资源" : "Resources"} score={scores.wealth} icon="💰" color="#f59e0b" tk={tk} />
               <ScoreBar label={isChinese ? "感情" : "Love"} score={scores.love} icon="❤️" color="#ef4444" tk={tk} />
               <ScoreBar label={isChinese ? "健康" : "Health"} score={scores.health} icon="🏥" color="#22c55e" tk={tk} />
             </div>
@@ -337,10 +337,10 @@ function DailyContent() {
 
             {/* Lucky guidance */}
             <div className={`${tk.sectionBg} border ${tk.accentBorder} rounded-2xl p-5`}>
-              <h3 className={`text-center text-xs ${tk.accentMuted} tracking-widest mb-4`}>{isChinese ? "今 日 幸 运 指 引" : "LUCKY GUIDANCE"}</h3>
+              <h3 className={`text-center text-xs ${tk.accentMuted} tracking-widest mb-4`}>{isChinese ? "今 日 参 考 指 引" : "DAILY GUIDANCE"}</h3>
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div>
-                  <div className={`text-[10px] ${tk.label} mb-1`}>🎨 {isChinese ? "幸运色" : "Color"}</div>
+                  <div className={`text-[10px] ${tk.label} mb-1`}>🎨 {isChinese ? "参考色" : "Color"}</div>
                   <div className={`text-xs ${tk.text2}`}>{rec.colors.split("、")[0]}</div>
                 </div>
                 <div>
@@ -369,23 +369,23 @@ function DailyContent() {
               <div className={`${tk.sectionBg} border ${theme === "cosmic" ? "border-emerald-400/15" : "border-emerald-600/20"} rounded-2xl p-5`}>
                 <div className="flex items-center gap-2 mb-3">
                   <span className={`text-xs ${theme === "cosmic" ? "bg-emerald-900/40 text-emerald-300" : "bg-emerald-100 text-emerald-700"} px-2 py-0.5 rounded-full font-semibold`}>PRO</span>
-                  <h3 className={`text-xs ${theme === "cosmic" ? "text-emerald-400/60" : "text-emerald-600/70"} tracking-widest`}>{isChinese ? "深 度 日 运 分 析" : "DEEP DAILY ANALYSIS"}</h3>
+                  <h3 className={`text-xs ${theme === "cosmic" ? "text-emerald-400/60" : "text-emerald-600/70"} tracking-widest`}>{isChinese ? "深 度 每 日 趋 势" : "DEEP DAILY ANALYSIS"}</h3>
                 </div>
                 <div className="space-y-3">
                   <div className={`${tk.sectionBg} rounded-xl p-3.5 border ${tk.border}`}>
                     <div className={`text-xs font-semibold ${tk.accent} mb-1`}>🎯 {isChinese ? "今日关键时段" : "Key Time Windows"}</div>
                     <p className={`text-[11px] ${tk.text2} leading-relaxed`}>
                       {scores.career >= 70
-                        ? (isChinese ? "上午 9-11 点（巳时）事业运最旺，适合重要会议和决策。下午 3-5 点（申时）财运活跃，宜处理财务。" : "9-11am best for career decisions. 3-5pm favorable for financial matters.")
-                        : (isChinese ? "上午宜静不宜动，下午 1-3 点（未时）运势回升，适合推进重要事项。晚间宜休养。" : "Morning: stay calm. 1-3pm energy rises, good for important tasks. Evening: rest.")}
+                        ? (isChinese ? "上午 9-11 点（巳时）专注度更高，适合重要会议和决策。下午 3-5 点（申时）资源议题更活跃，宜处理预算与协作。" : "9-11am best for career decisions. 3-5pm favorable for financial matters.")
+                        : (isChinese ? "上午宜静不宜动，下午 1-3 点（未时）节奏回升，适合推进重要事项。晚间宜休养。" : "Morning: stay calm. 1-3pm energy rises, good for important tasks. Evening: rest.")}
                     </p>
                   </div>
                   <div className={`${tk.sectionBg} rounded-xl p-3.5 border ${tk.border}`}>
                     <div className={`text-xs font-semibold ${tk.accent} mb-1`}>💡 {isChinese ? "个性化行动建议" : "Personalized Actions"}</div>
                     <p className={`text-[11px] ${tk.text2} leading-relaxed`}>
                       {chart.dayMasterStrength === "strong"
-                        ? (isChinese ? `今日${scores.tenGod}当令，身强者宜主动出击。适合谈判、签约、社交拓展。穿${rec.colors.split("、")[0]}系衣物增运。` : `Today favors proactive moves. Good for negotiations and networking. Wear ${rec.colors.split("、")[0]} for luck.`)
-                        : (isChinese ? `今日${scores.tenGod}当令，身弱者宜借力使力。寻求团队支持，避免单打独斗。佩戴${chart.luckyElement}属性饰品助运。` : `Today favors teamwork over solo efforts. Seek support. Wear ${chart.luckyElement} element accessories.`)}
+                        ? (isChinese ? `今日${scores.tenGod}当令，结构偏强者宜主动推进。适合谈判、签约、社交拓展。穿${rec.colors.split("、")[0]}系衣物增强仪式感。` : `Today favors proactive moves. Good for negotiations and networking. Wear ${rec.colors.split("、")[0]} for focus.`)
+                        : (isChinese ? `今日${scores.tenGod}当令，结构偏柔者宜借力使力。寻求团队支持，避免单打独斗。可用${chart.luckyElement}属性配饰提醒自己保持节奏。` : `Today favors teamwork over solo efforts. Seek support. Use ${chart.luckyElement} element accessories as a focus cue.`)}
                     </p>
                   </div>
                   <div className={`${tk.sectionBg} rounded-xl p-3.5 border ${tk.border}`}>
@@ -424,7 +424,7 @@ function DailyContent() {
             {/* Actions */}
             <div className="flex gap-3 pt-2">
               <Link href="/fortune" className={`flex-1 py-3 rounded-xl text-sm font-medium text-center cursor-pointer ${tk.ctaPrimary} transition-all`}>
-                {isChinese ? "完整八字分析" : "Full BaZi Analysis"}
+                {isChinese ? "完整图谱分析" : "Full Map Analysis"}
               </Link>
               <button
                 onClick={() => setChart(null)}

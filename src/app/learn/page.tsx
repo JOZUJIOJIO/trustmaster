@@ -12,38 +12,38 @@ import { PageArtworkBand } from "@/components/PageArtwork";
 const sections = [
   {
     icon: "☯",
-    title: "What is BaZi?",
-    titleZh: "什么是八字？",
-    content: "BaZi (八字), also known as the Four Pillars of Destiny, is a 3,000-year-old Chinese metaphysical system that maps the energetic blueprint of your life using the exact moment of your birth. Each person's chart consists of four 'pillars' — Year, Month, Day, and Hour — each containing a Heavenly Stem and an Earthly Branch.",
-    contentZh: "八字，又称四柱命理，是一套拥有 3000 年历史的中国哲学分析体系。它通过出生时刻的年、月、日、时四柱——每柱包含一个天干和一个地支——来绘制你人生的能量蓝图。",
+    title: "What is the Four Pillars Map?",
+    titleZh: "什么是四柱图谱？",
+    content: "The Four Pillars Map is a 3,000-year-old Chinese philosophical framework that maps personal temperament and life rhythms using the exact moment of birth. Each map consists of four pillars — Year, Month, Day, and Hour — each containing a Heavenly Stem and an Earthly Branch.",
+    contentZh: "四柱是一套拥有 3000 年历史的中国哲学分析体系。它通过出生时刻的年、月、日、时四柱——每柱包含一个天干和一个地支——来绘制你的能量图谱。",
   },
   {
     icon: "🌳",
     title: "The Five Elements",
     titleZh: "五行是什么？",
-    content: "Everything in the BaZi system is built on Five Elements: Wood (木), Fire (火), Earth (土), Metal (金), and Water (水). These elements interact through two cycles: the Generation Cycle (Wood → Fire → Earth → Metal → Water → Wood) where each element nourishes the next, and the Control Cycle where each element restrains another. Your chart's balance of these elements reveals your strengths, challenges, and life patterns.",
-    contentZh: "八字系统建立在五行基础上：木、火、土、金、水。五行通过相生（木→火→土→金→水→木）和相克两个循环互相作用。你命盘中五行的平衡揭示了你的优势、挑战和人生规律。",
+    content: "Everything in the Four Pillars system is built on Five Elements: Wood (木), Fire (火), Earth (土), Metal (金), and Water (水). These elements interact through two cycles: the Generation Cycle (Wood → Fire → Earth → Metal → Water → Wood) where each element nourishes the next, and the Control Cycle where each element restrains another. Your map's balance of these elements reveals strengths, challenges, and behavior patterns.",
+    contentZh: "四柱系统建立在五行基础上：木、火、土、金、水。五行通过相生（木→火→土→金→水→木）和相克两个循环互相作用。你图谱中五行的平衡揭示了优势、挑战和行为模式。",
   },
   {
     icon: "🎯",
     title: "The Day Master",
     titleZh: "什么是日主？",
-    content: "The Day Master (日主) is the Heavenly Stem of your Day Pillar — it represents YOU. All other elements in your chart are analyzed in relation to your Day Master. For example, if your Day Master is Wood (甲 or 乙), Fire represents your talent and expression, Earth represents your wealth opportunities, Metal represents your authority figures, and Water represents your mentors and wisdom.",
-    contentZh: "日主是日柱的天干——代表「你自己」。命盘中所有其他元素都以日主为参照进行分析。比如日主为木的人，火代表才华，土代表财运，金代表权力，水代表智慧和贵人。",
+    content: "The Day Master (日主) is the Heavenly Stem of your Day Pillar — it represents your core reference point. All other elements in your map are analyzed in relation to your Day Master. For example, if your Day Master is Wood (甲 or 乙), Fire represents expression, Earth represents resources, Metal represents rules and structure, and Water represents learning and support.",
+    contentZh: "日主是日柱的天干——代表「你自己」。图谱中所有其他元素都以日主为参照进行分析。比如日主为木的人，火代表表达，土代表资源，金代表规则，水代表学习和支持。",
   },
   {
-    icon: "🔮",
+    icon: "✦",
     title: "Ten Gods (十神)",
     titleZh: "什么是十神？",
-    content: "The Ten Gods describe the relationship between your Day Master and every other element in your chart. They include: Companion (比肩), Rob Wealth (劫财), Eating God (食神), Hurting Officer (伤官), Direct/Indirect Wealth (正财/偏财), Direct Officer/Seven Killings (正官/七杀), and Direct/Indirect Seal (正印/偏印). Each God reveals a different aspect of your life — career, relationships, wealth, creativity, and more.",
-    contentZh: "十神描述日主与命盘中其他元素的关系：比肩、劫财、食神、伤官、偏财、正财、七杀、正官、偏印、正印。每个十神揭示人生的不同面向——事业、关系、财富、创造力等。",
+    content: "The Ten Symbols describe the relationship between your Day Master and every other element in your map. We present them as modern themes such as self, collaboration, expression, creation, resources, rules, challenge, learning, and insight. Each symbol reveals a different aspect of work style, relationships, resources, creativity, and more.",
+    contentZh: "十神描述日主与图谱中其他元素的关系。Kairós 会将传统术语翻译成现代主题：自我、协作、表达、创造、稳定资源、机会资源、规则、挑战、学习与洞察，让它更容易被今天的人理解。",
   },
   {
     icon: "📅",
     title: "Luck Cycles (大运)",
     titleZh: "什么是大运？",
     content: "Your life unfolds in 10-year Luck Cycles (大运). Each cycle brings a different elemental energy that interacts with your natal chart, creating periods of opportunity or challenge. Understanding your current luck cycle helps you make better decisions — when to push forward, when to consolidate, and when to prepare for change.",
-    contentZh: "人生按每十年一个「大运」周期展开。每个大运带来不同的五行能量，与你的先天命盘交互，形成机遇期或挑战期。了解当前大运帮助你做出更好的决策——何时进取、何时守成、何时准备变化。",
+    contentZh: "人生按每十年一个「大运」周期展开。每个大运带来不同的五行能量，与你的先天图谱交互，形成不同节奏。了解当前周期帮助你做出更好的决策——何时进取、何时守成、何时准备变化。",
   },
   {
     icon: "🤖",
@@ -66,7 +66,7 @@ export default function LearnPage() {
       <header className={`flex items-center justify-between px-4 lg:px-12 py-4 border-b ${tk.border}`}>
         <div className="flex items-center gap-3">
           <Link href="/" className={`${tk.accent} hover:opacity-80 text-lg`}>←</Link>
-          <span className={`text-sm ${tk.text2}`}>{isChinese ? "了解八字" : "Learn BaZi"}</span>
+          <span className={`text-sm ${tk.text2}`}>{isChinese ? "了解图谱" : "Learn the Map"}</span>
         </div>
         <LanguageSwitcher />
       </header>
@@ -77,7 +77,7 @@ export default function LearnPage() {
             <span>☸</span><span>Ancient Eastern Wisdom</span><span>☸</span>
           </div>
           <h1 className="text-3xl font-bold text-gradient-gold">
-            {isChinese ? "了解四柱八字" : "Understanding BaZi"}
+            {isChinese ? "了解四柱图谱" : "Understanding the Four Pillars Map"}
           </h1>
           <p className={`${tk.text2} text-sm mt-3`}>
             {isChinese ? "3000 年东方智慧，六分钟读懂" : "3,000 years of Eastern wisdom in 6 minutes"}
@@ -166,13 +166,13 @@ export default function LearnPage() {
         {/* CTA */}
         <div className="text-center mt-10 space-y-3">
           <p className={`${tk.text2} text-xs`}>
-            {isChinese ? "理论已就绪，现在来看看你的命盘" : "Theory complete — now see your own chart"}
+            {isChinese ? "理论已就绪，现在来看看你的图谱" : "Theory complete — now see your own map"}
           </p>
           <Link
             href="/fortune"
             className={`inline-block px-8 py-3.5 rounded-2xl font-semibold cursor-pointer ${tk.ctaPrimary} hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all`}
           >
-            {isChinese ? "生成我的命盘 →" : "Generate My Chart →"}
+            {isChinese ? "生成我的图谱 →" : "Generate My Map →"}
           </Link>
         </div>
       </main>

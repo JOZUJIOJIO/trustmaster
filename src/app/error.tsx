@@ -1,5 +1,7 @@
 "use client";
 
+import BrandMark from "@/components/BrandMark";
+
 export default function Error({
   reset,
 }: {
@@ -9,7 +11,7 @@ export default function Error({
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0a0814] px-4">
       <div className="text-center">
-        <div className="text-6xl mb-4">🔮</div>
+        <div className="mb-4 flex justify-center"><BrandMark size="lg" /></div>
         <h1 className="text-2xl font-bold text-amber-100 mb-2">Something went wrong</h1>
         <p className="text-amber-200/40 text-sm mb-6">
           An unexpected error occurred. Please try again.

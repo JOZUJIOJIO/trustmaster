@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useLocale } from "@/lib/LocaleContext";
 
 function IconHome({ className }: { className?: string }) {
@@ -19,6 +20,16 @@ function IconCompass({ className }: { className?: string }) {
       <circle cx="12" cy="12" r="10" />
       <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" opacity="0.15" stroke="none" />
       <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+    </svg>
+  );
+}
+
+function IconDaily({ className }: { className?: string }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <rect x="4" y="5" width="16" height="15" rx="2" />
+      <path d="M8 3v4M16 3v4M4 10h16" />
+      <path d="M9 15h.01M12 15h.01M15 15h.01" />
     </svg>
   );
 }
@@ -48,14 +59,28 @@ const navItems = [
   { href: "/profile", Icon: IconUser, labelKey: "nav.profile" },
 ];
 
+const telegramNavItems = [
+  { href: "/tg", Icon: IconHome, labelKey: "nav.home" },
+  { href: "/fortune", Icon: IconCompass, labelKey: "nav.fortune" },
+  { href: "/daily", Icon: IconDaily, labelKey: "nav.daily" },
+  { href: "/profile", Icon: IconUser, labelKey: "nav.profile" },
+];
+
 export default function BottomNav() {
   const pathname = usePathname();
   const { t } = useLocale();
+  const [isTelegramMiniApp, setIsTelegramMiniApp] = useState(false);
+
+  useEffect(() => {
+    setIsTelegramMiniApp(Boolean(window.Telegram?.WebApp?.initData));
+  }, []);
+
+  const activeNavItems = isTelegramMiniApp || pathname === "/tg" ? telegramNavItems : navItems;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-[#060410]/90 backdrop-blur-md border-t border-[#F2F0EB]/[0.06] safe-bottom">
       <div className="flex justify-around items-center h-16 max-w-md mx-auto">
-        {navItems.map((item) => {
+        {activeNavItems.map((item) => {
           const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
           return (
             <Link

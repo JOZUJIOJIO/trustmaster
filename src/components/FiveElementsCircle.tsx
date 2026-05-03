@@ -33,7 +33,7 @@ const ELEMENT_IMPACT: Record<string, Record<string, string>> = {
     organs: "心脏/小肠",
   },
   土: {
-    strong: "土旺之人，稳重可靠，踏实厚道，是团队中的定海神针。财运通常较稳。",
+    strong: "土旺之人，稳重可靠，踏实厚道，是团队中的稳定支点。资源管理通常较稳。",
     weak: "土弱需培，宜接地气、多接触大自然。长夏（换季期）注意脾胃调养。",
     organs: "脾胃系统",
   },
@@ -319,7 +319,7 @@ export default function FiveElementsCircle({ fiveElements, dayMasterElement, luc
           <div className="flex items-center gap-4 text-[10px] text-amber-200/30 pt-1 border-t border-white/5">
             <span>对应脏腑：{ELEMENT_IMPACT[activeEl].organs}</span>
             <span>·</span>
-            <span>八字中有 {fiveElements[activeEl as keyof typeof fiveElements]} 个</span>
+            <span>图谱中有 {fiveElements[activeEl as keyof typeof fiveElements]} 个</span>
           </div>
         </div>
       )}

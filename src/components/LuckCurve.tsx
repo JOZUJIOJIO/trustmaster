@@ -13,6 +13,23 @@ const ELEMENT_COLORS: Record<string, string> = {
   木: "#22c55e", 火: "#ef4444", 土: "#c9956b", 金: "#f59e0b", 水: "#3b82f6",
 };
 
+const TEN_GOD_LABELS: Record<string, string> = {
+  比肩: "自我",
+  劫财: "协作",
+  食神: "表达",
+  伤官: "创造",
+  正财: "稳定资源",
+  偏财: "机会资源",
+  正官: "规则",
+  七杀: "挑战",
+  正印: "学习",
+  偏印: "洞察",
+};
+
+function displayTenGod(tenGod: string): string {
+  return TEN_GOD_LABELS[tenGod] || tenGod;
+}
+
 // Score a luck cycle based on ten god relationship to day master
 function scoreCycle(tenGod: string, dayMasterStrength: string): number {
   const isStrong = dayMasterStrength === "strong";
@@ -199,10 +216,10 @@ export default function LuckCurve({ chart }: { chart: BaziChart }) {
                       strokeWidth="1"
                     />
                     <text x={p.x} y={p.y - 38} textAnchor="middle" fill="rgba(217,169,106,0.8)" fontSize="9" fontWeight="bold">
-                      {cycle.stem}{cycle.branch} · {cycle.element} · {cycle.tenGod}
+                      {cycle.stem}{cycle.branch} · {cycle.element} · {displayTenGod(cycle.tenGod)}
                     </text>
                     <text x={p.x} y={p.y - 24} textAnchor="middle" fill="rgba(217,169,106,0.4)" fontSize="8">
-                      {cycle.startAge}-{cycle.startAge + 9}岁 · 运势 {cycleScores[i]}
+                      {cycle.startAge}-{cycle.startAge + 9}岁 · 趋势 {cycleScores[i]}
                     </text>
                   </g>
                 )}
@@ -238,12 +255,12 @@ export default function LuckCurve({ chart }: { chart: BaziChart }) {
             </span>
           </div>
           <p className="text-xs text-amber-200/40">
-            {cycles[hoveredIdx].tenGod} · {cycles[hoveredIdx].nayin || ""} · {cycles[hoveredIdx].startAge}-{cycles[hoveredIdx].startAge + 9}岁
+            {displayTenGod(cycles[hoveredIdx].tenGod)} · {cycles[hoveredIdx].nayin || ""} · {cycles[hoveredIdx].startAge}-{cycles[hoveredIdx].startAge + 9}岁
           </p>
           <p className="text-[10px] text-amber-200/25 mt-1">
-            {cycleScores[hoveredIdx] >= 70 ? "🌟 运势高峰期，适合积极进取" :
-             cycleScores[hoveredIdx] >= 50 ? "☀️ 运势平稳期，宜稳中求进" :
-             "🌙 运势蛰伏期，宜修身养性"}
+            {cycleScores[hoveredIdx] >= 70 ? "🌟 趋势上扬期，适合积极进取" :
+             cycleScores[hoveredIdx] >= 50 ? "☀️ 趋势平稳期，宜稳中求进" :
+             "🌙 趋势沉淀期，宜修身养性"}
           </p>
         </div>
       )}

@@ -1,5 +1,5 @@
 /**
- * BaZi (八字) Precise Calculation Engine
+ * Four Pillars precise calculation engine
  * All calculations are deterministic — no AI, no randomness.
  */
 

@@ -23,12 +23,12 @@ export async function POST(request: Request) {
     const tiers: Record<string, { name: string; desc: string; amount: number }> = {
       pro: {
         name: "AI Personality Analysis — Pro",
-        desc: "6-dimension AI personality reading based on BaZi Four Pillars framework",
+        desc: "6-dimension AI personality insight based on the Four Pillars framework",
         amount: 990, // $9.90
       },
       master: {
-        name: "AI Personality Analysis — Master",
-        desc: "Deep master-level reading with life cycle analysis, career planning, and personalized guidance",
+        name: "AI Personality Analysis — Complete",
+        desc: "Complete insight report with life cycle analysis, work rhythm, and personalized guidance",
         amount: 2990, // $29.90
       },
     };

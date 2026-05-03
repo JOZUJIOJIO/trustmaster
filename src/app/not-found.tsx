@@ -1,19 +1,20 @@
 import Link from "next/link";
+import BrandMark from "@/components/BrandMark";
 
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-[#12101c] flex items-center justify-center px-4">
       <div className="text-center max-w-md space-y-6">
-        <div className="text-6xl mb-4">🔮</div>
-        <h1 className="font-display text-3xl font-bold text-amber-100">此页不在命盘之中</h1>
-        <p className="text-amber-200/50 text-sm">This page was not written in your destiny — but these paths await you:</p>
+        <div className="mb-4 flex justify-center"><BrandMark size="lg" /></div>
+        <h1 className="font-display text-3xl font-bold text-amber-100">此页不在图谱之中</h1>
+        <p className="text-amber-200/50 text-sm">This page is outside the current map, but these paths are open:</p>
 
         <div className="space-y-3 text-left">
           {[
-            { href: "/fortune", icon: "☯", label: "八字命理分析", labelEn: "BaZi Analysis" },
-            { href: "/daily", icon: "📅", label: "每日运势", labelEn: "Daily Fortune" },
+            { href: "/fortune", icon: "☯", label: "个人图谱", labelEn: "Personal Map" },
+            { href: "/daily", icon: "📅", label: "每日趋势", labelEn: "Daily Trends" },
             { href: "/compatibility", icon: "💑", label: "双人合盘", labelEn: "Compatibility" },
-            { href: "/learn", icon: "📖", label: "了解八字", labelEn: "Learn BaZi" },
+            { href: "/learn", icon: "📖", label: "了解体系", labelEn: "Learn" },
             { href: "/", icon: "🏠", label: "返回首页", labelEn: "Home" },
           ].map((item) => (
             <Link

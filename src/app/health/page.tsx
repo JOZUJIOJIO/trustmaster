@@ -7,6 +7,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import TiltCard from "@/components/TiltCard";
 import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
+import BrandMark from "@/components/BrandMark";
 import { PageArtworkBand } from "@/components/PageArtwork";
 
 export default function HealthPage() {
@@ -47,7 +48,7 @@ export default function HealthPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl">🔮</span>
+              <BrandMark size="sm" />
               <span className={`text-xl font-bold ${tk.accent}`}>{t("app.name")}</span>
             </Link>
           </div>

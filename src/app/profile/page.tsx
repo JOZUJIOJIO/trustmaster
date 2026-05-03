@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/supabase/auth-context";
 import { useLocale } from "@/lib/LocaleContext";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import BrandMark from "@/components/BrandMark";
 import { PageArtworkBand, PageArtworkBackdrop } from "@/components/PageArtwork";
 
 export default function ProfilePage() {
@@ -88,19 +89,19 @@ export default function ProfilePage() {
         </div>
         {/* Non-logged-in state */}
         <div className="relative z-10 text-center space-y-6 py-8">
-          <div className="text-5xl mb-2">🔮</div>
+          <div className="mb-2 flex justify-center"><BrandMark size="lg" /></div>
           <h2 className="text-xl font-bold text-amber-100">
-            {isChinese ? "解锁你的专属命盘" : "Unlock Your Personal Chart"}
+            {isChinese ? "解锁你的专属图谱" : "Unlock Your Personal Map"}
           </h2>
           <p className="text-amber-200/50 text-sm max-w-xs mx-auto">
-            {isChinese ? "登录后，你可以保存命盘、追踪每日运势、获得个性化建议" : "Sign in to save your chart, track daily fortune, and get personalized insights"}
+            {isChinese ? "登录后，你可以保存图谱、追踪每日趋势、获得个性化建议" : "Sign in to save your map, track daily trends, and get personalized insights"}
           </p>
 
           {/* Feature highlights */}
           <div className="space-y-3 max-w-xs mx-auto text-left">
             {[
-              { icon: "📊", text: isChinese ? "永久保存你的八字命盘" : "Save your BaZi chart permanently" },
-              { icon: "📅", text: isChinese ? "每日个性化运势追踪" : "Daily personalized fortune tracking" },
+              { icon: "📊", text: isChinese ? "永久保存你的个人图谱" : "Save your personal map permanently" },
+              { icon: "📅", text: isChinese ? "每日个性化趋势追踪" : "Daily personalized trend tracking" },
               { icon: "🎁", text: isChinese ? "注册即送一次免费 AI 深度解读" : "Free AI deep reading on signup" },
               { icon: "💑", text: isChinese ? "保存合盘分析记录" : "Save compatibility analysis records" },
             ].map((item, i) => (
@@ -133,7 +134,7 @@ export default function ProfilePage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl">🔮</span>
+              <BrandMark size="sm" />
               <span className="text-xl font-bold text-amber-200">{t("app.name")}</span>
             </Link>
             <span className="text-amber-200/20">/</span>
@@ -156,7 +157,7 @@ export default function ProfilePage() {
       <main className="lg:max-w-3xl lg:mx-auto lg:px-6 lg:py-10 pb-24">
         {loading ? (
           <div className="text-center py-20">
-            <div className="animate-spin text-3xl">🔮</div>
+            <div className="flex justify-center animate-pulse"><BrandMark size="md" /></div>
           </div>
         ) : (
           <div className="space-y-4 p-4 lg:p-0">
@@ -221,7 +222,7 @@ export default function ProfilePage() {
                 <p className="text-sm text-amber-200/40 mb-3">
                   {isTelegramProfile
                     ? (isChinese ? "Mini App 内使用 Stars 单次解锁，支付后自动生成 AI 深度解读" : "Use Stars inside the Mini App to unlock a focused AI reading")
-                    : (isChinese ? "无限 AI 解读 · 每日深度运势 · $4.99/月" : "Unlimited AI readings · Daily insights · $4.99/mo")}
+                    : (isChinese ? "无限 AI 洞察 · 每日趋势 · $4.99/月" : "Unlimited AI readings · Daily insights · $4.99/mo")}
                 </p>
                 <Link
                   href="/fortune"

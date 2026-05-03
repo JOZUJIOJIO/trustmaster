@@ -33,11 +33,11 @@ export async function generateBaziPDF(
 
   const readingCards = aiReading && !aiReading.error ? [
     { icon: "🧠", title: "性格特质", key: "personality" },
-    { icon: "💼", title: "事业运势", key: "career" },
-    { icon: "💰", title: "财运分析", key: "wealth" },
-    { icon: "❤️", title: "感情运势", key: "love" },
+    { icon: "💼", title: "事业节奏", key: "career" },
+    { icon: "💰", title: "资源策略", key: "wealth" },
+    { icon: "❤️", title: "关系沟通", key: "love" },
     { icon: "🏥", title: "健康提醒", key: "health" },
-    { icon: "🍀", title: "开运指南", key: "advice" },
+    { icon: "🍀", title: "行动建议", key: "advice" },
   ].filter((c) => aiReading[c.key]).map((c) => `
     <div style="background:#fefbf6;border:1px solid #e8d5b8;border-radius:10px;padding:14px;margin-bottom:10px;page-break-inside:avoid;">
       <div style="font-weight:bold;font-size:13px;color:#92400e;margin-bottom:6px;">${c.icon} ${c.title}</div>
@@ -49,9 +49,9 @@ export async function generateBaziPDF(
     <div style="font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;color:#1a1a1a;padding:40px 35px;">
       <!-- Header -->
       <div style="text-align:center;border-bottom:2px solid #b45309;padding-bottom:20px;margin-bottom:24px;">
-        <div style="font-size:11px;color:#999;letter-spacing:4px;margin-bottom:6px;">☸ TRUSTMASTER ☸</div>
-        <div style="font-size:26px;font-weight:bold;color:#92400e;">个性化人生蓝图分析</div>
-        <div style="font-size:12px;color:#888;margin-top:8px;">Personalized Life Blueprint Analysis</div>
+        <div style="font-size:11px;color:#999;letter-spacing:4px;margin-bottom:6px;">☸ KAIROS ☸</div>
+        <div style="font-size:26px;font-weight:bold;color:#92400e;">个性化东方图谱分析</div>
+        <div style="font-size:12px;color:#888;margin-top:8px;">Personalized Eastern Map Analysis</div>
       </div>
 
       <!-- User Info -->
@@ -69,7 +69,7 @@ export async function generateBaziPDF(
 
       <!-- Four Pillars -->
       <div style="margin-bottom:18px;">
-        <div style="text-align:center;font-size:12px;color:#b45309;letter-spacing:6px;margin-bottom:12px;">四 柱 八 字</div>
+        <div style="text-align:center;font-size:12px;color:#b45309;letter-spacing:6px;margin-bottom:12px;">四 柱 图 谱</div>
         <div style="display:flex;justify-content:center;gap:12px;">
           ${[
             { label: "年柱", p: chart.yearPillar },
@@ -112,7 +112,7 @@ export async function generateBaziPDF(
 
       <!-- Footer -->
       <div style="text-align:center;border-top:1px solid #eee;padding-top:16px;margin-top:24px;">
-        <div style="font-size:10px;color:#bbb;">本报告由 Kairós 八字命理引擎生成</div>
+        <div style="font-size:10px;color:#bbb;">本报告由 Kairós AI 东方洞察引擎生成</div>
         <div style="font-size:9px;color:#ddd;margin-top:4px;">仅供参考，不作为重要决策依据 · ${new Date().toLocaleDateString("zh-CN")}</div>
       </div>
     </div>

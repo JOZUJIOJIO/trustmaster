@@ -12,8 +12,8 @@ const ELEMENT_SYMBOLS: Record<string, string> = {
 };
 
 /**
- * 命盘揭示仪式动画
- * Phase 1: 太极旋转 + "天机推演" 文字
+ * 图谱揭示仪式动画
+ * Phase 1: 太极旋转 + "图谱生成" 文字
  * Phase 2: 四柱依次从上方落入
  * Phase 3: 五行粒子汇聚到中心
  * Phase 4: 金色封印解开 → 回调 onComplete
@@ -33,7 +33,7 @@ export default function BaziReveal({
   useEffect(() => {
     // Phase 0: Initial (太极旋转)
     const t1 = setTimeout(() => setPhase(1), 800);
-    // Phase 1: Show text "天机推演中..."
+    // Phase 1: Show text "图谱生成中..."
     const t2 = setTimeout(() => setPhase(2), 2000);
     // Phase 2: Pillars drop in one by one
     const t3 = setTimeout(() => setPillarIndex(0), 2200);
@@ -150,7 +150,7 @@ export default function BaziReveal({
         }}
       >
         <p className="text-amber-400/60 text-sm tracking-[0.4em] font-light">
-          天 机 推 演 中
+          图 谱 生 成 中
         </p>
         <div className="flex gap-1.5 mt-3">
           {[0, 1, 2].map((i) => (
@@ -284,7 +284,7 @@ export default function BaziReveal({
           <div className="text-center">
             <div className="text-3xl mb-2">{chart.zodiacEmoji}</div>
             <div className="text-lg font-bold text-amber-200">
-              {chart.dayMaster}{chart.dayMasterElement}命
+              {chart.dayMaster}{chart.dayMasterElement}图谱
             </div>
             {userName && <div className="text-xs text-amber-200/40 mt-1">{userName}</div>}
           </div>

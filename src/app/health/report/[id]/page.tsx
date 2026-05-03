@@ -164,7 +164,7 @@ export default function HealthReportPage({ params }: { params: Promise<{ id: str
           <SeasonalCalendar seasons={reading.seasonalWellness} />
         </div>
 
-        {/* Section 6: BaZi Enhancement (if available) */}
+        {/* Section 6: Four Pillars enhancement (if available) */}
         {assessment.bazi_chart_hash && (
           <div className="border-b border-amber-400/10 pb-8">
             <h3 className="text-sm font-semibold text-amber-100 mb-2">

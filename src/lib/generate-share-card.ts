@@ -75,8 +75,8 @@ export async function generateShareCard(chart: BaziChart, userName: string) {
 
       <!-- Header -->
       <div style="text-align:center;margin-bottom:24px;">
-        <div style="font-size:10px;color:rgba(217,175,120,0.4);letter-spacing:4px;margin-bottom:8px;">☸ TRUSTMASTER ☸</div>
-        <div style="font-size:28px;font-weight:bold;background:linear-gradient(135deg,#d4a574,#f5d4a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">个性化人生蓝图</div>
+        <div style="font-size:10px;color:rgba(217,175,120,0.4);letter-spacing:4px;margin-bottom:8px;">☸ KAIROS ☸</div>
+        <div style="font-size:28px;font-weight:bold;background:linear-gradient(135deg,#d4a574,#f5d4a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">个性化东方图谱</div>
       </div>
 
       <!-- User info -->
@@ -114,7 +114,7 @@ export async function generateShareCard(chart: BaziChart, userName: string) {
       <div style="display:flex;justify-content:center;align-items:center;gap:16px;margin-bottom:16px;">
         <div style="text-align:center;">
           <div style="font-size:32px;font-weight:bold;color:#d4a574;">${chart.dayMaster}</div>
-          <div style="font-size:10px;color:rgba(217,175,120,0.4);">${chart.dayMasterElement}命 · ${chart.dayMasterStrength === "strong" ? "身强" : "身弱"}</div>
+          <div style="font-size:10px;color:rgba(217,175,120,0.4);">${chart.dayMasterElement}图谱 · ${chart.dayMasterStrength === "strong" ? "结构偏强" : "结构偏柔"}</div>
         </div>
         <div style="width:1px;height:40px;background:rgba(217,175,120,0.1);"></div>
         <div style="text-align:center;">

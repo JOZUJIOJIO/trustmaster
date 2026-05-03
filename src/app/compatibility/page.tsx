@@ -13,6 +13,7 @@ import { useToast } from "@/components/Toast";
 import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
 import { PageArtworkBand } from "@/components/PageArtwork";
+import BrandMark from "@/components/BrandMark";
 
 type Step = "input" | "result";
 
@@ -515,8 +516,8 @@ function CompatibilityContent() {
             <button
               onClick={() => {
                 const text = isChinese
-                  ? `我和${nameB || "TA"}的合盘兼容度是 ${overall}% 🔮 来 Kairós 测测你们的缘分吧！`
-                  : `Our compatibility score is ${overall}%! 🔮 Check yours on Kairós!`;
+                  ? `我和${nameB || "TA"}的合盘兼容度是 ${overall}% 来 Kairós 看看你们的沟通节奏吧！`
+                  : `Our compatibility score is ${overall}%! Check yours on Kairós.`;
                 const shareUrl = `${window.location.origin}/compatibility`;
                 if (navigator.share) {
                   navigator.share({ title: "Kairós Compatibility", text, url: shareUrl });
@@ -534,14 +535,14 @@ function CompatibilityContent() {
 
             {/* Viral referral CTA */}
             <div className={`${theme === "cosmic" ? "bg-gradient-to-r from-purple-900/20 via-purple-800/15 to-amber-900/20 border-purple-400/10" : "bg-gradient-to-r from-purple-100/40 via-purple-50/30 to-amber-100/40 border-purple-600/10"} border rounded-2xl p-5 text-center space-y-3`}>
-              <div className="text-2xl">🔮</div>
+              <div className="flex justify-center"><BrandMark size="md" /></div>
               <p className={`${tk.text1} text-sm font-semibold`}>
                 {isChinese ? "想看 TA 眼中的你？" : "Want to see yourself through their eyes?"}
               </p>
               <p className={`${tk.label} text-xs leading-relaxed`}>
                 {isChinese
-                  ? `让${nameB || "对方"}也生成自己的命盘，解锁双向合盘视角`
-                  : `Have ${nameB || "them"} generate their own chart for a two-way compatibility view`}
+                  ? `让${nameB || "对方"}也生成自己的图谱，解锁双向合盘视角`
+                  : `Have ${nameB || "them"} generate their own map for a two-way compatibility view`}
               </p>
               <button
                 onClick={() => {

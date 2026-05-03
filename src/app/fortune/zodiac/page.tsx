@@ -6,6 +6,7 @@ import { useLocale } from "@/lib/LocaleContext";
 import { zodiacSigns, getZodiacByDate, getElementGradient, type ZodiacSign } from "@/lib/horoscope";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import BrandMark from "@/components/BrandMark";
 
 interface HoroscopeResult {
   sign: string;
@@ -82,7 +83,7 @@ export default function FortunePage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl">🔮</span>
+              <BrandMark size="sm" />
               <span className="text-xl font-bold text-amber-200">{t("app.name")}</span>
             </Link>
             <span className="text-amber-200/20">/</span>

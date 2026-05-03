@@ -7,8 +7,11 @@ describe("Telegram navigation", () => {
   });
 
   it("reroutes Supabase-only account pages back to the Mini App home", () => {
-    expect(resolveTelegramRedirectPath("/profile")).toBe("/tg");
     expect(resolveTelegramRedirectPath("/login?redirect=/profile")).toBe("/tg");
     expect(resolveTelegramRedirectPath("/health/quiz")).toBe("/tg");
+  });
+
+  it("allows the Telegram-aware profile page", () => {
+    expect(resolveTelegramRedirectPath("/profile")).toBe("/profile");
   });
 });

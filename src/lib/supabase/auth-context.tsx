@@ -3,9 +3,16 @@
 import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from "react";
 import { createClient, isSupabaseConfigured } from "./client";
 import type { User } from "@supabase/supabase-js";
+import {
+  clearTelegramClientSession,
+  readTelegramClientSession,
+  writeTelegramClientSession,
+  type TelegramClientSession,
+} from "@/lib/telegram/client-session";
 
 interface AuthContextType {
   user: User | null;
+  telegramUser: TelegramClientSession | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string, displayName: string) => Promise<{ error: string | null }>;
@@ -15,6 +22,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  telegramUser: null,
   loading: true,
   signIn: async () => ({ error: null }),
   signUp: async () => ({ error: null }),
@@ -24,22 +32,72 @@ const AuthContext = createContext<AuthContextType>({
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [telegramUser, setTelegramUser] = useState<TelegramClientSession | null>(null);
   const [loading, setLoading] = useState(true);
   const supabaseRef = useRef(createClient());
 
   useEffect(() => {
+    let cancelled = false;
+    const refreshTelegramUser = () => {
+      if (!cancelled) setTelegramUser(readTelegramClientSession());
+    };
+    const waitForTelegramWebApp = async () => {
+      for (let attempt = 0; attempt < 8; attempt += 1) {
+        const webApp = window.Telegram?.WebApp;
+        if (webApp) return webApp;
+        await new Promise((resolve) => window.setTimeout(resolve, 120));
+      }
+      return window.Telegram?.WebApp;
+    };
+    const authenticateTelegramFromWebApp = async () => {
+      const storedSession = readTelegramClientSession();
+      if (storedSession) {
+        if (!cancelled) setTelegramUser(storedSession);
+        return storedSession;
+      }
+
+      const webApp = await waitForTelegramWebApp();
+      if (!webApp?.initData) return null;
+
+      const startParam = webApp.initDataUnsafe?.start_param || "";
+      const res = await fetch("/api/telegram/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ initData: webApp.initData, startParam }),
+      });
+      const session = await res.json();
+      if (!res.ok || !session?.telegramUserId) return null;
+
+      writeTelegramClientSession(session);
+      if (!cancelled) setTelegramUser(session);
+      window.dispatchEvent(new CustomEvent("kairos:telegram-session", { detail: session }));
+      return session as TelegramClientSession;
+    };
+
+    refreshTelegramUser();
+    window.addEventListener("kairos:telegram-session", refreshTelegramUser);
+    window.addEventListener("storage", refreshTelegramUser);
+
     if (!isSupabaseConfigured()) {
-      setLoading(false);
-      return;
+      authenticateTelegramFromWebApp().finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+      return () => {
+        cancelled = true;
+        window.removeEventListener("kairos:telegram-session", refreshTelegramUser);
+        window.removeEventListener("storage", refreshTelegramUser);
+      };
     }
 
     const supabase = supabaseRef.current;
 
-    supabase.auth.getSession().then(({ data }) => {
-      setUser(data?.session?.user ?? null);
-      setLoading(false);
-    }).catch(() => {
-      setLoading(false);
+    Promise.all([
+      authenticateTelegramFromWebApp().catch(() => null),
+      supabase.auth.getSession()
+        .then(({ data }) => setUser(data?.session?.user ?? null))
+        .catch(() => {}),
+    ]).finally(() => {
+      if (!cancelled) setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -48,7 +106,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+      window.removeEventListener("kairos:telegram-session", refreshTelegramUser);
+      window.removeEventListener("storage", refreshTelegramUser);
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -81,11 +144,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
+    clearTelegramClientSession();
+    setTelegramUser(null);
     await supabaseRef.current.auth.signOut();
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, telegramUser, loading, signIn, signUp, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );

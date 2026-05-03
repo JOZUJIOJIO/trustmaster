@@ -10,7 +10,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { PageArtworkBand, PageArtworkBackdrop } from "@/components/PageArtwork";
 
 export default function ProfilePage() {
-  const { user, loading: authLoading, signOut } = useAuth();
+  const { user, telegramUser, loading: authLoading, signOut } = useAuth();
   const { isChinese, t } = useLocale();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -26,13 +26,33 @@ export default function ProfilePage() {
     stats: { signups: number; converted: number };
   }>({ referralCode: null, freeReadings: 0, stats: { signups: 0, converted: 0 } });
   const [refCopied, setRefCopied] = useState(false);
+  const isTelegramProfile = Boolean(telegramUser && !user);
+  const profileName = user?.user_metadata?.display_name
+    || user?.email?.split("@")[0]
+    || telegramUser?.firstName
+    || "Kairos";
+  const profileSubtitle = user?.email
+    || (telegramUser?.username ? `@${telegramUser.username}` : telegramUser ? `Telegram ID ${telegramUser.telegramUserId}` : "");
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user) {
+    if (!user && !telegramUser) {
       router.replace("/login?redirect=/profile");
       return;
     }
+
+    if (telegramUser && !user) {
+      setSubscription({ subscribed: false });
+      setReferral({
+        referralCode: telegramUser.referralCode || null,
+        freeReadings: 0,
+        stats: { signups: 0, converted: 0 },
+      });
+      setLoading(false);
+      return;
+    }
+
+    if (!user) return;
 
     Promise.all([
       fetch("/api/subscription/status", {
@@ -51,14 +71,14 @@ export default function ProfilePage() {
       }
       setLoading(false);
     });
-  }, [user, authLoading]);
+  }, [user, telegramUser, authLoading, router]);
 
   const handleSignOut = async () => {
     await signOut();
-    router.push("/");
+    router.push(isTelegramProfile ? "/tg" : "/");
   };
 
-  if (!authLoading && !user) {
+  if (!authLoading && !user && !telegramUser) {
     return (
       <div className="relative min-h-screen overflow-hidden bg-[#0a0814]">
         <PageArtworkBackdrop art="profile" />
@@ -146,9 +166,15 @@ export default function ProfilePage() {
                 👤
               </div>
               <h2 className="text-lg font-bold mt-3 text-amber-100">
-                {user?.user_metadata?.display_name || user?.email?.split("@")[0]}
+                {profileName}
               </h2>
-              <p className="text-sm text-amber-200/40">{user?.email}</p>
+              <p className="text-sm text-amber-200/40">{profileSubtitle}</p>
+              {isTelegramProfile && (
+                <div className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 bg-cyan-900/25 border border-cyan-400/25 rounded-full">
+                  <span className="text-xs">Telegram</span>
+                  <span className="text-xs font-semibold text-cyan-200">{isChinese ? "免注册身份" : "Mini App identity"}</span>
+                </div>
+              )}
               {subscription.subscribed && (
                 <div className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 bg-emerald-900/30 border border-emerald-500/30 rounded-full">
                   <span className="text-xs">♾️</span>
@@ -190,10 +216,12 @@ export default function ProfilePage() {
             ) : (
               <div className="bg-white/[0.03] rounded-2xl border border-amber-400/10 p-5">
                 <h3 className="font-semibold text-amber-200/80 mb-2">
-                  {isChinese ? "升级 Pro 会员" : "Upgrade to Pro"}
+                  {isTelegramProfile ? (isChinese ? "Telegram Stars 解锁" : "Unlock with Telegram Stars") : (isChinese ? "升级 Pro 会员" : "Upgrade to Pro")}
                 </h3>
                 <p className="text-sm text-amber-200/40 mb-3">
-                  {isChinese ? "无限 AI 解读 · 每日深度运势 · $4.99/月" : "Unlimited AI readings · Daily insights · $4.99/mo"}
+                  {isTelegramProfile
+                    ? (isChinese ? "Mini App 内使用 Stars 单次解锁，支付后自动生成 AI 深度解读" : "Use Stars inside the Mini App to unlock a focused AI reading")
+                    : (isChinese ? "无限 AI 解读 · 每日深度运势 · $4.99/月" : "Unlimited AI readings · Daily insights · $4.99/mo")}
                 </p>
                 <Link
                   href="/fortune"

@@ -3,7 +3,6 @@ const TELEGRAM_UNSUPPORTED_REDIRECT_PATHS = [
   "/health/quiz",
   "/health/report",
   "/login",
-  "/profile",
 ];
 
 export function resolveTelegramRedirectPath(redirectTo: string) {

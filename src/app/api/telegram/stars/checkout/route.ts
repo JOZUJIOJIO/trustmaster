@@ -7,6 +7,7 @@ import {
   createTelegramStarsPayload,
   getTelegramStarsProduct,
   productIdFromTier,
+  setTelegramStarsWebhook,
 } from "@/lib/telegram/stars";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +27,21 @@ export async function POST(request: Request) {
   const telegramUser = validation.payload.user;
   const product = getTelegramStarsProduct(productIdFromTier(String(body.tier || "pro")));
   const payload = createTelegramStarsPayload();
+  const origin = process.env.NEXT_PUBLIC_SITE_URL || request.headers.get("origin") || new URL(request.url).origin;
+  const webhookUrl = new URL("/api/telegram/webhook", origin).toString();
+  const webhookResult = await setTelegramStarsWebhook({
+    botToken,
+    webhookUrl,
+    secretToken: process.env.TELEGRAM_WEBHOOK_SECRET,
+  });
+
+  if (!webhookResult.ok) {
+    return NextResponse.json(
+      { error: webhookResult.description || "Failed to configure Telegram Stars webhook" },
+      { status: 502 }
+    );
+  }
+
   const invoice = buildTelegramStarsInvoicePayload({
     product,
     payload,

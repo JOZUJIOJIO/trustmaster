@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { hasAdminSession } from "@/lib/admin/auth";
+import { setTelegramStarsWebhook } from "@/lib/telegram/stars";
 
 export const dynamic = "force-dynamic";
 
@@ -17,15 +18,10 @@ export async function POST(request: Request) {
   const webhookUrl = new URL("/api/telegram/webhook", siteUrl).toString();
   const secretToken = process.env.TELEGRAM_WEBHOOK_SECRET;
 
-  const telegramResponse = await fetch(`https://api.telegram.org/bot${botToken}/setWebhook`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      url: webhookUrl,
-      allowed_updates: ["message", "pre_checkout_query"],
-      secret_token: secretToken || undefined,
-    }),
+  const result = await setTelegramStarsWebhook({
+    botToken,
+    webhookUrl,
+    secretToken: secretToken || undefined,
   });
-  const result = await telegramResponse.json();
   return NextResponse.json({ webhookUrl, result });
 }

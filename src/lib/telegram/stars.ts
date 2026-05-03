@@ -85,6 +85,31 @@ export async function createTelegramStarsInvoiceLink(botToken: string, invoice: 
   return (await res.json()) as TelegramCreateInvoiceLinkResult;
 }
 
+export type TelegramSetWebhookResult =
+  | { ok: true; result: true; description?: string }
+  | { ok: false; description?: string; error_code?: number };
+
+export async function setTelegramStarsWebhook({
+  botToken,
+  webhookUrl,
+  secretToken,
+}: {
+  botToken: string;
+  webhookUrl: string;
+  secretToken?: string;
+}) {
+  const res = await fetch(`https://api.telegram.org/bot${botToken}/setWebhook`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      url: webhookUrl,
+      allowed_updates: ["message", "pre_checkout_query"],
+      secret_token: secretToken || undefined,
+    }),
+  });
+  return (await res.json()) as TelegramSetWebhookResult;
+}
+
 export async function answerPreCheckoutQuery({
   botToken,
   preCheckoutQueryId,

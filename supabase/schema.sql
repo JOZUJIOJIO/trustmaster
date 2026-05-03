@@ -201,6 +201,9 @@ CREATE TABLE IF NOT EXISTS orders (
   stripe_payment_intent TEXT,
   customer_email TEXT,
   chart_id TEXT NOT NULL DEFAULT '',
+  telegram_user_id BIGINT,
+  payment_provider TEXT NOT NULL DEFAULT 'stripe',
+  telegram_payment_charge_id TEXT,
   user_name TEXT NOT NULL DEFAULT '',
   tier TEXT NOT NULL DEFAULT 'pro',
   amount INTEGER NOT NULL DEFAULT 0,
@@ -213,6 +216,10 @@ CREATE TABLE IF NOT EXISTS orders (
 
 CREATE INDEX IF NOT EXISTS idx_orders_stripe_session ON orders(stripe_session_id);
 CREATE INDEX IF NOT EXISTS idx_orders_chart_id ON orders(chart_id);
+CREATE INDEX IF NOT EXISTS idx_orders_telegram_user ON orders(telegram_user_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_orders_telegram_charge
+  ON orders(telegram_payment_charge_id)
+  WHERE telegram_payment_charge_id IS NOT NULL;
 
 -- Orders: service role can write, anyone can read their own by session_id
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
@@ -271,6 +278,9 @@ CREATE POLICY "Users can view own subscriptions"
 
 -- Add user_id to orders for linking purchases to accounts
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS telegram_user_id BIGINT;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_provider TEXT NOT NULL DEFAULT 'stripe';
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS telegram_payment_charge_id TEXT;
 
 -- ============================================
 -- Referral system

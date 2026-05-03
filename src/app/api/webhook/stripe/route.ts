@@ -42,6 +42,7 @@ export async function POST(request: Request) {
               : session.payment_intent?.id ?? null,
           customer_email: session.customer_details?.email ?? null,
           user_id: session.metadata?.userId || null,
+          payment_provider: "stripe",
           chart_id: session.metadata?.chartId ?? "",
           user_name: session.metadata?.userName ?? "",
           tier: session.metadata?.tier ?? "pro",

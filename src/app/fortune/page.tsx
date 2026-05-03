@@ -61,6 +61,7 @@ function FortuneContent() {
   const tk = themeTokens[theme];
   const { user } = useAuth();
   const { toast } = useToast();
+  const [isTelegramMiniApp, setIsTelegramMiniApp] = useState(false);
   const [mode, setMode] = useState<Mode>("bazi");
   const [step, setStep] = useState<Step>("input");
   const [, setIsSubscriber] = useState(false);
@@ -68,6 +69,10 @@ function FortuneContent() {
   const [subLoading, setSubLoading] = useState(false);
 
   const [freeReadings, setFreeReadings] = useState(0);
+
+  useEffect(() => {
+    setIsTelegramMiniApp(Boolean(window.Telegram?.WebApp?.initData));
+  }, []);
 
   // Check subscription status + free readings when user logs in
   useEffect(() => {
@@ -243,6 +248,11 @@ function FortuneContent() {
   };
 
   const handleSubscribe = async (plan: "monthly" | "yearly" = "monthly") => {
+    if (isTelegramMiniApp) {
+      setShowPaywall(true);
+      toast(isChinese ? "Telegram 内请使用 Stars 单次解锁" : "Use Telegram Stars for native checkout", "success");
+      return;
+    }
     if (!user) { setShowLoginGate(true); return; }
     setSubLoading(true);
     try {
@@ -265,10 +275,61 @@ function FortuneContent() {
   };
 
   const handleStripeCheckout = async (tier: "pro" | "master" = "pro") => {
-    if (!user) { setShowLoginGate(true); return; }
+    const telegramWebApp = typeof window !== "undefined" ? window.Telegram?.WebApp : undefined;
+    const telegramInitData = telegramWebApp?.initData || "";
+    if (!user && !telegramInitData) { setShowLoginGate(true); return; }
     setCheckoutLoading(true);
     setCheckoutError("");
     try {
+      if (telegramInitData && telegramWebApp?.openInvoice) {
+        const res = await fetch("/api/telegram/stars/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            initData: telegramInitData,
+            chartId: chart?.solarDate || "",
+            chartHash: chart ? getChartHash(chart) : "",
+            userName,
+            tier,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.invoiceLink) {
+          throw new Error(data.error || "Failed to create Telegram Stars invoice");
+        }
+        if (chart) {
+          const chartJson = JSON.stringify(chart);
+          sessionStorage.setItem("kairos_chart", chartJson);
+          localStorage.setItem("kairos_chart", chartJson);
+        }
+        sessionStorage.setItem("kairos_userName", userName);
+        localStorage.setItem("kairos_userName", userName);
+        telegramWebApp.openInvoice(data.invoiceLink, (status) => {
+          if (status === "paid") {
+            telegramWebApp.HapticFeedback?.notificationOccurred?.("success");
+            setUnlocked(true);
+            setShowPaywall(false);
+            sessionStorage.setItem("kairos_paid", "true");
+            localStorage.setItem("kairos_order_session", data.payload || "telegram-stars");
+            toast(isChinese ? "Stars 支付成功，正在生成解读..." : "Stars payment successful. Generating your reading...", "success");
+            setTimeout(() => {
+              handleAiReading();
+            }, 800);
+          } else if (status === "failed") {
+            telegramWebApp.HapticFeedback?.notificationOccurred?.("error");
+            setCheckoutError(isChinese ? "Stars 支付失败，请重试" : "Stars payment failed. Please try again.");
+          }
+          setCheckoutLoading(false);
+        });
+        return;
+      }
+
+      if (!user) {
+        setShowLoginGate(true);
+        setCheckoutLoading(false);
+        return;
+      }
+
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -299,7 +360,9 @@ function FortuneContent() {
       }
     } catch (err) {
       console.error("Checkout error:", err);
-      const errMsg = isChinese ? "网络错误，请检查连接后重试" : "Network error. Please check your connection.";
+      const errMsg = err instanceof Error && err.message
+        ? err.message
+        : (isChinese ? "网络错误，请检查连接后重试" : "Network error. Please check your connection.");
       setCheckoutError(errMsg);
       toast(errMsg, "error");
       setCheckoutLoading(false);
@@ -1338,6 +1401,7 @@ function FortuneContent() {
                     setUnlocked={setUnlocked}
                     setFreeReadings={setFreeReadings}
                     freeReadings={freeReadings}
+                    isTelegramMiniApp={isTelegramMiniApp}
                     isChinese={isChinese}
                     t={t}
                     handleAiReading={handleAiReading}

@@ -3,6 +3,7 @@ import { listAdminTable, formatDate } from "@/lib/admin/data";
 import type { Database } from "@/lib/supabase/database.types";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { AdminPanel, AdminStatCard } from "@/components/admin/AdminCards";
+import { TelegramWebhookButton } from "@/components/admin/TelegramWebhookButton";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,10 @@ export default async function AdminTelegramPage() {
         <AdminStatCard label="Telegram 用户" value={String(accounts.count)} hint="telegram_accounts 总数" tone="cyan" />
         <AdminStatCard label="Premium 用户" value={String(premiumCount)} hint="Telegram Premium 标记" tone="emerald" />
         <AdminStatCard label="推荐启动" value={String(referralStarts)} hint="带 ref_ 参数打开" />
+      </div>
+
+      <div className="mt-5">
+        <TelegramWebhookButton />
       </div>
 
       <div className="mt-6 grid gap-5 xl:grid-cols-2">

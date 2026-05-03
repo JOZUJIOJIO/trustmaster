@@ -54,6 +54,9 @@ export type Database = {
           stripe_payment_intent: string | null;
           customer_email: string | null;
           user_id: string | null;
+          telegram_user_id: number | null;
+          payment_provider: string;
+          telegram_payment_charge_id: string | null;
           chart_id: string;
           user_name: string;
           tier: string;
@@ -70,6 +73,9 @@ export type Database = {
           stripe_payment_intent?: string | null;
           customer_email?: string | null;
           user_id?: string | null;
+          telegram_user_id?: number | null;
+          payment_provider?: string;
+          telegram_payment_charge_id?: string | null;
           chart_id?: string;
           user_name?: string;
           tier?: string;
@@ -84,6 +90,9 @@ export type Database = {
           stripe_payment_intent?: string | null;
           customer_email?: string | null;
           user_id?: string | null;
+          telegram_user_id?: number | null;
+          payment_provider?: string;
+          telegram_payment_charge_id?: string | null;
           chart_id?: string;
           user_name?: string;
           tier?: string;

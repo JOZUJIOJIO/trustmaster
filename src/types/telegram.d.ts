@@ -26,6 +26,10 @@ declare global {
     disableClosingConfirmation?: () => void;
     setHeaderColor?: (color: string) => void;
     setBackgroundColor?: (color: string) => void;
+    openInvoice?: (
+      url: string,
+      callback?: (status: "paid" | "cancelled" | "failed" | "pending") => void
+    ) => void;
     MainButton?: {
       text: string;
       isVisible: boolean;
@@ -42,8 +46,8 @@ declare global {
       onClick: (callback: () => void) => void;
       offClick: (callback: () => void) => void;
     };
-    onEvent?: (eventType: string, callback: () => void) => void;
-    offEvent?: (eventType: string, callback: () => void) => void;
+    onEvent?: (eventType: string, callback: (...args: unknown[]) => void) => void;
+    offEvent?: (eventType: string, callback: (...args: unknown[]) => void) => void;
     HapticFeedback?: {
       impactOccurred?: (style: "light" | "medium" | "heavy" | "rigid" | "soft") => void;
       notificationOccurred?: (type: "error" | "success" | "warning") => void;

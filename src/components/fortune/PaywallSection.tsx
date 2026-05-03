@@ -11,6 +11,7 @@ export interface PaywallSectionProps {
   setUnlocked: (v: boolean) => void;
   setFreeReadings: React.Dispatch<React.SetStateAction<number>>;
   freeReadings: number;
+  isTelegramMiniApp?: boolean;
   isChinese: boolean;
   t: (key: string) => string;
   handleAiReading: () => void;
@@ -30,6 +31,7 @@ export function PaywallSection({
   setUnlocked,
   setFreeReadings,
   freeReadings,
+  isTelegramMiniApp = false,
   isChinese,
   t,
   handleAiReading,
@@ -42,7 +44,7 @@ export function PaywallSection({
   return (
     <div className="relative -mt-20 pt-12">
       {/* Login Gate Modal */}
-      {showLoginGate && !user && (
+      {showLoginGate && !user && !isTelegramMiniApp && (
         <div className="bg-white/[0.03] border border-amber-400/15 rounded-2xl p-6 space-y-4 animate-slideUp mb-4" style={{ animationDuration: "0.4s" }}>
           <div className="text-center">
             <div className="text-3xl mb-2">👤</div>
@@ -82,7 +84,10 @@ export function PaywallSection({
             <div className="text-2xl mb-2">✨</div>
             <h3 className="text-xl font-bold text-amber-100">{t("bazi.unlockTitle")}</h3>
             <p className="text-amber-200/40 text-sm mt-2">
-              {isChinese ? "基于您的真实八字，AI 大师将为您深度解读 6 大维度" : "AI will deeply analyze 6 dimensions based on your real birth chart"}
+              {isTelegramMiniApp
+                ? (isChinese ? "使用 Telegram Stars 原生支付，解锁您的 AI 深度解读" : "Use Telegram Stars native checkout to unlock your AI reading")
+                : (isChinese ? "基于您的真实八字，AI 大师将为您深度解读 6 大维度" : "AI will deeply analyze 6 dimensions based on your real birth chart")
+              }
             </p>
           </div>
 
@@ -121,6 +126,7 @@ export function PaywallSection({
           )}
 
           {/* Subscription Option — Best Value */}
+          {!isTelegramMiniApp && (
           <div className="bg-emerald-900/15 border border-emerald-400/25 rounded-xl p-4 text-center relative overflow-hidden">
             <div className="absolute top-0 right-0 bg-emerald-500/80 text-white text-[8px] px-2 py-0.5 rounded-bl-lg font-bold">
               {isChinese ? "最划算" : "BEST VALUE"}
@@ -150,40 +156,43 @@ export function PaywallSection({
               </button>
             </div>
           </div>
+          )}
 
+          {!isTelegramMiniApp && (
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-white/5" />
             <span className="text-amber-200/20 text-[10px]">{isChinese ? "或单次购买" : "or one-time purchase"}</span>
             <div className="flex-1 h-px bg-white/5" />
           </div>
+          )}
 
           {/* Two-tier one-time pricing */}
           <div className="grid grid-cols-2 gap-3">
             {/* Pro */}
             <div className="bg-amber-900/15 border border-amber-500/20 rounded-xl p-3.5 text-center">
               <div className="text-[10px] text-amber-400/50 mb-1">⭐ {isChinese ? "专业版" : "Pro"}</div>
-              <div className="text-2xl font-bold text-amber-300">$9.90</div>
+              <div className="text-2xl font-bold text-amber-300">{isTelegramMiniApp ? "499 ★" : "$9.90"}</div>
               <p className="text-amber-200/25 text-[10px] mt-1 mb-3">{isChinese ? "6维AI深度解读" : "6-dimension AI reading"}</p>
               <button
                 onClick={() => handleStripeCheckout("pro")}
                 disabled={checkoutLoading}
                 className="w-full py-3 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(217,119,6,0.2)] transition-all"
               >
-                {checkoutLoading ? "..." : (isChinese ? "选择专业版" : "Choose Pro")}
+                {checkoutLoading ? "..." : (isTelegramMiniApp ? (isChinese ? "Stars 解锁" : "Pay Stars") : (isChinese ? "选择专业版" : "Choose Pro"))}
               </button>
             </div>
             {/* Master */}
             <div className="bg-purple-900/15 border border-purple-400/25 rounded-xl p-3.5 text-center relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-purple-500/80 text-white text-[8px] px-2 py-0.5 rounded-bl-lg font-bold">{isChinese ? "推荐" : "BEST"}</div>
               <div className="text-[10px] text-purple-300/60 mb-1">👑 {isChinese ? "大师版" : "Master"}</div>
-              <div className="text-2xl font-bold text-purple-200">$29.90</div>
+              <div className="text-2xl font-bold text-purple-200">{isTelegramMiniApp ? "1499 ★" : "$29.90"}</div>
               <p className="text-purple-200/25 text-[10px] mt-1 mb-3">{isChinese ? "宗师级全盘深度解析" : "Master-level deep reading"}</p>
               <button
                 onClick={() => handleStripeCheckout("master")}
                 disabled={checkoutLoading}
                 className="w-full py-3 rounded-lg font-semibold cursor-pointer bg-gradient-to-r from-purple-700 via-purple-600 to-purple-700 text-white text-xs disabled:opacity-50 hover:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-all"
               >
-                {checkoutLoading ? "..." : (isChinese ? "选择大师版" : "Choose Master")}
+                {checkoutLoading ? "..." : (isTelegramMiniApp ? (isChinese ? "Stars 解锁" : "Pay Stars") : (isChinese ? "选择大师版" : "Choose Master"))}
               </button>
             </div>
           </div>
@@ -192,7 +201,7 @@ export function PaywallSection({
             <p className="text-center text-red-400/80 text-xs">{checkoutError}</p>
           )}
           <p className="text-center text-amber-200/15 text-[10px] leading-relaxed">
-            Secure payment via Stripe · Card / Alipay / WeChat Pay
+            {isTelegramMiniApp ? "Native payment via Telegram Stars" : "Secure payment via Stripe · Card / Alipay / WeChat Pay"}
           </p>
 
           <div className="space-y-1.5 pt-2 border-t border-white/5">

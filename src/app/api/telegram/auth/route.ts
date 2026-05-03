@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { validateTelegramInitData } from "@/lib/telegram/init-data";
+import {
+  createTelegramSessionCookieValue,
+  getTelegramSessionCookieOptions,
+  TELEGRAM_SESSION_COOKIE,
+} from "@/lib/telegram/session";
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +47,7 @@ export async function POST(request: Request) {
     }, { onConflict: "telegram_user_id" });
   }
 
-  return NextResponse.json({
+  const response = NextResponse.json({
     telegramUserId: user.id,
     firstName: user.first_name,
     username: user.username,
@@ -50,4 +55,14 @@ export async function POST(request: Request) {
     referralCode: referralCode || undefined,
     isPremium: Boolean(user.is_premium),
   });
+  response.cookies.set(
+    TELEGRAM_SESSION_COOKIE,
+    createTelegramSessionCookieValue({
+      telegramUserId: user.id,
+      firstName: user.first_name,
+      username: user.username,
+    }),
+    getTelegramSessionCookieOptions()
+  );
+  return response;
 }

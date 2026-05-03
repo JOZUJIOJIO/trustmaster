@@ -50,7 +50,7 @@ const TEN_GOD_MEANING: Record<string, string> = {
 export async function POST(request: Request) {
   try {
     // Auth check
-    const { user } = await getAuthUser();
+    const { user, telegramUser } = await getAuthUser();
     if (!user) {
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
@@ -84,19 +84,24 @@ export async function POST(request: Request) {
 
     // === Server-side payment verification ===
     if (supabase) {
-      const [orderResult, subResult] = await Promise.all([
-        supabase.from("orders").select("id").eq("user_id", user.id).eq("status", "paid").limit(1),
-        supabase.from("subscriptions").select("id").eq("user_id", user.id).eq("status", "active").limit(1),
-      ]);
+      const orderQuery = telegramUser
+        ? supabase.from("orders").select("id").eq("telegram_user_id", telegramUser.telegramUserId).eq("status", "paid").limit(1)
+        : supabase.from("orders").select("id").eq("user_id", user.id).eq("status", "paid").limit(1);
+      const subscriptionQuery = telegramUser
+        ? Promise.resolve({ data: [] })
+        : supabase.from("subscriptions").select("id").eq("user_id", user.id).eq("status", "active").limit(1);
+      const [orderResult, subResult] = await Promise.all([orderQuery, subscriptionQuery]);
       const hasPaidOrder = (orderResult.data?.length ?? 0) > 0;
       const hasActiveSub = (subResult.data?.length ?? 0) > 0;
 
       // Also check free readings from referrals
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("free_readings")
-        .eq("id", user.id)
-        .single();
+      const { data: profile } = telegramUser
+        ? { data: null }
+        : await supabase
+          .from("profiles")
+          .select("free_readings")
+          .eq("id", user.id)
+          .single();
       const hasFreeReading = (profile?.free_readings ?? 0) > 0;
 
       if (!hasPaidOrder && !hasActiveSub && !hasFreeReading) {

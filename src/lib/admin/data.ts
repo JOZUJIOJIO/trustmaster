@@ -106,6 +106,9 @@ export async function getAdminDashboardData() {
 }
 
 export function formatMoney(amount: number, currency = "USD") {
+  if (currency.toUpperCase() === "XTR") {
+    return `${Math.round(amount)} Stars`;
+  }
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,

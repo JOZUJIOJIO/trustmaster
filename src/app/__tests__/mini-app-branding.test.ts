@@ -60,4 +60,13 @@ describe("Mini App brand and entry experience", () => {
     expect(tokens).toContain('text2: "text-[#F2F0EB]/78"');
     expect(tokens).toContain('text3: "text-[#F2F0EB]/60"');
   });
+
+  it("shows Stars pricing on the Daily page inside Telegram", () => {
+    const daily = readSource("src/app/daily/page.tsx");
+
+    expect(daily).toContain("isTelegramMiniApp");
+    expect(daily).toContain("WebApp?.initData");
+    expect(daily).toContain("formatStarsPrice");
+    expect(daily).toContain("Stars 解锁");
+  });
 });

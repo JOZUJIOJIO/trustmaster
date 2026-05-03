@@ -9,6 +9,7 @@ import { themeTokens } from "@/lib/theme-tokens";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { calculateBazi, STEM_ELEMENTS, getTenGod, type BaziChart } from "@/lib/bazi";
 import { ELEMENT_RECOMMENDATIONS } from "@/lib/bazi-glossary";
+import { formatStarsPrice } from "@/lib/pricing";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import { PageArtworkBand } from "@/components/PageArtwork";
@@ -188,6 +189,11 @@ function DailyContent() {
   const [birthDate, setBirthDate] = useState(() => dateParam || getStoredBirthDate());
   const [chart, setChart] = useState<BaziChart | null>(() => (dateParam ? calculateDefaultDailyChart(dateParam) : null));
   const [isSubscriber, setIsSubscriber] = useState(false);
+  const [isTelegramMiniApp, setIsTelegramMiniApp] = useState(false);
+
+  useEffect(() => {
+    setIsTelegramMiniApp(Boolean(window.Telegram?.WebApp?.initData));
+  }, []);
 
   // Check subscription
   useEffect(() => {
@@ -415,7 +421,9 @@ function DailyContent() {
                     href="/fortune"
                     className="inline-block px-5 py-2 bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-700 text-white rounded-lg text-xs font-semibold"
                   >
-                    {isChinese ? "解锁 Pro · $4.99/月" : "Unlock Pro · $4.99/mo"}
+                    {isTelegramMiniApp
+                      ? (isChinese ? `Stars 解锁 · ${formatStarsPrice("fortune_pro")}` : `Unlock with Stars · ${formatStarsPrice("fortune_pro")}`)
+                      : (isChinese ? "解锁 Pro · $4.99/月" : "Unlock Pro · $4.99/mo")}
                   </Link>
                 </div>
               </div>

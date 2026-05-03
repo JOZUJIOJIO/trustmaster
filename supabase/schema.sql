@@ -53,6 +53,47 @@ CREATE TABLE IF NOT EXISTS favorites (
 
 CREATE INDEX IF NOT EXISTS idx_favorites_user_id ON favorites(user_id);
 
+-- ============================================
+-- Telegram Mini App identity and analytics
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS telegram_accounts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  telegram_user_id BIGINT UNIQUE NOT NULL,
+  username TEXT,
+  first_name TEXT NOT NULL,
+  last_name TEXT,
+  language_code TEXT,
+  is_premium BOOLEAN NOT NULL DEFAULT FALSE,
+  photo_url TEXT,
+  start_param TEXT,
+  referral_code TEXT,
+  raw_user JSONB,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_telegram_accounts_user_id ON telegram_accounts(telegram_user_id);
+CREATE INDEX IF NOT EXISTS idx_telegram_accounts_referral ON telegram_accounts(referral_code);
+CREATE INDEX IF NOT EXISTS idx_telegram_accounts_last_seen ON telegram_accounts(last_seen_at DESC);
+
+CREATE TABLE IF NOT EXISTS telegram_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  telegram_user_id BIGINT,
+  event_name TEXT NOT NULL,
+  path TEXT,
+  start_param TEXT,
+  metadata JSONB NOT NULL DEFAULT '{}',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_telegram_events_user_id ON telegram_events(telegram_user_id);
+CREATE INDEX IF NOT EXISTS idx_telegram_events_name ON telegram_events(event_name);
+CREATE INDEX IF NOT EXISTS idx_telegram_events_created ON telegram_events(created_at DESC);
+
+ALTER TABLE telegram_accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE telegram_events ENABLE ROW LEVEL SECURITY;
+
 -- Profiles table
 CREATE TABLE IF NOT EXISTS profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,

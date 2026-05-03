@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/lib/LocaleContext";
@@ -26,6 +26,16 @@ export default function Home() {
   const { theme } = useTheme();
   const router = useRouter();
   const tk = themeTokens[theme];
+  const heroSignals = [
+    { value: "4", label: locale === "zh" ? "核心模块" : "Core modules" },
+    { value: "10", label: locale === "zh" ? "维度解读" : "Insight layers" },
+    { value: "3min", label: locale === "zh" ? "生成报告" : "To report" },
+  ];
+  const productPaths = [
+    { href: "/fortune", title: locale === "zh" ? "命盘解读" : "BaZi Reading", desc: locale === "zh" ? "四柱、五行、十神、大运曲线" : "Four Pillars, elements, cycles", icon: "☯" },
+    { href: "/health", title: locale === "zh" ? "体质测评" : "Health Map", desc: locale === "zh" ? "五行体质、脏腑地图、食疗建议" : "Constitution, organs, diet", icon: "⬠" },
+    { href: "/daily", title: locale === "zh" ? "每日运势" : "Daily Signal", desc: locale === "zh" ? "每天一张趋势卡，方便分享" : "Daily card, share-ready", icon: "◐" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY);
@@ -119,53 +129,126 @@ export default function Home() {
           </div>
         </nav>
 
-        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-          {/* Taiji */}
-          <div
-            className={`mb-8 sm:mb-14 lg:mb-16 animate-materialize ${taijiSpin ? "animate-compassSpin" : ""}`}
-            style={{ animationDelay: taijiSpin ? "0s" : "0.3s", transform: `translateY(${scrollY * 0.15}px)` }}
-          >
-            <div className="sm:hidden"><TaijiSvg size={100} /></div>
-            <div className="hidden sm:block"><TaijiSvg size={160} /></div>
-          </div>
+        <div className="flex-1 px-5 lg:px-12 pt-4 lg:pt-10">
+          <div className="mx-auto grid max-w-6xl items-center gap-7 lg:min-h-[calc(100vh-150px)] lg:grid-cols-[minmax(0,1fr)_420px]">
+            <section className="text-center lg:text-left">
+              {/* Taiji */}
+              <div
+                className={`mb-4 sm:mb-8 lg:mb-9 flex justify-center lg:justify-start animate-materialize ${taijiSpin ? "animate-compassSpin" : ""}`}
+                style={{ animationDelay: taijiSpin ? "0s" : "0.15s", transform: `translateY(${scrollY * 0.1}px)` }}
+              >
+                <div className="sm:hidden"><TaijiSvg size={72} /></div>
+                <div className="hidden sm:block"><TaijiSvg size={132} /></div>
+              </div>
 
-          {/* Title */}
-          <div>
-            <h1
-              className={`font-display text-3xl sm:text-5xl lg:text-7xl font-bold tracking-[0.1em] max-w-4xl leading-[1.2] animate-riseIn ${tk.text1}`}
-              style={{ animationDelay: "1.2s", animationDuration: "0.8s" }}
-            >
-              {t("hero.title")}
-            </h1>
-            <p
-              className={`mt-2 text-sm sm:text-base tracking-widest animate-riseIn ${tk.text2}`}
-              style={{ animationDelay: "1.8s", animationDuration: "0.6s" }}
-            >
-              {t("hero.subtitle")}
-            </p>
-          </div>
+              {/* Title */}
+              <div>
+                <div className={`mb-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] tracking-[0.18em] ${theme === "cosmic" ? "border-amber-300/15 bg-amber-300/5 text-amber-200/55" : "border-amber-700/15 bg-white/50 text-amber-800/55"}`}>
+                  <span>{locale === "zh" ? "青铜神树 · AI 命理引擎" : "Bronze Oracle · AI Insight Engine"}</span>
+                </div>
+                <h1
+                  className={`font-display text-3xl sm:text-5xl lg:text-7xl font-bold tracking-[0.06em] max-w-4xl leading-[1.12] animate-riseIn ${tk.text1}`}
+                  style={{ animationDelay: "0.2s", animationDuration: "0.8s" }}
+                >
+                  {t("hero.title")}
+                </h1>
+                <p
+                  className={`mt-3 text-sm sm:text-base lg:text-lg tracking-wider leading-relaxed animate-riseIn ${tk.text2}`}
+                  style={{ animationDelay: "0.32s", animationDuration: "0.6s" }}
+                >
+                  {t("hero.subtitle")}
+                </p>
+              </div>
 
-          {/* Date input */}
-          <div className="mt-8 sm:mt-12 w-full max-w-xs mx-auto animate-riseIn" style={{ animationDelay: "2.4s" }}>
-            <p className={`text-[10px] mb-3 tracking-[0.2em] uppercase ${tk.text3}`}>
-              {locale === "zh" ? "输入出生日期" : "Birth date"}
-            </p>
-            <input
-              type="date"
-              value={quickDate}
-              onChange={handleDateChange}
-              max={new Date().toISOString().split("T")[0]}
-              min="1940-01-01"
-              className={`w-full px-4 py-3 rounded-xl border text-center focus:outline-none transition-all duration-300 ${
-                dateFlash ? "animate-goldenFlash" : `${tk.input} focus:border-amber-400/30`
-              }`}
-              style={{ colorScheme: theme === "cosmic" ? "dark" : "light" }}
-            />
+              <div className="mt-5 grid grid-cols-3 gap-2.5 animate-riseIn" style={{ animationDelay: "0.42s" }}>
+                {heroSignals.map((item) => (
+                  <div key={item.label} className={`rounded-xl border px-2.5 py-3 ${theme === "cosmic" ? "border-white/10 bg-white/[0.035]" : "border-black/10 bg-white/55"} backdrop-blur-sm`}>
+                    <div className={`font-data text-lg font-semibold ${theme === "cosmic" ? "text-amber-200" : "text-amber-800"}`}>{item.value}</div>
+                    <div className={`mt-0.5 text-[10px] ${tk.text3}`}>{item.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Date input */}
+              <div className="mt-5 w-full max-w-md mx-auto lg:mx-0 animate-riseIn" style={{ animationDelay: "0.52s" }}>
+                <p className={`text-[10px] mb-3 tracking-[0.2em] uppercase ${tk.text3}`}>
+                  {locale === "zh" ? "输入出生日期，先看你的命盘轮廓" : "Enter birth date for a first chart signal"}
+                </p>
+                <div className={`flex flex-col gap-2 rounded-2xl border p-2 sm:flex-row ${theme === "cosmic" ? "border-amber-300/15 bg-[#090712]/80" : "border-amber-700/15 bg-white/70"} backdrop-blur-md`}>
+                  <input
+                    type="date"
+                    value={quickDate}
+                    onChange={handleDateChange}
+                    max={new Date().toISOString().split("T")[0]}
+                    min="1940-01-01"
+                    className={`min-h-[48px] flex-1 rounded-xl border px-4 text-center focus:outline-none transition-all duration-300 ${
+                      dateFlash ? "animate-goldenFlash" : `${tk.input} focus:border-amber-400/30`
+                    }`}
+                    style={{ colorScheme: theme === "cosmic" ? "dark" : "light" }}
+                  />
+                  <button
+                    onClick={() => handleNavigate(quickDate ? `/fortune?date=${quickDate}` : "/fortune")}
+                    className={`min-h-[48px] rounded-xl px-5 text-sm font-semibold transition-all ${tk.ctaPrimary}`}
+                  >
+                    {quickDate ? (locale === "zh" ? "继续解读" : "Continue") : (locale === "zh" ? "立即体验" : "Start")}
+                  </button>
+                </div>
+              </div>
+
+              {!quickPreview && (
+                <p className={`text-[10px] mt-3 tracking-[0.12em] animate-riseIn ${tk.text3}`} style={{ animationDelay: "0.62s" }}>
+                  {locale === "zh" ? "免费基础命盘 · 支付解锁 AI 深度报告 · 移动端可分享" : "Free chart · Paid AI report · Shareable on mobile"}
+                </p>
+              )}
+            </section>
+
+            <aside className="animate-riseIn" style={{ animationDelay: "0.58s" }}>
+              <div className={`rounded-3xl border p-4 sm:p-5 ${theme === "cosmic" ? "border-amber-300/15 bg-[#090712]/72 shadow-[0_30px_120px_rgba(0,0,0,0.38)]" : "border-amber-800/15 bg-white/70 shadow-[0_30px_90px_rgba(86,62,32,0.12)]"} backdrop-blur-xl`}>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className={`text-[10px] uppercase tracking-[0.24em] ${tk.accentMuted}`}>{locale === "zh" ? "可视化报告" : "Visual report"}</p>
+                    <h2 className={`mt-1 text-base font-semibold ${tk.text1}`}>{locale === "zh" ? "你会得到什么" : "What you get"}</h2>
+                  </div>
+                  <div className={`rounded-full border px-3 py-1 text-[10px] ${theme === "cosmic" ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-200/80" : "border-emerald-700/20 bg-emerald-50 text-emerald-800/80"}`}>AI</div>
+                </div>
+
+                <div className="mt-4 space-y-3">
+                  {productPaths.map((item) => (
+                    <Link key={item.href} href={item.href} className={`group flex items-center gap-3 rounded-2xl border p-3 transition-all ${theme === "cosmic" ? "border-white/8 bg-white/[0.035] hover:border-amber-300/20 hover:bg-amber-300/[0.06]" : "border-black/8 bg-white/65 hover:border-amber-700/20 hover:bg-amber-50"}`}>
+                      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-lg ${theme === "cosmic" ? "border-amber-300/15 bg-black/20 text-amber-200" : "border-amber-700/15 bg-white text-amber-800"}`}>{item.icon}</span>
+                      <span className="min-w-0 flex-1">
+                        <span className={`block text-sm font-semibold ${tk.text1}`}>{item.title}</span>
+                        <span className={`mt-0.5 block truncate text-[11px] ${tk.text3}`}>{item.desc}</span>
+                      </span>
+                      <span className={`${tk.accentMuted} transition-transform group-hover:translate-x-1`}>→</span>
+                    </Link>
+                  ))}
+                </div>
+
+                <div className={`mt-4 rounded-2xl border p-4 ${theme === "cosmic" ? "border-white/8 bg-black/20" : "border-black/8 bg-white/55"}`}>
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className={`text-[11px] ${tk.text3}`}>{locale === "zh" ? "样例信息密度" : "Sample insight density"}</span>
+                    <span className={`font-data text-[11px] ${tk.accent}`}>87%</span>
+                  </div>
+                  {["五行平衡", "事业趋势", "健康提示"].map((label, i) => (
+                    <div key={label} className="mb-2 last:mb-0">
+                      <div className="mb-1 flex justify-between text-[10px]">
+                        <span className={tk.text3}>{locale === "zh" ? label : ["Element balance", "Career trend", "Health cues"][i]}</span>
+                        <span className={tk.text3}>{[72, 88, 64][i]}</span>
+                      </div>
+                      <div className={`h-1.5 overflow-hidden rounded-full ${theme === "cosmic" ? "bg-white/8" : "bg-black/8"}`}>
+                        <div className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-amber-300 to-rose-400" style={{ width: `${[72, 88, 64][i]}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
           </div>
 
           {/* Preview card */}
           {quickPreview && (
-            <div className="mt-6 w-full max-w-xs mx-auto animate-cardExpand">
+            <div className="mx-auto mt-6 w-full max-w-md animate-cardExpand lg:-mt-8 lg:mr-auto lg:ml-[max(3rem,calc((100vw-72rem)/2))]">
               <div className={`border rounded-2xl p-5 backdrop-blur-sm stagger-card ${tk.card}`}>
                 <div className="flex items-center justify-between mb-3">
                   <div>
@@ -213,21 +296,6 @@ export default function Home() {
               </div>
             </div>
           )}
-
-          {/* CTA */}
-          {!quickPreview && (
-            <button
-              onClick={() => handleNavigate("/fortune")}
-              className={`mt-8 px-10 py-3.5 rounded-full text-sm font-medium tracking-wider btn-haptic cursor-pointer border transition-all duration-500 animate-riseIn ${tk.cta}`}
-              style={{ animationDelay: "3s" }}
-            >
-              {t("hero.cta")} →
-            </button>
-          )}
-
-          <p className={`text-[9px] mt-3 tracking-[0.15em] animate-riseIn ${tk.text3}`} style={{ animationDelay: "3.3s" }}>
-            {locale === "zh" ? "免费 · 无需注册 · 即时生成" : "Free · No signup · Instant"}
-          </p>
         </div>
       </div>
 

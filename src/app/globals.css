@@ -400,6 +400,28 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+/* Telegram Mini App runtime fit */
+.telegram-miniapp body {
+  min-height: var(--tg-viewport-stable-height, 100vh);
+  background: var(--tg-theme-bg-color, #060410);
+}
+
+.telegram-miniapp .safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
+}
+
+.telegram-miniapp input,
+.telegram-miniapp select,
+.telegram-miniapp button,
+.telegram-miniapp a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.telegram-miniapp [data-tg-card="true"] {
+  background: color-mix(in srgb, var(--tg-theme-secondary-bg-color, #12101c) 76%, transparent);
+  color: var(--tg-theme-text-color, #f2f0eb);
+}
+
 /* ===== Visual System ===== */
 
 /* Scroll reveal */

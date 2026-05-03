@@ -9,7 +9,6 @@ import { themeTokens } from "@/lib/theme-tokens";
 import { calculateBazi, CHINESE_HOURS, type BaziChart, getTenGod, STEM_ELEMENTS } from "@/lib/bazi";
 import { ELEMENT_RECOMMENDATIONS } from "@/lib/bazi-glossary";
 import { Term } from "@/components/Tooltip";
-import RadarChart from "@/components/RadarChart";
 import Accordion from "@/components/Accordion";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -57,14 +56,14 @@ export default function FortunePage() {
 }
 
 function FortuneContent() {
-  const { locale, isChinese, t } = useLocale();
+  const { isChinese, t } = useLocale();
   const { theme } = useTheme();
   const tk = themeTokens[theme];
   const { user } = useAuth();
   const { toast } = useToast();
   const [mode, setMode] = useState<Mode>("bazi");
   const [step, setStep] = useState<Step>("input");
-  const [isSubscriber, setIsSubscriber] = useState(false);
+  const [, setIsSubscriber] = useState(false);
   const [showLoginGate, setShowLoginGate] = useState(false);
   const [subLoading, setSubLoading] = useState(false);
 
@@ -218,6 +217,16 @@ function FortuneContent() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [checkoutError, setCheckoutError] = useState("");
+  const inputValueCards = [
+    { title: isChinese ? "四柱命盘" : "Four Pillars", value: "8", sub: isChinese ? "天干地支" : "stems/branches" },
+    { title: isChinese ? "五行分布" : "Elements", value: "5", sub: isChinese ? "能量图谱" : "energy map" },
+    { title: isChinese ? "大运曲线" : "Luck Curve", value: "10y", sub: isChinese ? "十年周期" : "cycles" },
+  ];
+  const inputPreviewRows = [
+    { label: isChinese ? "命盘结构" : "Chart structure", value: 86 },
+    { label: isChinese ? "性格蓝图" : "Personality blueprint", value: 74 },
+    { label: isChinese ? "事业财富" : "Career and wealth", value: 68 },
+  ];
 
   // Dynamic day master personality snippets for blurred preview
   const previewPersonality: Record<string, { zh: string; en: string }> = {
@@ -313,6 +322,30 @@ function FortuneContent() {
       localStorage.setItem("kairos_saved_chart", JSON.stringify({ chart: result, userName, date: new Date().toISOString() }));
       localStorage.setItem("kairos_birth_date", birthDate);
       localStorage.setItem("kairos_gender", gender);
+    } catch { /* ignore */ }
+  };
+
+  const handleFastGenerate = () => {
+    if (!birthDate) return;
+    const finalHour = hourBranch || "午";
+    const finalGender = (gender || "male") as "male" | "female";
+    const finalName = userName.trim() || "缘主";
+    const [y, m, d] = birthDate.split("-").map(Number);
+    const result = calculateBazi(y, m, d, finalHour, finalGender);
+    setChart(result);
+    setUserName(finalName);
+    setHourBranch(finalHour);
+    setGender(finalGender);
+    setStep("reveal");
+    try {
+      const chartJson = JSON.stringify(result);
+      sessionStorage.setItem("kairos_chart", chartJson);
+      sessionStorage.setItem("kairos_userName", finalName);
+      localStorage.setItem("kairos_chart", chartJson);
+      localStorage.setItem("kairos_userName", finalName);
+      localStorage.setItem("kairos_saved_chart", JSON.stringify({ chart: result, userName: finalName, date: new Date().toISOString() }));
+      localStorage.setItem("kairos_birth_date", birthDate);
+      localStorage.setItem("kairos_gender", finalGender);
     } catch { /* ignore */ }
   };
 
@@ -553,19 +586,32 @@ function FortuneContent() {
         <LanguageSwitcher />
       </header>
 
-      <PageArtworkBand art="fortune" className="relative z-10 h-40 lg:h-60 border-b border-amber-400/10" />
+      <PageArtworkBand art="fortune" className="relative z-10 h-28 lg:h-60 border-b border-amber-400/10" />
 
-      <main className="relative z-10 max-w-lg lg:max-w-4xl mx-auto px-4 py-8 lg:py-16 pb-24">
+      <main className="relative z-10 max-w-lg lg:max-w-4xl mx-auto px-4 py-6 lg:py-16 pb-24">
         {/* ===== Unified Input ===== */}
         {step === "input" && (
-          <div className="text-center animate-fadeIn max-w-md mx-auto" style={{ animationDuration: "0.5s" }}>
-            <h2 className={`font-display text-2xl font-bold ${tk.text1} mb-2`}>
-              {isChinese ? "输入你的出生信息" : "Enter Your Birth Info"}
-            </h2>
-            <p className={`${tk.label} text-sm mb-8`}>
-              {isChinese ? "只需几秒，即刻生成命盘" : "Takes seconds, instant chart generation"}
-            </p>
+          <div className="animate-fadeIn max-w-4xl mx-auto" style={{ animationDuration: "0.5s" }}>
+            <div className="text-center max-w-xl mx-auto">
+              <h2 className={`font-display text-2xl lg:text-4xl font-bold ${tk.text1} mb-2`}>
+                {isChinese ? "输入你的出生信息" : "Enter Your Birth Info"}
+              </h2>
+              <p className={`${tk.label} text-sm mb-4 lg:mb-6`}>
+                {isChinese ? "生成一份包含命盘、五行、十神、大运和 AI 深度解读的可视化报告" : "Generate a visual report with pillars, elements, Ten Gods, cycles, and AI reading"}
+              </p>
+            </div>
 
+            <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mb-5 lg:mb-6">
+              {inputValueCards.map((card) => (
+                <div key={card.title} className={`${tk.sectionBg} border ${tk.accentBorder} rounded-2xl p-3 sm:p-4 text-center`}>
+                  <div className={`font-data text-lg sm:text-xl font-semibold ${tk.accent}`}>{card.value}</div>
+                  <div className={`${tk.text1} text-[11px] sm:text-sm font-semibold mt-1`}>{card.title}</div>
+                  <div className={`${tk.text3} text-[10px] mt-0.5`}>{card.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_330px]">
             <div className="space-y-5 text-left">
               {/* Date */}
               <div>
@@ -646,36 +692,9 @@ function FortuneContent() {
                   className={`w-full px-4 py-3 rounded-xl ${tk.selectBg} ${tk.input.split(" ").filter(c => c.startsWith("border-") || c.startsWith("text-")).join(" ")} ${theme === "cosmic" ? "placeholder-amber-200/20" : "placeholder-amber-600/20"} focus:outline-none ${tk.inputFocus} transition-all`}
                 />
               </div>
-            </div>
-
             {/* Submit */}
             <button
-              onClick={() => {
-                if (!hourBranch) setHourBranch("午");
-                if (!userName.trim()) setUserName("缘主");
-                if (!gender) setGender("male");
-                // Need a small delay to let state update, or compute directly
-                const finalHour = hourBranch || "午";
-                const finalGender = (gender || "male") as "male" | "female";
-                const finalName = userName.trim() || "缘主";
-                const [y, m, d] = birthDate.split("-").map(Number);
-                const result = calculateBazi(y, m, d, finalHour, finalGender);
-                setChart(result);
-                setUserName(finalName);
-                setHourBranch(finalHour);
-                setGender(finalGender);
-                setStep("reveal");
-                try {
-                  const chartJson = JSON.stringify(result);
-                  sessionStorage.setItem("kairos_chart", chartJson);
-                  sessionStorage.setItem("kairos_userName", finalName);
-                  localStorage.setItem("kairos_chart", chartJson);
-                  localStorage.setItem("kairos_userName", finalName);
-                  localStorage.setItem("kairos_saved_chart", JSON.stringify({ chart: result, userName: finalName, date: new Date().toISOString() }));
-                  localStorage.setItem("kairos_birth_date", birthDate);
-                  localStorage.setItem("kairos_gender", finalGender);
-                } catch { /* ignore */ }
-              }}
+              onClick={handleFastGenerate}
               disabled={!birthDate}
               className={`mt-8 w-full py-4 rounded-xl font-medium text-base cursor-pointer
                          ${tk.cta}
@@ -689,6 +708,49 @@ function FortuneContent() {
             <p className={`${tk.text3} text-[10px] mt-3`}>
               {isChinese ? "只需出生日期即可生成 · 其余可选" : "Only birth date required · rest optional"}
             </p>
+            </div>
+
+            <aside className={`${tk.sectionBg} border ${tk.accentBorder} rounded-2xl p-5 h-fit`}>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className={`${tk.accentMuted} text-[10px] tracking-[0.22em] uppercase`}>{isChinese ? "解读预览" : "Reading preview"}</p>
+                  <h3 className={`${tk.text1} text-base font-semibold mt-1`}>{isChinese ? "生成后会看到" : "After generation"}</h3>
+                </div>
+                <span className={`${tk.badge} rounded-full px-2.5 py-1 text-[10px] font-semibold`}>AI</span>
+              </div>
+              <div className="space-y-3">
+                {inputPreviewRows.map((row) => (
+                  <div key={row.label}>
+                    <div className="flex justify-between text-[11px] mb-1">
+                      <span className={tk.text2}>{row.label}</span>
+                      <span className={`${tk.text3} font-data`}>{row.value}%</span>
+                    </div>
+                    <div className={`h-2 rounded-full overflow-hidden ${theme === "cosmic" ? "bg-white/8" : "bg-black/8"}`}>
+                      <div className="h-full rounded-full bg-gradient-to-r from-cyan-300 via-amber-300 to-rose-400" style={{ width: `${row.value}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className={`mt-4 rounded-xl border ${tk.border} p-3`}>
+                <p className={`${tk.text2} text-xs leading-relaxed`}>
+                  {isChinese
+                    ? "基础命盘免费生成，深度报告会继续展开事业、财富、关系、健康和本月行动清单。"
+                    : "The base chart is free. The deep report expands into career, wealth, relationships, health, and action items."}
+                </p>
+              </div>
+            </aside>
+            </div>
+
+            {birthDate && (
+            <div className="lg:hidden fixed right-4 bottom-[76px] z-40 w-[168px] pointer-events-none">
+              <button
+                onClick={handleFastGenerate}
+                className={`pointer-events-auto w-full rounded-2xl py-3 text-sm font-semibold shadow-[0_18px_50px_rgba(0,0,0,0.45)] transition-all ${tk.ctaPrimary}`}
+              >
+                {isChinese ? "生成命盘 →" : "Generate Chart →"}
+              </button>
+            </div>
+            )}
           </div>
         )}
 

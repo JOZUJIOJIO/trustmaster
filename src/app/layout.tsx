@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono, Playfair_Display, LXGW_WenKai_TC } from "next/font/google";
 import "./globals.css";
 import { LocaleProvider } from "@/lib/LocaleContext";
@@ -7,6 +8,7 @@ import { ThemeProvider } from "@/lib/ThemeContext";
 import { Analytics } from "@vercel/analytics/react";
 import MouseAura from "@/components/MouseAura";
 import { ToastProvider } from "@/components/Toast";
+import TelegramMiniAppBridge from "@/components/TelegramMiniAppBridge";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -114,12 +116,16 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <LocaleProvider>
-              <ToastProvider>{children}</ToastProvider>
+              <ToastProvider>
+                <TelegramMiniAppBridge />
+                {children}
+              </ToastProvider>
             </LocaleProvider>
           </AuthProvider>
         </ThemeProvider>
         <MouseAura />
         <Analytics />
+        <Script src="https://telegram.org/js/telegram-web-app.js" strategy="afterInteractive" />
       </body>
     </html>
   );

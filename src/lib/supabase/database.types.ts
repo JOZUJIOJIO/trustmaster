@@ -282,6 +282,80 @@ export type Database = {
         };
         Relationships: [];
       };
+      telegram_accounts: {
+        Row: {
+          id: string;
+          telegram_user_id: number;
+          username: string | null;
+          first_name: string;
+          last_name: string | null;
+          language_code: string | null;
+          is_premium: boolean;
+          photo_url: string | null;
+          start_param: string | null;
+          referral_code: string | null;
+          raw_user: Json | null;
+          created_at: string;
+          last_seen_at: string;
+        };
+        Insert: {
+          id?: string;
+          telegram_user_id: number;
+          username?: string | null;
+          first_name: string;
+          last_name?: string | null;
+          language_code?: string | null;
+          is_premium?: boolean;
+          photo_url?: string | null;
+          start_param?: string | null;
+          referral_code?: string | null;
+          raw_user?: Json | null;
+          created_at?: string;
+          last_seen_at?: string;
+        };
+        Update: {
+          telegram_user_id?: number;
+          username?: string | null;
+          first_name?: string;
+          last_name?: string | null;
+          language_code?: string | null;
+          is_premium?: boolean;
+          photo_url?: string | null;
+          start_param?: string | null;
+          referral_code?: string | null;
+          raw_user?: Json | null;
+          last_seen_at?: string;
+        };
+        Relationships: [];
+      };
+      telegram_events: {
+        Row: {
+          id: string;
+          telegram_user_id: number | null;
+          event_name: string;
+          path: string | null;
+          start_param: string | null;
+          metadata: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          telegram_user_id?: number | null;
+          event_name: string;
+          path?: string | null;
+          start_param?: string | null;
+          metadata?: Json;
+          created_at?: string;
+        };
+        Update: {
+          telegram_user_id?: number | null;
+          event_name?: string;
+          path?: string | null;
+          start_param?: string | null;
+          metadata?: Json;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

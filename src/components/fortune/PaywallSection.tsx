@@ -43,7 +43,7 @@ export function PaywallSection({
   checkoutError,
 }: PaywallSectionProps) {
   return (
-    <div className="relative -mt-20 pt-12">
+    <div className="relative mt-4">
       {/* Login Gate Modal */}
       {showLoginGate && !user && !isTelegramMiniApp && (
         <div className="bg-white/[0.03] border border-amber-400/15 rounded-2xl p-6 space-y-4 animate-slideUp mb-4" style={{ animationDuration: "0.4s" }}>
@@ -76,7 +76,9 @@ export function PaywallSection({
           onClick={() => setShowPaywall(true)}
           className="w-full py-4 rounded-2xl font-semibold cursor-pointer bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_40px_rgba(217,119,6,0.25)] transition-all animate-glowPulse"
         >
-          {t("bazi.unlock")}
+          {isTelegramMiniApp
+            ? (isChinese ? `Stars 解锁完整图谱 · ${formatStarsPrice("fortune_pro")}` : `Unlock with Stars · ${formatStarsPrice("fortune_pro")}`)
+            : t("bazi.unlock")}
         </button>
       ) : (
         /* Paywall Modal */

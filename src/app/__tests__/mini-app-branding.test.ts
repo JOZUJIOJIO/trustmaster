@@ -18,10 +18,15 @@ describe("Mini App brand and entry experience", () => {
   it("turns the Telegram entry into a product home with Stars pricing", () => {
     const page = readSource("src/app/tg/page.tsx");
 
-    expect(page).toContain("AI 东方个人洞察");
-    expect(page).toContain("500 ★");
-    expect(page).toContain("1500 ★");
+    expect(page).toContain("打开今天的节奏");
+    expect(page).toContain("守中而行");
+    expect(page).toContain("formatStarsPrice");
+    expect(page).toContain("用星星解锁更深一层");
+    expect(page).toContain("三步完成今日入场");
     expect(page).toContain("BottomNav");
+    expect(page).not.toContain("Growth Preview");
+    expect(page).not.toContain("Affiliate Program");
+    expect(page).not.toContain("Managed Bots");
     expect(page).not.toContain("已适配 Telegram");
     expect(page).not.toContain("命理");
   });
@@ -65,8 +70,46 @@ describe("Mini App brand and entry experience", () => {
     const daily = readSource("src/app/daily/page.tsx");
 
     expect(daily).toContain("isTelegramMiniApp");
-    expect(daily).toContain("WebApp?.initData");
+    expect(daily).toContain("isTelegramMiniAppRuntime");
     expect(daily).toContain("formatStarsPrice");
     expect(daily).toContain("Stars 解锁");
+    expect(daily).toContain("handleDailyStarsUnlock");
+    expect(daily).toContain("handleDailyShare");
+    expect(daily).toContain('"health"');
+    expect(daily).toContain("kairos_daily_paid");
+  });
+
+  it("surfaces the Mini App Stars unlock path on the Fortune page", () => {
+    const fortune = readSource("src/app/fortune/page.tsx");
+    const paywall = readSource("src/components/fortune/PaywallSection.tsx");
+
+    expect(fortune).toContain("Mini App 解锁");
+    expect(fortune).toContain("formatStarsPrice");
+    expect(fortune).toContain("fortune_pro");
+    expect(fortune).toContain("本地仅预览 Stars 支付界面");
+    expect(fortune).toContain("PaywallSection");
+    expect(paywall).toContain("Stars 解锁完整图谱");
+  });
+
+  it("documents the final Mini App PRD", () => {
+    const prd = readSource("docs/superpowers/specs/2026-05-03-telegram-mini-app-final-experience-prd.md");
+
+    expect(prd).toContain("Kairos Telegram Mini App Final Experience PRD");
+    expect(prd).toContain("/tg");
+    expect(prd).toContain("/daily");
+    expect(prd).toContain("/fortune");
+    expect(prd).toContain("/profile");
+    expect(prd).toContain("29 Stars");
+  });
+
+  it("supports a localhost Mini App preview mode", () => {
+    const env = readSource("src/lib/telegram/environment.ts");
+    const nav = readSource("src/components/BottomNav.tsx");
+
+    expect(env).toContain("isTelegramMiniAppRuntime");
+    expect(env).toContain("isTelegramMiniAppPreviewRuntime");
+    expect(env).toContain("localhost");
+    expect(env).toContain("tg_preview");
+    expect(nav).toContain("isTelegramMiniAppRuntime");
   });
 });

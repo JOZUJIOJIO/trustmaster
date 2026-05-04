@@ -7,12 +7,14 @@ import { useLocale } from "@/lib/LocaleContext";
 import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
 import { useAuth } from "@/lib/supabase/auth-context";
+import { isTelegramMiniAppRuntime } from "@/lib/telegram/environment";
 import { calculateBazi, STEM_ELEMENTS, getTenGod, type BaziChart } from "@/lib/bazi";
 import { ELEMENT_RECOMMENDATIONS } from "@/lib/bazi-glossary";
 import { formatStarsPrice } from "@/lib/pricing";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import { PageArtworkBand } from "@/components/PageArtwork";
+import { useToast } from "@/components/Toast";
 
 // @ts-expect-error lunar-javascript has no type declarations
 import { Solar } from "lunar-javascript";
@@ -184,16 +186,92 @@ function DailyContent() {
   const { theme } = useTheme();
   const tk = themeTokens[theme];
   const { user } = useAuth();
+  const { toast } = useToast();
   const searchParams = useSearchParams();
   const dateParam = getValidDateParam(searchParams.get("date"));
   const [birthDate, setBirthDate] = useState(() => dateParam || getStoredBirthDate());
   const [chart, setChart] = useState<BaziChart | null>(() => (dateParam ? calculateDefaultDailyChart(dateParam) : null));
   const [isSubscriber, setIsSubscriber] = useState(false);
   const [isTelegramMiniApp, setIsTelegramMiniApp] = useState(false);
+  const [dailyUnlocked, setDailyUnlocked] = useState(false);
+  const [dailyCheckoutLoading, setDailyCheckoutLoading] = useState(false);
+  const [dailyCheckoutError, setDailyCheckoutError] = useState("");
+  const today = new Date();
+  const todayKey = today.toISOString().split("T")[0];
 
   useEffect(() => {
-    setIsTelegramMiniApp(Boolean(window.Telegram?.WebApp?.initData));
-  }, []);
+    setIsTelegramMiniApp(isTelegramMiniAppRuntime());
+    setDailyUnlocked(localStorage.getItem("kairos_daily_paid") === todayKey);
+  }, [todayKey]);
+
+  const handleDailyShare = async () => {
+    const shareUrl = new URL("/daily", window.location.origin);
+    if (birthDate) shareUrl.searchParams.set("date", birthDate);
+    const text = chart
+      ? (isChinese
+        ? `我今天的 Kairos 节奏：${chart.dayMaster}${chart.dayMasterElement}图谱 · ${todayKey}`
+        : `My Kairos daily rhythm: ${chart.dayMaster} ${chart.dayMasterElement} map · ${todayKey}`)
+      : (isChinese ? "打开 Kairos，查看今天的节奏。" : "Open Kairos and check today's rhythm.");
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Kairós Daily",
+          text,
+          url: shareUrl.toString(),
+        });
+        return;
+      }
+      await navigator.clipboard.writeText(`${text}\n${shareUrl.toString()}`);
+      toast(isChinese ? "今日卡链接已复制" : "Daily card link copied", "success");
+    } catch {
+      toast(isChinese ? "分享暂时不可用，请稍后重试" : "Sharing is unavailable. Please try again.", "error");
+    }
+  };
+
+  const handleDailyStarsUnlock = async () => {
+    const telegramWebApp = window.Telegram?.WebApp;
+    const telegramInitData = telegramWebApp?.initData || "";
+    if (!telegramInitData || !telegramWebApp?.openInvoice) {
+      toast(isChinese ? "请在 Telegram Mini App 内使用 Stars 解锁" : "Use Stars inside the Telegram Mini App", "error");
+      return;
+    }
+    setDailyCheckoutLoading(true);
+    setDailyCheckoutError("");
+    try {
+      const res = await fetch("/api/telegram/stars/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          initData: telegramInitData,
+          chartId: birthDate || todayKey,
+          userName: "Kairos",
+          tier: "health",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.invoiceLink) {
+        throw new Error(data.error || "Failed to create Telegram Stars invoice");
+      }
+      telegramWebApp.openInvoice(data.invoiceLink, (status) => {
+        if (status === "paid") {
+          telegramWebApp.HapticFeedback?.notificationOccurred?.("success");
+          localStorage.setItem("kairos_daily_paid", todayKey);
+          setDailyUnlocked(true);
+          toast(isChinese ? "今日进阶已解锁" : "Daily depth unlocked", "success");
+        } else if (status === "failed") {
+          telegramWebApp.HapticFeedback?.notificationOccurred?.("error");
+          setDailyCheckoutError(isChinese ? "Stars 支付失败，请重试" : "Stars payment failed. Please try again.");
+        }
+        setDailyCheckoutLoading(false);
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : (isChinese ? "无法创建 Stars 支付" : "Unable to create Stars payment");
+      setDailyCheckoutError(message);
+      toast(message, "error");
+      setDailyCheckoutLoading(false);
+    }
+  };
 
   // Check subscription
   useEffect(() => {
@@ -210,10 +288,10 @@ function DailyContent() {
 
   const handleGenerate = () => {
     if (!birthDate) return;
+    localStorage.setItem("kairos_birth_date", birthDate);
     setChart(calculateDefaultDailyChart(birthDate));
   };
 
-  const today = new Date();
   const dateStr = isChinese
     ? `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`
     : today.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
@@ -223,6 +301,7 @@ function DailyContent() {
   if (scores) scores.overall = Math.round((scores.career + scores.wealth + scores.love + scores.health) / 4);
   const guidance = chart && scores ? getDailyGuidance(chart, scores.tenGod) : null;
   const rec = chart ? ELEMENT_RECOMMENDATIONS[chart.luckyElement] : null;
+  const hasDailyDepth = isSubscriber || dailyUnlocked;
 
   return (
     <div className={`min-h-screen ${tk.bg} relative`}>
@@ -253,25 +332,59 @@ function DailyContent() {
 
         {!chart ? (
           /* Input state */
-          <div className="text-center space-y-6">
-            <div className="text-5xl mb-4 animate-float">☯</div>
-            <p className={`${tk.text2} text-sm`}>{isChinese ? "输入出生日期，获取专属每日趋势" : "Enter your birth date for personalized daily insights"}</p>
-            <input
-              type="date"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              max={new Date().toISOString().split("T")[0]}
-              min="1940-01-01"
-              className={`w-full max-w-xs mx-auto block px-4 py-3 rounded-xl ${tk.selectBg} border ${tk.accentBorder} ${tk.text1} text-center ${tk.label} focus:outline-none ${tk.inputFocus} focus:bg-white/[0.08] transition-all`}
-              style={{ colorScheme: tk.colorScheme }}
-            />
-            <button
-              onClick={handleGenerate}
-              disabled={!birthDate}
-              className={`w-full max-w-xs mx-auto block py-3.5 rounded-xl font-semibold cursor-pointer ${tk.ctaPrimary} disabled:opacity-30 transition-all`}
-            >
-              {isChinese ? "查看今日趋势" : "View Today's Signal"}
-            </button>
+          <div className="space-y-5">
+            <section className={`${tk.sectionBg} border ${tk.accentBorder} rounded-[28px] p-5 text-center`}>
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-amber-300/20 bg-amber-300/[0.08] text-2xl text-amber-100">
+                鉴
+              </div>
+              <h2 className={`font-display text-2xl font-bold ${tk.text1}`}>
+                {isChinese ? "先看今天，再决定下一步" : "See today first, then choose your next move"}
+              </h2>
+              <p className={`${tk.text2} mx-auto mt-3 max-w-sm text-sm leading-7`}>
+                {isChinese
+                  ? "输入出生日期，Kairos 会生成一张今日节奏卡：关键词、行动方向、适合与不适合的事。"
+                  : "Enter your birth date and Kairos creates a daily rhythm card with keywords, action direction, and do/don't signals."}
+              </p>
+              <div className="mt-5 grid grid-cols-3 gap-2">
+                {[
+                  isChinese ? "今日关键词" : "Keyword",
+                  isChinese ? "行动建议" : "Action",
+                  isChinese ? "分享卡片" : "Share card",
+                ].map((item) => (
+                  <div key={item} className={`rounded-2xl border ${tk.border} bg-white/[0.035] px-2 py-3 text-xs font-semibold ${tk.text2}`}>
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className={`${tk.sectionBg} border ${tk.accentBorder} rounded-2xl p-5 space-y-4`}>
+              <label className={`block text-xs font-semibold tracking-[0.18em] ${tk.accentMuted}`}>
+                {isChinese ? "出生日期" : "BIRTH DATE"}
+              </label>
+              <input
+                type="date"
+                value={birthDate}
+                onChange={(e) => setBirthDate(e.target.value)}
+                max={new Date().toISOString().split("T")[0]}
+                min="1940-01-01"
+                className={`w-full px-4 py-3.5 rounded-xl ${tk.selectBg} border ${tk.accentBorder} ${tk.text1} text-center ${tk.label} focus:outline-none ${tk.inputFocus} focus:bg-white/[0.08] transition-all`}
+                style={{ colorScheme: tk.colorScheme }}
+              />
+              <button
+                onClick={handleGenerate}
+                disabled={!birthDate}
+                className={`w-full py-3.5 rounded-xl font-semibold cursor-pointer ${tk.ctaPrimary} disabled:opacity-30 transition-all`}
+              >
+                {isChinese ? "生成今日节奏卡" : "Create Daily Rhythm Card"}
+              </button>
+              <Link
+                href="/fortune"
+                className={`block w-full rounded-xl border ${tk.border} py-3 text-center text-sm font-semibold ${tk.text2} transition active:scale-[0.99]`}
+              >
+                {isChinese ? "直接生成完整图谱" : "Generate complete map instead"}
+              </Link>
+            </section>
           </div>
         ) : scores && guidance && rec ? (
           /* Results */
@@ -370,12 +483,12 @@ function DailyContent() {
 
             </div>{/* End desktop 2-column grid */}
 
-            {/* Pro Deep Insights — subscriber only */}
-            {isSubscriber ? (
+            {/* Daily Deep Insights — subscriber or Stars unlock */}
+            {hasDailyDepth ? (
               <div className={`${tk.sectionBg} border ${theme === "cosmic" ? "border-emerald-400/15" : "border-emerald-600/20"} rounded-2xl p-5`}>
                 <div className="flex items-center gap-2 mb-3">
-                  <span className={`text-xs ${theme === "cosmic" ? "bg-emerald-900/40 text-emerald-300" : "bg-emerald-100 text-emerald-700"} px-2 py-0.5 rounded-full font-semibold`}>PRO</span>
-                  <h3 className={`text-xs ${theme === "cosmic" ? "text-emerald-400/60" : "text-emerald-600/70"} tracking-widest`}>{isChinese ? "深 度 每 日 趋 势" : "DEEP DAILY ANALYSIS"}</h3>
+                  <span className={`text-xs ${theme === "cosmic" ? "bg-emerald-900/40 text-emerald-300" : "bg-emerald-100 text-emerald-700"} px-2 py-0.5 rounded-full font-semibold`}>{isTelegramMiniApp ? "STARS" : "PRO"}</span>
+                  <h3 className={`text-xs ${theme === "cosmic" ? "text-emerald-400/60" : "text-emerald-600/70"} tracking-widest`}>{isChinese ? "深 度 每 日 节 奏" : "DEEP DAILY RHYTHM"}</h3>
                 </div>
                 <div className="space-y-3">
                   <div className={`${tk.sectionBg} rounded-xl p-3.5 border ${tk.border}`}>
@@ -411,20 +524,33 @@ function DailyContent() {
                 <div className={`absolute inset-0 bg-gradient-to-t ${theme === "cosmic" ? "from-[#12101c]" : "from-[#F5F3EE]"} via-transparent to-transparent pointer-events-none`} />
                 <div className="relative">
                   <div className="flex items-center justify-center gap-2 mb-2">
-                    <span className={`text-xs ${theme === "cosmic" ? "bg-emerald-900/40 text-emerald-300" : "bg-emerald-100 text-emerald-700"} px-2 py-0.5 rounded-full font-semibold`}>PRO</span>
-                    <span className={`text-xs ${theme === "cosmic" ? "text-emerald-400/60" : "text-emerald-600/70"}`}>{isChinese ? "深度日运分析" : "Deep Daily Analysis"}</span>
+                    <span className={`text-xs ${theme === "cosmic" ? "bg-emerald-900/40 text-emerald-300" : "bg-emerald-100 text-emerald-700"} px-2 py-0.5 rounded-full font-semibold`}>{isTelegramMiniApp ? "STARS" : "PRO"}</span>
+                    <span className={`text-xs ${theme === "cosmic" ? "text-emerald-400/60" : "text-emerald-600/70"}`}>{isChinese ? "今日进阶洞察" : "Daily Depth"}</span>
                   </div>
                   <p className={`${tk.label} text-xs mb-3`}>
-                    {isChinese ? "关键时段 · 行动建议 · 饮食调养 · 每日更新" : "Key time windows · Action items · Diet tips · Updated daily"}
+                    {isChinese ? "关键时段 · 行动建议 · 饮食调养 · 今日解锁" : "Key time windows · Action items · Diet tips · Today unlock"}
                   </p>
-                  <Link
-                    href="/fortune"
-                    className="inline-block px-5 py-2 bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-700 text-white rounded-lg text-xs font-semibold"
-                  >
-                    {isTelegramMiniApp
-                      ? (isChinese ? `Stars 解锁 · ${formatStarsPrice("fortune_pro")}` : `Unlock with Stars · ${formatStarsPrice("fortune_pro")}`)
-                      : (isChinese ? "解锁 Pro · $4.99/月" : "Unlock Pro · $4.99/mo")}
-                  </Link>
+                  {isTelegramMiniApp ? (
+                    <button
+                      onClick={handleDailyStarsUnlock}
+                      disabled={dailyCheckoutLoading}
+                      className="inline-flex min-h-[40px] items-center justify-center rounded-lg bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-700 px-5 text-xs font-semibold text-white disabled:opacity-50"
+                    >
+                      {dailyCheckoutLoading
+                        ? "..."
+                        : (isChinese ? `Stars 解锁 · ${formatStarsPrice("health_report")}` : `Unlock · ${formatStarsPrice("health_report")}`)}
+                    </button>
+                  ) : (
+                    <Link
+                      href="/fortune"
+                      className="inline-flex min-h-[40px] items-center justify-center rounded-lg bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-700 px-5 text-xs font-semibold text-white"
+                    >
+                      {isChinese ? "解锁 Pro · $4.99/月" : "Unlock Pro · $4.99/mo"}
+                    </Link>
+                  )}
+                  {dailyCheckoutError && (
+                    <p className="mt-3 text-xs text-red-300/80">{dailyCheckoutError}</p>
+                  )}
                 </div>
               </div>
             )}
@@ -435,8 +561,16 @@ function DailyContent() {
                 {isChinese ? "完整图谱分析" : "Full Map Analysis"}
               </Link>
               <button
-                onClick={() => setChart(null)}
+                onClick={handleDailyShare}
                 className={`flex-1 py-3 rounded-xl text-sm font-medium cursor-pointer ${tk.selectBg} ${tk.text2} hover:opacity-80 transition-colors border ${tk.border}`}
+              >
+                {isChinese ? "分享今日卡" : "Share Card"}
+              </button>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setChart(null)}
+                className={`w-full py-3 rounded-xl text-sm font-medium cursor-pointer ${tk.selectBg} ${tk.text2} hover:opacity-80 transition-colors border ${tk.border}`}
               >
                 {isChinese ? "换人查看" : "Try Another"}
               </button>

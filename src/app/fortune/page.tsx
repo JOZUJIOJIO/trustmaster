@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useLocale } from "@/lib/LocaleContext";
 import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
+import { isTelegramMiniAppRuntime } from "@/lib/telegram/environment";
 import { calculateBazi, CHINESE_HOURS, type BaziChart, getTenGod, STEM_ELEMENTS } from "@/lib/bazi";
 import { ELEMENT_RECOMMENDATIONS } from "@/lib/bazi-glossary";
 import { Term } from "@/components/Tooltip";
@@ -23,6 +24,7 @@ import YinYangSelector from "@/components/YinYangSelector";
 import CelestialDatePicker from "@/components/CelestialDatePicker";
 import MysticalNameInput from "@/components/MysticalNameInput";
 import { generateBlueprint } from "@/lib/bazi-interpreter";
+import { formatStarsPrice } from "@/lib/pricing";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { useToast } from "@/components/Toast";
 import { ElementBar } from "@/components/fortune/ElementBar";
@@ -72,7 +74,7 @@ function FortuneContent() {
   const [freeReadings, setFreeReadings] = useState(0);
 
   useEffect(() => {
-    setIsTelegramMiniApp(Boolean(window.Telegram?.WebApp?.initData));
+    setIsTelegramMiniApp(isTelegramMiniAppRuntime());
   }, []);
 
   // Check subscription status + free readings when user logs in
@@ -293,6 +295,15 @@ function FortuneContent() {
   const handleStripeCheckout = async (tier: "pro" | "master" = "pro") => {
     const telegramWebApp = typeof window !== "undefined" ? window.Telegram?.WebApp : undefined;
     const telegramInitData = telegramWebApp?.initData || "";
+    if (isTelegramMiniApp && !telegramInitData) {
+      const message = isChinese
+        ? "本地仅预览 Stars 支付界面；请在 Telegram Mini App 内完成真实星星付款。"
+        : "Local preview only shows the Stars checkout UI. Complete payment inside Telegram Mini App.";
+      setShowPaywall(true);
+      setCheckoutError(message);
+      toast(message, "error");
+      return;
+    }
     if (!user && !telegramInitData) { setShowLoginGate(true); return; }
     setCheckoutLoading(true);
     setCheckoutError("");
@@ -825,6 +836,21 @@ function FortuneContent() {
                     ? "基础图谱免费生成，深度报告会继续展开优势、资源、关系、习惯和本月行动清单。"
                     : "The base map is free. The deep report expands into strengths, resources, relationships, habits, and action items."}
                 </p>
+              </div>
+              <div className={`mt-3 rounded-xl border ${theme === "cosmic" ? "border-emerald-400/16 bg-emerald-300/[0.045]" : "border-emerald-700/15 bg-emerald-50"} p-3`}>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className={`text-[10px] uppercase tracking-[0.18em] ${theme === "cosmic" ? "text-emerald-200/58" : "text-emerald-700/55"}`}>
+                      {isChinese ? "Mini App 解锁" : "Mini App unlock"}
+                    </p>
+                    <p className={`mt-1 text-xs leading-relaxed ${theme === "cosmic" ? "text-emerald-50/68" : "text-emerald-900/70"}`}>
+                      {isChinese ? "Telegram 内使用 Stars，支付后自动生成深度洞察。" : "Use Stars in Telegram and generate the deep insight instantly."}
+                    </p>
+                  </div>
+                  <span className={`shrink-0 rounded-xl px-3 py-2 font-data text-lg font-bold ${theme === "cosmic" ? "bg-emerald-300/[0.10] text-emerald-100" : "bg-emerald-100 text-emerald-800"}`}>
+                    {formatStarsPrice("fortune_pro")}
+                  </span>
+                </div>
               </div>
             </aside>
             </div>

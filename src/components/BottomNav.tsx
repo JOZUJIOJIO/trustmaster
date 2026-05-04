@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLocale } from "@/lib/LocaleContext";
+import { isTelegramMiniAppRuntime } from "@/lib/telegram/environment";
 
 function IconHome({ className }: { className?: string }) {
   return (
@@ -72,7 +73,7 @@ export default function BottomNav() {
   const [isTelegramMiniApp, setIsTelegramMiniApp] = useState(false);
 
   useEffect(() => {
-    setIsTelegramMiniApp(Boolean(window.Telegram?.WebApp?.initData));
+    setIsTelegramMiniApp(isTelegramMiniAppRuntime());
   }, []);
 
   const activeNavItems = isTelegramMiniApp || pathname === "/tg" ? telegramNavItems : navItems;

@@ -9,6 +9,50 @@ import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import BrandMark from "@/components/BrandMark";
 import { PageArtworkBand, PageArtworkBackdrop } from "@/components/PageArtwork";
+import { formatStarsPrice } from "@/lib/pricing";
+import { isTelegramMiniAppPreviewRuntime } from "@/lib/telegram/environment";
+
+const miniAppRevenuePath = [
+  {
+    labelZh: "今日洞察",
+    labelEn: "Daily insight",
+    price: formatStarsPrice("health_report"),
+    href: "/daily",
+  },
+  {
+    labelZh: "完整图谱",
+    labelEn: "Complete map",
+    price: formatStarsPrice("fortune_pro"),
+    href: "/fortune",
+  },
+  {
+    labelZh: "Pro 月度",
+    labelEn: "Pro monthly",
+    price: formatStarsPrice("fortune_master"),
+    href: "/fortune",
+  },
+];
+
+const miniAppBenefitCards = [
+  {
+    titleZh: "邀请好友",
+    titleEn: "Invite friends",
+    descZh: "把你的专属入口发给朋友，对方进入后会带上你的邀请标记。",
+    descEn: "Share your entry link and bring friends into Kairos with your invite mark.",
+  },
+  {
+    titleZh: "保存报告",
+    titleEn: "Saved reports",
+    descZh: "解锁后的图谱和每日节奏会进入你的个人空间。",
+    descEn: "Unlocked maps and daily rhythm notes live in your personal space.",
+  },
+  {
+    titleZh: "每日提醒",
+    titleEn: "Daily reminder",
+    descZh: "回到 Telegram 就能继续查看每日节奏和行动提示。",
+    descEn: "Return in Telegram to continue your daily rhythm and action prompts.",
+  },
+];
 
 export default function ProfilePage() {
   const { user, telegramUser, loading: authLoading, signOut } = useAuth();
@@ -27,16 +71,38 @@ export default function ProfilePage() {
     stats: { signups: number; converted: number };
   }>({ referralCode: null, freeReadings: 0, stats: { signups: 0, converted: 0 } });
   const [refCopied, setRefCopied] = useState(false);
-  const isTelegramProfile = Boolean(telegramUser && !user);
+  const [telegramLinkCopied, setTelegramLinkCopied] = useState(false);
+  const [isMiniAppPreview, setIsMiniAppPreview] = useState(false);
+  const isPreviewTelegramProfile = Boolean(isMiniAppPreview && !telegramUser && !user);
+  const isTelegramProfile = Boolean((telegramUser || isPreviewTelegramProfile) && !user);
+  const botUsername = (process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || "xkairos_bot").replace(/^@/, "");
+  const telegramInviteLink = referral.referralCode
+    ? `https://t.me/${botUsername}/kairos?startapp=ref_${referral.referralCode}`
+    : `https://t.me/${botUsername}/kairos`;
   const profileName = user?.user_metadata?.display_name
     || user?.email?.split("@")[0]
     || telegramUser?.firstName
+    || (isPreviewTelegramProfile ? (isChinese ? "Kairos 体验用户" : "Kairos Preview") : "")
     || "Kairos";
   const profileSubtitle = user?.email
-    || (telegramUser?.username ? `@${telegramUser.username}` : telegramUser ? `Telegram ID ${telegramUser.telegramUserId}` : "");
+    || (telegramUser?.username ? `@${telegramUser.username}` : telegramUser ? `Telegram ID ${telegramUser.telegramUserId}` : isPreviewTelegramProfile ? "Telegram Mini App Preview" : "");
 
   useEffect(() => {
     if (authLoading) return;
+    const isPreview = isTelegramMiniAppPreviewRuntime();
+    setIsMiniAppPreview(isPreview);
+
+    if (!user && !telegramUser && isPreview) {
+      setSubscription({ subscribed: false });
+      setReferral({
+        referralCode: "preview",
+        freeReadings: 0,
+        stats: { signups: 0, converted: 0 },
+      });
+      setLoading(false);
+      return;
+    }
+
     if (!user && !telegramUser) {
       router.replace("/login?redirect=/profile");
       return;
@@ -79,7 +145,7 @@ export default function ProfilePage() {
     router.push(isTelegramProfile ? "/tg" : "/");
   };
 
-  if (!authLoading && !user && !telegramUser) {
+  if (!authLoading && !user && !telegramUser && !isMiniAppPreview) {
     return (
       <div className="relative min-h-screen overflow-hidden bg-[#0a0814]">
         <PageArtworkBackdrop art="profile" />
@@ -231,6 +297,77 @@ export default function ProfilePage() {
                   {isChinese ? "了解详情" : "Learn More"}
                 </Link>
               </div>
+            )}
+
+            {isTelegramProfile && (
+              <section className="rounded-2xl border border-emerald-400/15 bg-emerald-300/[0.045] p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-100/58">Stars Wallet</p>
+                    <h3 className="mt-1 text-lg font-semibold text-emerald-50">
+                      {isChinese ? "我的星星权益" : "My Stars Access"}
+                    </h3>
+                    <p className="mt-2 text-sm leading-6 text-emerald-50/58">
+                      {isChinese
+                        ? "在 Telegram 里，你可以用 Stars 解锁更完整的洞察，也可以把专属入口分享给朋友。"
+                        : "Use Stars to unlock deeper insight in Telegram, then share your personal entry with friends."}
+                    </p>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-emerald-300/20 px-3 py-1 text-[10px] font-semibold text-emerald-100/72">
+                    Stars
+                  </span>
+                </div>
+
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  {miniAppRevenuePath.map((item) => (
+                    <Link
+                      key={item.labelEn}
+                      href={item.href}
+                      className="rounded-xl border border-emerald-300/12 bg-black/20 p-3 text-center transition active:scale-[0.99]"
+                    >
+                      <span className="block text-[10px] leading-4 text-emerald-50/52">
+                        {isChinese ? item.labelZh : item.labelEn}
+                      </span>
+                      <span className="mt-1 block font-data text-lg font-bold text-emerald-100">{item.price}</span>
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="mt-4 rounded-xl border border-amber-300/14 bg-black/[0.18] p-3">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-amber-100/56">
+                    {isChinese ? "Telegram 邀请链接" : "Telegram invite link"}
+                  </p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <div className="min-w-0 flex-1 truncate rounded-lg border border-amber-300/12 bg-white/[0.04] px-3 py-2 text-xs text-amber-50/66">
+                      {telegramInviteLink}
+                    </div>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(telegramInviteLink).then(() => {
+                          setTelegramLinkCopied(true);
+                          setTimeout(() => setTelegramLinkCopied(false), 2000);
+                        });
+                      }}
+                      className="min-h-[36px] rounded-lg bg-amber-600 px-3 text-xs font-semibold text-white transition active:scale-[0.98]"
+                    >
+                      {telegramLinkCopied ? "OK" : (isChinese ? "复制" : "Copy")}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  {miniAppBenefitCards.map((card) => (
+                    <div key={card.titleEn} className="rounded-xl border border-white/10 bg-white/[0.035] p-3">
+                      <div className="text-sm font-semibold text-amber-50">
+                        {isChinese ? card.titleZh : card.titleEn}
+                      </div>
+                      <p className="mt-1 text-xs leading-5 text-amber-50/52">
+                        {isChinese ? card.descZh : card.descEn}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
             )}
 
             {/* Referral Program */}

@@ -6,9 +6,9 @@ export type KairosProductPrice = {
 };
 
 export const kairosPrices: Record<KairosProductId, KairosProductPrice> = {
-  health_report: { usdCents: 490, stars: 250 },
-  fortune_pro: { usdCents: 990, stars: 500 },
-  fortune_master: { usdCents: 2990, stars: 1500 },
+  health_report: { usdCents: 490, stars: 29 },
+  fortune_pro: { usdCents: 990, stars: 99 },
+  fortune_master: { usdCents: 2990, stars: 399 },
 };
 
 export function formatUsdPrice(productId: KairosProductId) {

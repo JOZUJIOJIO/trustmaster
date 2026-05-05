@@ -1,4 +1,4 @@
-export type KairosProductId = "fortune_pro" | "fortune_master" | "health_report";
+export type KairosProductId = "fortune_pro" | "fortune_master" | "health_report" | "ziwei_pro";
 
 export type KairosProductPrice = {
   usdCents: number;
@@ -9,6 +9,7 @@ export const kairosPrices: Record<KairosProductId, KairosProductPrice> = {
   health_report: { usdCents: 490, stars: 29 },
   fortune_pro: { usdCents: 990, stars: 99 },
   fortune_master: { usdCents: 2990, stars: 399 },
+  ziwei_pro: { usdCents: 1290, stars: 129 },
 };
 
 export function formatUsdPrice(productId: KairosProductId) {

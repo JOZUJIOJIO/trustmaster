@@ -20,4 +20,12 @@ describe("Telegram Stars invoices", () => {
     expect(invoice.title).toContain("Kairós");
     expect(invoice.payload.length).toBeLessThanOrEqual(128);
   });
+
+  it("supports a dedicated Ziwei Stars product", () => {
+    const product = getTelegramStarsProduct("ziwei_pro");
+
+    expect(product.tier).toBe("ziwei");
+    expect(product.title).toContain("Zi Wei");
+    expect(product.amount).toBe(129);
+  });
 });

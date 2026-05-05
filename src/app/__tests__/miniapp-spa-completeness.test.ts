@@ -26,4 +26,17 @@ describe("single-file Telegram Mini App completeness", () => {
     expect(html).toContain("markProductUnlocked");
     expect(html).toContain("renderShareCard");
   });
+
+  it("adds Zi Wei insight without removing the light Bronze Tree commerce loop", () => {
+    expect(html).toContain("紫微斗数");
+    expect(html).toContain("Purple Star");
+    expect(html).toContain("calculateZiweiSnapshot");
+    expect(html).toContain("renderZiweiInsight");
+    expect(html).toContain("ziwei_pro");
+    expect(html).toContain("requestStarsUnlock");
+    expect(html).toContain("paymentSheet");
+    expect(html).toContain("kairos_miniapp_history");
+    expect(html).toContain('data-route="share"');
+    expect(html).toContain("navShare");
+  });
 });

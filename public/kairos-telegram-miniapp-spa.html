@@ -361,6 +361,68 @@
       animation: fillBar 1.2s ease both;
     }
 
+    .ziwei-orbit {
+      position: relative;
+      width: 188px;
+      height: 188px;
+      margin: 0 auto;
+      border-radius: 999px;
+      border: 1px solid rgba(242, 206, 138, .24);
+      background:
+        radial-gradient(circle at center, rgba(62,230,208,.16), transparent 18%),
+        conic-gradient(from 14deg, rgba(242,206,138,.06), rgba(62,230,208,.18), rgba(242,206,138,.08), rgba(185,133,66,.2), rgba(242,206,138,.06));
+      box-shadow: 0 0 70px rgba(62, 230, 208, .08), inset 0 0 50px rgba(242, 206, 138, .08);
+      animation: slowSpin 32s linear infinite;
+    }
+
+    .ziwei-orbit::before,
+    .ziwei-orbit::after {
+      content: "";
+      position: absolute;
+      inset: 26px;
+      border-radius: inherit;
+      border: 1px dashed rgba(242, 206, 138, .18);
+    }
+
+    .ziwei-orbit::after {
+      inset: 62px;
+      border-style: solid;
+      background: rgba(7, 6, 11, .48);
+      box-shadow: inset 0 0 28px rgba(62, 230, 208, .1);
+    }
+
+    .ziwei-palace-dot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 30px;
+      height: 30px;
+      margin: -15px 0 0 -15px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      border: 1px solid rgba(242, 206, 138, .26);
+      background: rgba(255,255,255,.055);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 600;
+      transform: rotate(var(--a)) translateY(-78px) rotate(calc(var(--a) * -1));
+      box-shadow: 0 0 22px rgba(242, 206, 138, .13);
+    }
+
+    .ziwei-center {
+      position: absolute;
+      inset: 68px;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(242,206,138,.26), rgba(62,230,208,.08) 58%, transparent);
+      color: var(--gold);
+      font-size: 24px;
+      text-shadow: 0 0 18px rgba(242, 206, 138, .42);
+    }
+
     .module-reveal {
       transform-style: preserve-3d;
       animation: moduleReveal .72s cubic-bezier(.2,.8,.2,1) both;
@@ -618,6 +680,11 @@
                 <div class="mt-3 text-[16px] font-semibold text-amber-50">查看图谱</div>
                 <p class="mt-2 text-[13px] leading-6 subtle-text">四柱、五行、周期与行动建议。</p>
               </button>
+              <button data-route="ziwei" class="tap-scale rounded-[24px] bronze-card p-4 text-left">
+                <div class="text-[22px]">紫</div>
+                <div class="mt-3 text-[16px] font-semibold text-amber-50">紫微星盘</div>
+                <p class="mt-2 text-[13px] leading-6 subtle-text">十二宫位、命宫身宫与关键星曜。</p>
+              </button>
               <button data-route="share" class="tap-scale rounded-[24px] bronze-card p-4 text-left">
                 <div class="text-[22px]">✦</div>
                 <div class="mt-3 text-[16px] font-semibold text-amber-50">生成分享卡</div>
@@ -710,6 +777,15 @@
             <div id="moduleGrid" class="mt-5 grid gap-3">
             </div>
 
+            <button data-route="ziwei" class="tap-scale mt-5 flex w-full items-center justify-between rounded-[26px] bronze-card p-4 text-left">
+              <span>
+                <span class="block text-[11px] uppercase tracking-[.24em] text-[#3ee6d0]/62">Purple Star</span>
+                <b class="mt-2 block text-[17px] text-amber-50">紫微斗数补充洞察</b>
+                <span class="mt-1 block text-[13px] leading-6 subtle-text">用十二宫位补全八字图谱没有展开的关系、事业与资源结构。</span>
+              </span>
+              <span class="ml-3 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-amber-200/18 bg-amber-200/[.08] text-amber-100">紫</span>
+            </button>
+
             <div class="mt-6">
               <div class="mb-3 flex items-end justify-between">
                 <h3 class="text-[19px] font-semibold text-amber-50">10 大洞察维度</h3>
@@ -721,6 +797,92 @@
             <button id="unlockReportBtn" class="tap-scale mt-6 flex h-[56px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-[#0f766e] via-[#2aa98c] to-[#d7a75e] text-[16px] font-semibold text-white shadow-[0_18px_54px_rgba(42,169,140,.2)]">
               Stars 解锁 AI 深度报告 · 99 ★
             </button>
+          </div>
+        </section>
+
+        <section id="ziweiView" class="view">
+          <div class="pt-2">
+            <p class="text-[11px] uppercase tracking-[.3em] text-[#3ee6d0]/62">Purple Star</p>
+            <h2 class="mt-2 font-display text-[26px] font-semibold leading-tight text-amber-50 oracle-title">紫微斗数星盘</h2>
+            <p class="mt-3 text-[15px] leading-[1.75] subtle-text">
+              在青铜神树图谱之外，用十二宫、命宫身宫和关键星曜补全你的行动剧本。
+            </p>
+
+            <div class="mt-5 rounded-[30px] bronze-card p-5">
+              <div class="ziwei-orbit">
+                <span class="ziwei-palace-dot" style="--a:0deg">命</span>
+                <span class="ziwei-palace-dot" style="--a:30deg">兄</span>
+                <span class="ziwei-palace-dot" style="--a:60deg">夫</span>
+                <span class="ziwei-palace-dot" style="--a:90deg">子</span>
+                <span class="ziwei-palace-dot" style="--a:120deg">财</span>
+                <span class="ziwei-palace-dot" style="--a:150deg">疾</span>
+                <span class="ziwei-palace-dot" style="--a:180deg">迁</span>
+                <span class="ziwei-palace-dot" style="--a:210deg">友</span>
+                <span class="ziwei-palace-dot" style="--a:240deg">官</span>
+                <span class="ziwei-palace-dot" style="--a:270deg">田</span>
+                <span class="ziwei-palace-dot" style="--a:300deg">福</span>
+                <span class="ziwei-palace-dot" style="--a:330deg">父</span>
+                <span class="ziwei-center">紫</span>
+              </div>
+
+              <div class="mt-5 grid grid-cols-2 gap-3">
+                <label class="space-y-2">
+                  <span class="text-[12px] font-semibold uppercase tracking-[.18em] text-amber-100/58">出生时间</span>
+                  <input id="ziweiBirthTime" type="time" value="12:00" class="h-12 w-full rounded-2xl border border-amber-200/14 bg-black/20 px-3 text-[15px] font-medium text-amber-50 outline-none [color-scheme:dark]" />
+                </label>
+                <label class="space-y-2">
+                  <span class="text-[12px] font-semibold uppercase tracking-[.18em] text-amber-100/58">性别</span>
+                  <select id="ziweiGender" class="h-12 w-full rounded-2xl border border-amber-200/14 bg-black/20 px-3 text-[15px] font-medium text-amber-50 outline-none [color-scheme:dark]">
+                    <option value="male">男</option>
+                    <option value="female">女</option>
+                  </select>
+                </label>
+              </div>
+              <button id="generateZiweiBtn" class="tap-scale mt-4 flex h-[54px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-[#95602b] via-[#c88639] to-[#f0b85d] text-[16px] font-semibold text-white">
+                生成紫微星盘
+              </button>
+            </div>
+
+            <div id="ziweiResult" class="mt-5 space-y-4">
+              <div class="rounded-[30px] bronze-card p-5">
+                <p class="text-[11px] uppercase tracking-[.26em] text-amber-100/48">Life Palace</p>
+                <h3 id="ziweiHeadline" class="mt-2 text-[24px] font-semibold text-amber-50 oracle-title">命宫未定</h3>
+                <p id="ziweiSummary" class="mt-3 text-[15px] leading-[1.75] subtle-text">
+                  选择出生时间后，Kairós 会生成你的紫微速览。
+                </p>
+                <div id="ziweiMetaGrid" class="mt-5 grid grid-cols-2 gap-2"></div>
+              </div>
+
+              <div class="rounded-[26px] bronze-card p-4">
+                <div class="mb-3 flex items-end justify-between">
+                  <h3 class="text-[18px] font-semibold text-amber-50">四大关键宫位</h3>
+                  <span class="text-[11px] uppercase tracking-[.18em] text-[#3ee6d0]/62">Palaces</span>
+                </div>
+                <div id="ziweiPalaceGrid" class="grid gap-3"></div>
+              </div>
+
+              <div class="rounded-[26px] bronze-card p-4">
+                <h3 class="text-[18px] font-semibold text-amber-50">大限节奏</h3>
+                <div id="ziweiCycleList" class="mt-3 space-y-2"></div>
+              </div>
+
+              <div id="ziweiLockedInsight" class="rounded-[30px] bronze-card p-5 text-center">
+                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[#3ee6d0]/18 bg-[#3ee6d0]/10 text-[24px] text-[#3ee6d0]">AI</div>
+                <h3 class="mt-4 text-[20px] font-semibold text-amber-50">紫微深度洞察尚未开启</h3>
+                <p class="mt-3 text-[14px] leading-[1.75] subtle-text">
+                  解锁后会把命宫、官禄、财帛、夫妻四宫翻译成可执行的事业、关系与资源策略。
+                </p>
+                <button id="unlockZiweiBtn" class="tap-scale mt-5 h-[54px] w-full rounded-2xl bg-gradient-to-r from-[#0f766e] via-[#2aa98c] to-[#d7a75e] text-[16px] font-semibold text-white">
+                  Stars 解锁紫微深度洞察 · 129 ★
+                </button>
+              </div>
+
+              <div id="ziweiUnlockedInsight" class="hidden rounded-[30px] bronze-card p-5">
+                <p class="text-[11px] uppercase tracking-[.26em] text-[#3ee6d0]/62">AI Ziwei Insight</p>
+                <h3 class="mt-2 text-[21px] font-semibold text-amber-50">紫微行动剧本</h3>
+                <p id="ziweiInsightText" class="mt-4 text-[16px] leading-[1.85] text-amber-50/84"></p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -834,12 +996,15 @@
       </main>
 
       <nav class="fixed bottom-0 left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 border-t border-amber-200/10 bg-[rgba(5,4,10,.84)] px-3 pb-[calc(10px+env(safe-area-inset-bottom))] pt-2 backdrop-blur-2xl">
-        <div class="grid grid-cols-5 gap-1">
+        <div class="grid grid-cols-6 gap-1">
           <button data-route="home" class="nav-item active tap-scale flex flex-col items-center gap-1 py-1 text-[11px] subtle-text">
             <span class="nav-glyph flex h-9 w-9 items-center justify-center rounded-2xl border border-transparent">⌂</span><span>首页</span>
           </button>
           <button data-route="map" class="nav-item tap-scale flex flex-col items-center gap-1 py-1 text-[11px] subtle-text">
             <span class="nav-glyph flex h-9 w-9 items-center justify-center rounded-2xl border border-transparent">☷</span><span>图谱</span>
+          </button>
+          <button data-route="ziwei" class="nav-item tap-scale flex flex-col items-center gap-1 py-1 text-[11px] subtle-text">
+            <span class="nav-glyph flex h-9 w-9 items-center justify-center rounded-2xl border border-transparent">紫</span><span>紫微</span>
           </button>
           <button data-route="report" class="nav-item tap-scale flex flex-col items-center gap-1 py-1 text-[11px] subtle-text">
             <span class="nav-glyph flex h-9 w-9 items-center justify-center rounded-2xl border border-transparent">✦</span><span>报告</span>
@@ -902,6 +1067,7 @@
   <script>
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     const supportedLanguages = ['zh', 'en', 'th'];
+    const supportedRoutes = ['home', 'oracle', 'map', 'ziwei', 'report', 'share', 'profile'];
     const languageLabels = { zh: '中', en: 'EN', th: 'ไทย' };
     const languageAttrs = { zh: 'zh-CN', en: 'en', th: 'th' };
     const STORAGE_KEYS = {
@@ -912,7 +1078,8 @@
     const starProducts = {
       health: { tier: 'health', amount: 29, productId: 'health_report' },
       fortune_pro: { tier: 'pro', amount: 99, productId: 'fortune_pro' },
-      fortune_master: { tier: 'master', amount: 399, productId: 'fortune_master' }
+      fortune_master: { tier: 'master', amount: 399, productId: 'fortune_master' },
+      ziwei_pro: { tier: 'ziwei', amount: 129, productId: 'ziwei_pro' }
     };
 
     function detectLanguage() {
@@ -934,6 +1101,7 @@
       birthDate: '',
       generated: false,
       dailyOracle: null,
+      ziwei: null,
       lang: detectLanguage(),
       session: null,
       history: [],
@@ -961,6 +1129,8 @@
         dailyOracleCta: '摇一卦 · 开启今日仪式',
         mapCardTitle: '查看图谱',
         mapCardDesc: '四柱、五行、周期与行动建议。',
+        ziweiHomeTitle: '紫微星盘',
+        ziweiHomeDesc: '十二宫位、命宫身宫与关键星曜。',
         shareCardTitleHome: '生成分享卡',
         shareCardDescHome: '一键带走今日东方洞察。',
         dailyShellOracle: '龟甲每日神谕',
@@ -988,6 +1158,29 @@
         dimensionTitle: '10 大洞察维度',
         aiMatrix: 'AI 矩阵',
         unlockReport: 'Stars 解锁 AI 深度报告 · 99 ★',
+        ziweiSupplementTitle: '紫微斗数补充洞察',
+        ziweiSupplementDesc: '用十二宫位补全八字图谱没有展开的关系、事业与资源结构。',
+        ziweiEyebrow: '紫微斗数',
+        ziweiTitle: '紫微斗数星盘',
+        ziweiSubtitle: '在青铜神树图谱之外，用十二宫、命宫身宫和关键星曜补全你的行动剧本。',
+        birthTime: '出生时间',
+        gender: '性别',
+        genderMale: '男',
+        genderFemale: '女',
+        generateZiwei: '生成紫微星盘',
+        ziweiLifePalace: '命宫',
+        ziweiPlaceholderTitle: '命宫未定',
+        ziweiPlaceholderSummary: '选择出生时间后，Kairós 会生成你的紫微速览。',
+        ziweiCorePalaces: '四大关键宫位',
+        ziweiCycles: '大限节奏',
+        ziweiLockedTitle: '紫微深度洞察尚未开启',
+        ziweiLockedDesc: '解锁后会把命宫、官禄、财帛、夫妻四宫翻译成可执行的事业、关系与资源策略。',
+        unlockZiwei: 'Stars 解锁紫微深度洞察 · 129 ★',
+        ziweiInsightEyebrow: 'AI 紫微洞察',
+        ziweiInsightTitle: '紫微行动剧本',
+        ziweiPalaceRoles: ['自我底色', '事业节奏', '资源模式', '关系沟通'],
+        ziweiMetaLabels: ['命宫', '身宫', '命主', '五行局'],
+        ziweiCyclePrefix: '大限',
         deepReport: 'AI 深度神谕报告',
         reportTitle: 'AI 神谕报告',
         lockedTitle: '深度洞察尚未开启',
@@ -1033,6 +1226,7 @@
         localUserName: 'Kairos 体验用户',
         navHome: '首页',
         navMap: '图谱',
+        navZiwei: '紫微',
         navReport: '报告',
         navShare: '分享',
         navProfile: '我的',
@@ -1046,6 +1240,7 @@
         shareTitleNative: 'Kairós 今日神谕',
         shareDefault: '我的 Kairós 今日神谕：守中而行。先稳住节奏，再启动决定。x-kairos.com',
         shareOracle: result => `我的 Kairós 今日一卦：${loc(result.name)} · ${loc(result.keyword)}。${loc(result.summary)} x-kairos.com`,
+        ziweiInsightBody: chart => `你的紫微速览显示，${chart.lifePalace}是本轮观察中心，${chart.soulStar}让你的判断更重视秩序与长期价值。\n\n事业上先看${chart.careerPalace}：适合把资源重新排布，少做临时反应，多做结构设计。关系上看${chart.relationshipPalace}：不要用猜测替代沟通，今天适合把期待说得更具体。\n\n接下来 30 天的关键词是「定盘」。先确定一个核心目标，再让财帛、官禄与夫妻宫围绕它协同。`,
         oracleBody: '你的图谱像一件刚从青铜光影中显现的器物：外层克制，内里锋利。今天最重要的不是马上行动，而是把问题问准。\n\n事业上，适合处理结构、规则、资源分配一类事情。关系上，不要用沉默测试对方，清晰表达会带来更好的回应。\n\n本月的关键词是「定」。先定边界，再定节奏，最后才是定结果。你的力量会在秩序中被放大。'
       },
       en: {
@@ -1066,6 +1261,8 @@
         dailyOracleCta: 'Cast Today’s Oracle',
         mapCardTitle: 'View Map',
         mapCardDesc: 'Pillars, elements, cycles, and action guidance.',
+        ziweiHomeTitle: 'Purple Star Map',
+        ziweiHomeDesc: 'Twelve palaces, life/body palace, and key stars.',
         shareCardTitleHome: 'Create Share Card',
         shareCardDescHome: 'Take today’s Eastern insight with one tap.',
         dailyShellOracle: 'Daily Shell Oracle',
@@ -1093,6 +1290,29 @@
         dimensionTitle: '10 Insight Dimensions',
         aiMatrix: 'AI Matrix',
         unlockReport: 'Unlock AI Deep Report · 99 ★',
+        ziweiSupplementTitle: 'Zi Wei Dou Shu Add-on',
+        ziweiSupplementDesc: 'Use twelve palaces to complete relationship, career, and resource patterns beyond the pillar map.',
+        ziweiEyebrow: 'Zi Wei Dou Shu',
+        ziweiTitle: 'Purple Star Map',
+        ziweiSubtitle: 'Beyond the Bronze Tree map, use twelve palaces, life/body palace, and key stars to complete your action script.',
+        birthTime: 'Birth Time',
+        gender: 'Gender',
+        genderMale: 'Male',
+        genderFemale: 'Female',
+        generateZiwei: 'Generate Purple Star Map',
+        ziweiLifePalace: 'Life Palace',
+        ziweiPlaceholderTitle: 'Life Palace Pending',
+        ziweiPlaceholderSummary: 'Choose a birth time and Kairós will generate your Ziwei snapshot.',
+        ziweiCorePalaces: 'Four Key Palaces',
+        ziweiCycles: 'Decadal Rhythm',
+        ziweiLockedTitle: 'Deep Ziwei Insight Is Locked',
+        ziweiLockedDesc: 'Unlock to translate life, career, wealth, and relationship palaces into practical strategy.',
+        unlockZiwei: 'Unlock Ziwei Insight · 129 ★',
+        ziweiInsightEyebrow: 'AI Ziwei Insight',
+        ziweiInsightTitle: 'Purple Star Action Script',
+        ziweiPalaceRoles: ['Self Pattern', 'Career Rhythm', 'Resource Pattern', 'Relationship Lens'],
+        ziweiMetaLabels: ['Life Palace', 'Body Palace', 'Soul Star', 'Element Class'],
+        ziweiCyclePrefix: 'Cycle',
         deepReport: 'Deep Oracle Report',
         reportTitle: 'AI Oracle Report',
         lockedTitle: 'Deep Insight Is Locked',
@@ -1138,6 +1358,7 @@
         localUserName: 'Kairos Explorer',
         navHome: 'Home',
         navMap: 'Map',
+        navZiwei: 'Ziwei',
         navReport: 'Report',
         navShare: 'Share',
         navProfile: 'Me',
@@ -1151,6 +1372,7 @@
         shareTitleNative: 'Kairós Daily Oracle',
         shareDefault: 'My Kairós daily oracle: Move from Center. Stabilize the rhythm, then make the move. x-kairos.com',
         shareOracle: result => `My Kairós daily hexagram: ${loc(result.name)} · ${loc(result.keyword)}. ${loc(result.summary)} x-kairos.com`,
+        ziweiInsightBody: chart => `Your Ziwei snapshot places ${chart.lifePalace} at the center of this reading, with ${chart.soulStar} emphasizing order and long-term value.\n\nFor work, read through ${chart.careerPalace}: redesign structure before reacting. For relationships, read through ${chart.relationshipPalace}: replace guessing with clear expectation-setting.\n\nFor the next 30 days, the phrase is “set the chart.” Choose one core target, then let wealth, career, and relationship palaces coordinate around it.`,
         oracleBody: 'Your map appears like an artifact emerging from bronze light: restrained on the surface, sharp within. The key today is not to move faster, but to ask the sharper question.\n\nFor work, handle structure, rules, and resource allocation. In relationships, do not test people with silence; clear expression will bring a cleaner response.\n\nThis month’s word is “Settle.” Set the boundary first, then the rhythm, and only then the outcome. Your strength grows inside order.'
       },
       th: {
@@ -1171,6 +1393,8 @@
         dailyOracleCta: 'เสี่ยงทายวันนี้',
         mapCardTitle: 'ดูแผนที่',
         mapCardDesc: 'เสาหลัก ธาตุ วัฏจักร และคำแนะนำการลงมือทำ',
+        ziweiHomeTitle: 'แผนที่ดาวม่วง',
+        ziweiHomeDesc: 'สิบสองตำหนัก ตำหนักชีวิต/กาย และดาวสำคัญ',
         shareCardTitleHome: 'สร้างการ์ดแชร์',
         shareCardDescHome: 'พกข้อมูลเชิงลึกของวันนี้ไปได้ในแตะเดียว',
         dailyShellOracle: 'คำทำนายกระดองเต่า',
@@ -1198,6 +1422,29 @@
         dimensionTitle: '10 มิติข้อมูลเชิงลึก',
         aiMatrix: 'AI Matrix',
         unlockReport: 'ปลดล็อกรายงาน AI · 99 ★',
+        ziweiSupplementTitle: 'ข้อมูลเสริม Zi Wei Dou Shu',
+        ziweiSupplementDesc: 'ใช้สิบสองตำหนักเติมรูปแบบความสัมพันธ์ งาน และทรัพยากรที่แผนที่เสาหลักยังไม่ได้ขยาย',
+        ziweiEyebrow: 'Zi Wei Dou Shu',
+        ziweiTitle: 'แผนที่ดาวม่วง',
+        ziweiSubtitle: 'นอกเหนือจากแผนที่ต้นไม้สำริด ใช้สิบสองตำหนัก ตำหนักชีวิต/กาย และดาวสำคัญเติมบทการลงมือของคุณ',
+        birthTime: 'เวลาเกิด',
+        gender: 'เพศ',
+        genderMale: 'ชาย',
+        genderFemale: 'หญิง',
+        generateZiwei: 'สร้างแผนที่ดาวม่วง',
+        ziweiLifePalace: 'ตำหนักชีวิต',
+        ziweiPlaceholderTitle: 'ยังไม่กำหนดตำหนักชีวิต',
+        ziweiPlaceholderSummary: 'เลือกเวลาเกิด แล้ว Kairós จะสร้างภาพรวม Ziwei ให้คุณ',
+        ziweiCorePalaces: '4 ตำหนักสำคัญ',
+        ziweiCycles: 'จังหวะรอบสิบปี',
+        ziweiLockedTitle: 'ข้อมูล Ziwei เชิงลึกยังถูกล็อก',
+        ziweiLockedDesc: 'ปลดล็อกเพื่อแปลตำหนักชีวิต งาน ทรัพยากร และความสัมพันธ์เป็นกลยุทธ์ที่ใช้ได้จริง',
+        unlockZiwei: 'ปลดล็อก Ziwei · 129 ★',
+        ziweiInsightEyebrow: 'AI Ziwei Insight',
+        ziweiInsightTitle: 'บทลงมือดาวม่วง',
+        ziweiPalaceRoles: ['รูปแบบตัวตน', 'จังหวะงาน', 'รูปแบบทรัพยากร', 'มุมความสัมพันธ์'],
+        ziweiMetaLabels: ['ตำหนักชีวิต', 'ตำหนักกาย', 'ดาวชีวิต', 'กลุ่มธาตุ'],
+        ziweiCyclePrefix: 'รอบ',
         deepReport: 'รายงานคำทำนายเชิงลึก',
         reportTitle: 'รายงานคำทำนาย AI',
         lockedTitle: 'ข้อมูลเชิงลึกยังถูกล็อก',
@@ -1243,6 +1490,7 @@
         localUserName: 'ผู้สำรวจ Kairós',
         navHome: 'หน้าแรก',
         navMap: 'แผนที่',
+        navZiwei: 'Ziwei',
         navReport: 'รายงาน',
         navShare: 'แชร์',
         navProfile: 'ฉัน',
@@ -1256,6 +1504,7 @@
         shareTitleNative: 'คำทำนายประจำวัน Kairós',
         shareDefault: 'คำทำนาย Kairós วันนี้: เดินจากศูนย์กลาง ตั้งจังหวะให้มั่น แล้วค่อยขยับ x-kairos.com',
         shareOracle: result => `คำทำนาย Kairós วันนี้: ${loc(result.name)} · ${loc(result.keyword)} ${loc(result.summary)} x-kairos.com`,
+        ziweiInsightBody: chart => `ภาพรวม Ziwei ของคุณวาง ${chart.lifePalace} เป็นศูนย์กลาง และ ${chart.soulStar} เน้นระเบียบกับคุณค่าระยะยาว\n\nเรื่องงานให้อ่านผ่าน ${chart.careerPalace}: ออกแบบโครงสร้างก่อนตอบสนองเร็ว เรื่องความสัมพันธ์ให้อ่านผ่าน ${chart.relationshipPalace}: แทนที่การเดาด้วยความคาดหวังที่ชัด\n\n30 วันข้างหน้าให้ “ตั้งแผนที่” เลือกเป้าหมายหลักหนึ่งเรื่อง แล้วให้ตำหนักทรัพยากร งาน และความสัมพันธ์ประสานรอบมัน`,
         oracleBody: 'แผนที่ของคุณเหมือนวัตถุที่เพิ่งปรากฏจากแสงสำริด: ภายนอกนิ่ง แต่ภายในคม วันนี้สิ่งสำคัญไม่ใช่การรีบลงมือ แต่คือการถามคำถามให้ชัดขึ้น\n\nเรื่องงาน เหมาะกับการจัดโครงสร้าง กติกา และทรัพยากร เรื่องความสัมพันธ์ อย่าใช้ความเงียบทดสอบกัน การพูดให้ชัดจะพาคำตอบที่ดีขึ้นมา\n\nคำสำคัญของเดือนนี้คือ “ตั้งหลัก” ตั้งขอบเขตก่อน ตั้งจังหวะต่อมา แล้วผลลัพธ์จะตามมา พลังของคุณจะขยายเมื่ออยู่ในระเบียบ'
       }
     };
@@ -1276,6 +1525,8 @@
       '摇一卦 · 开启今日仪式': 'dailyOracleCta',
       '查看图谱': 'mapCardTitle',
       '四柱、五行、周期与行动建议。': 'mapCardDesc',
+      '紫微星盘': 'ziweiHomeTitle',
+      '十二宫位、命宫身宫与关键星曜。': 'ziweiHomeDesc',
       '生成分享卡': 'generateShare',
       '一键带走今日东方洞察。': 'shareCardDescHome',
       'Daily Shell Oracle': 'dailyShellOracle',
@@ -1300,6 +1551,27 @@
       '10 大洞察维度': 'dimensionTitle',
       'AI Matrix': 'aiMatrix',
       'Stars 解锁 AI 深度报告 · 99 ★': 'unlockReport',
+      'Purple Star': 'ziweiEyebrow',
+      '紫微斗数补充洞察': 'ziweiSupplementTitle',
+      '用十二宫位补全八字图谱没有展开的关系、事业与资源结构。': 'ziweiSupplementDesc',
+      '紫微斗数星盘': 'ziweiTitle',
+      '在青铜神树图谱之外，用十二宫、命宫身宫和关键星曜补全你的行动剧本。': 'ziweiSubtitle',
+      '出生时间': 'birthTime',
+      '性别': 'gender',
+      '男': 'genderMale',
+      '女': 'genderFemale',
+      '生成紫微星盘': 'generateZiwei',
+      'Life Palace': 'ziweiLifePalace',
+      '命宫未定': 'ziweiPlaceholderTitle',
+      '选择出生时间后，Kairós 会生成你的紫微速览。': 'ziweiPlaceholderSummary',
+      '四大关键宫位': 'ziweiCorePalaces',
+      'Palaces': 'ziweiCorePalaces',
+      '大限节奏': 'ziweiCycles',
+      '紫微深度洞察尚未开启': 'ziweiLockedTitle',
+      '解锁后会把命宫、官禄、财帛、夫妻四宫翻译成可执行的事业、关系与资源策略。': 'ziweiLockedDesc',
+      'Stars 解锁紫微深度洞察 · 129 ★': 'unlockZiwei',
+      'AI Ziwei Insight': 'ziweiInsightEyebrow',
+      '紫微行动剧本': 'ziweiInsightTitle',
       'Deep Oracle Report': 'deepReport',
       'AI 神谕报告': 'reportTitle',
       '深度洞察尚未开启': 'lockedTitle',
@@ -1332,6 +1604,7 @@
       '分享你的青铜神树入口': 'inviteDesc',
       '首页': 'navHome',
       '图谱': 'navMap',
+      '紫微': 'navZiwei',
       '报告': 'navReport',
       '分享': 'navShare',
       '我的': 'navProfile',
@@ -1448,6 +1721,102 @@
       }
     ];
 
+    const ziweiBasePalaces = [
+      { name: { zh: '命宫', en: 'Life', th: 'ชีวิต' }, key: 'self' },
+      { name: { zh: '兄弟', en: 'Siblings', th: 'พี่น้อง' }, key: 'siblings' },
+      { name: { zh: '夫妻', en: 'Partner', th: 'คู่สัมพันธ์' }, key: 'relationship' },
+      { name: { zh: '子女', en: 'Children', th: 'บุตร' }, key: 'creation' },
+      { name: { zh: '财帛', en: 'Wealth', th: 'ทรัพยากร' }, key: 'wealth' },
+      { name: { zh: '疾厄', en: 'Wellness', th: 'สุขภาพ' }, key: 'wellness' },
+      { name: { zh: '迁移', en: 'Travel', th: 'การเคลื่อนที่' }, key: 'movement' },
+      { name: { zh: '交友', en: 'Allies', th: 'พันธมิตร' }, key: 'allies' },
+      { name: { zh: '官禄', en: 'Career', th: 'งาน' }, key: 'career' },
+      { name: { zh: '田宅', en: 'Home', th: 'บ้าน' }, key: 'home' },
+      { name: { zh: '福德', en: 'Spirit', th: 'จิตใจ' }, key: 'spirit' },
+      { name: { zh: '父母', en: 'Origin', th: 'ต้นทาง' }, key: 'origin' }
+    ];
+
+    const ziweiStars = [
+      { zh: '紫微', en: 'Zi Wei', th: 'Zi Wei' },
+      { zh: '天府', en: 'Tian Fu', th: 'Tian Fu' },
+      { zh: '武曲', en: 'Wu Qu', th: 'Wu Qu' },
+      { zh: '天相', en: 'Tian Xiang', th: 'Tian Xiang' },
+      { zh: '太阳', en: 'Tai Yang', th: 'Tai Yang' },
+      { zh: '太阴', en: 'Tai Yin', th: 'Tai Yin' },
+      { zh: '七杀', en: 'Qi Sha', th: 'Qi Sha' },
+      { zh: '破军', en: 'Po Jun', th: 'Po Jun' }
+    ];
+
+    const ziweiElementClasses = [
+      { zh: '金四局', en: 'Metal Four', th: 'ทองสี่' },
+      { zh: '木三局', en: 'Wood Three', th: 'ไม้สาม' },
+      { zh: '水二局', en: 'Water Two', th: 'น้ำสอง' },
+      { zh: '火六局', en: 'Fire Six', th: 'ไฟหก' },
+      { zh: '土五局', en: 'Earth Five', th: 'ดินห้า' }
+    ];
+
+    function calculateZiweiSnapshot({ birthDate, birthTime, gender }) {
+      const [year = 1990, month = 1, day = 1] = String(birthDate || '1990-06-15').split('-').map(Number);
+      const [hour = 12] = String(birthTime || '12:00').split(':').map(Number);
+      const hourIndex = hour === 23 ? 12 : Math.floor((hour + 1) / 2);
+      const genderOffset = gender === 'female' ? 7 : 3;
+      const seed = year + month * 11 + day * 17 + hourIndex * 19 + genderOffset;
+      const lifeIndex = seed % 12;
+      const bodyIndex = (lifeIndex + hourIndex + 4) % 12;
+      const soulStar = ziweiStars[seed % ziweiStars.length];
+      const bodyStar = ziweiStars[(seed + 3) % ziweiStars.length];
+      const elementClass = ziweiElementClasses[seed % ziweiElementClasses.length];
+      const rotated = ziweiBasePalaces.map((palace, index) => {
+        const score = 62 + ((seed + index * 13) % 35);
+        return {
+          ...palace,
+          index,
+          score,
+          star: ziweiStars[(seed + index * 2) % ziweiStars.length],
+          isLife: index === lifeIndex,
+          isBody: index === bodyIndex
+        };
+      });
+      const byKey = key => rotated.find(palace => palace.key === key) || rotated[lifeIndex];
+      const keyPalaces = [
+        { role: 'self', palace: rotated[lifeIndex] },
+        { role: 'career', palace: byKey('career') },
+        { role: 'wealth', palace: byKey('wealth') },
+        { role: 'relationship', palace: byKey('relationship') }
+      ];
+      return {
+        birthDate,
+        birthTime,
+        gender,
+        lifePalaceValue: rotated[lifeIndex].name,
+        bodyPalaceValue: rotated[bodyIndex].name,
+        careerPalaceValue: byKey('career').name,
+        relationshipPalaceValue: byKey('relationship').name,
+        soulStarValue: soulStar,
+        bodyStarValue: bodyStar,
+        elementClassValue: elementClass,
+        lifePalace: loc(rotated[lifeIndex].name),
+        bodyPalace: loc(rotated[bodyIndex].name),
+        careerPalace: loc(byKey('career').name),
+        relationshipPalace: loc(byKey('relationship').name),
+        soulStar: loc(soulStar),
+        bodyStar: loc(bodyStar),
+        elementClass: loc(elementClass),
+        palaces: rotated,
+        keyPalaces,
+        cycles: [0, 1, 2].map(i => {
+          const palace = rotated[(lifeIndex + i * 3) % 12];
+          return {
+            range: `${14 + i * 10}-${23 + i * 10}`,
+            palaceValue: palace.name,
+            starValue: palace.star,
+            palace: loc(palace.name),
+            star: loc(palace.star)
+          };
+        })
+      };
+    }
+
     function t(key) {
       const value = copy[state.lang]?.[key] ?? copy.en[key] ?? copy.zh[key] ?? key;
       return Array.isArray(value) ? value[0] : value;
@@ -1522,6 +1891,7 @@
     function productLabel(productKey) {
       const product = starProducts[productKey] || starProducts.fortune_pro;
       if (productKey === 'health') return `${t('unlockOracle')} · ${product.amount} ★`.replace(/ · 29 ★ · 29 ★$/, ' · 29 ★');
+      if (productKey === 'ziwei_pro') return t('unlockZiwei');
       if (productKey === 'fortune_master') return `Pro · ${product.amount} ★`;
       return t('unlockReportShort');
     }
@@ -1719,6 +2089,12 @@
       renderModules();
       renderDimensions();
       if (state.dailyOracle) renderDailyOracle(state.dailyOracle);
+      renderZiweiInsight(state.ziwei);
+      const ziweiGender = document.getElementById('ziweiGender');
+      if (ziweiGender) {
+        ziweiGender.options[0].textContent = t('genderMale');
+        ziweiGender.options[1].textContent = t('genderFemale');
+      }
       if (state.unlocked) typeOracle(false);
       renderProfile();
       renderShareCard();
@@ -1783,6 +2159,9 @@
       } else if (state.route === 'map') {
         mb.setText(t('mainUnlockReport'));
         mb.show();
+      } else if (state.route === 'ziwei') {
+        mb.setText(state.ziwei ? t('unlockZiwei') : t('generateZiwei'));
+        mb.show();
       } else if (state.route === 'report' && !state.unlocked) {
         mb.setText(t('mainStarsReport'));
         mb.show();
@@ -1796,6 +2175,7 @@
     function mainAction() {
       if (state.route === 'home') startCasting();
       else if (state.route === 'oracle') shakeDailyOracle();
+      else if (state.route === 'ziwei') state.ziwei ? unlockZiweiReading() : generateZiweiInsight();
       else if (state.route === 'map' || state.route === 'report') unlockReport();
     }
 
@@ -1826,6 +2206,84 @@
           <div class="dimension-bar"><span style="--v:${value}%"></span></div>
         </div>
       `).join('');
+    }
+
+    function renderZiweiInsight(chart = state.ziwei) {
+      if (!chart) {
+        document.getElementById('ziweiHeadline').textContent = t('ziweiPlaceholderTitle');
+        document.getElementById('ziweiSummary').textContent = t('ziweiPlaceholderSummary');
+        document.getElementById('ziweiMetaGrid').innerHTML = '';
+        document.getElementById('ziweiPalaceGrid').innerHTML = '';
+        document.getElementById('ziweiCycleList').innerHTML = '';
+        return;
+      }
+
+      const metaLabels = copy[state.lang].ziweiMetaLabels || copy.en.ziweiMetaLabels;
+      const roleLabels = copy[state.lang].ziweiPalaceRoles || copy.en.ziweiPalaceRoles;
+      const display = {
+        lifePalace: loc(chart.lifePalaceValue) || chart.lifePalace,
+        bodyPalace: loc(chart.bodyPalaceValue) || chart.bodyPalace,
+        careerPalace: loc(chart.careerPalaceValue) || chart.careerPalace,
+        relationshipPalace: loc(chart.relationshipPalaceValue) || chart.relationshipPalace,
+        soulStar: loc(chart.soulStarValue) || chart.soulStar,
+        bodyStar: loc(chart.bodyStarValue) || chart.bodyStar,
+        elementClass: loc(chart.elementClassValue) || chart.elementClass
+      };
+      document.getElementById('ziweiHeadline').textContent = `${display.lifePalace} · ${display.soulStar}`;
+      document.getElementById('ziweiSummary').textContent = state.lang === 'zh'
+        ? `${display.bodyPalace}落身，${display.elementClass}。这张盘适合用来观察你的长期行动剧本，而不是替代每日判断。`
+        : state.lang === 'th'
+          ? `${display.bodyPalace} เป็นตำหนักกาย และ ${display.elementClass} แผนนี้เหมาะกับการอ่านบทลงมือระยะยาว ไม่ใช่แทนการตัดสินใจรายวัน`
+          : `${display.bodyPalace} anchors the body palace with ${display.elementClass}. Use this as a long-cycle action script, not a replacement for daily judgment.`;
+      document.getElementById('ziweiMetaGrid').innerHTML = [
+        display.lifePalace,
+        display.bodyPalace,
+        display.soulStar,
+        display.elementClass
+      ].map((value, index) => `
+        <div class="rounded-2xl border border-white/8 bg-white/[.035] p-3">
+          <p class="text-[10px] uppercase tracking-[.18em] subtle-text">${metaLabels[index]}</p>
+          <b class="mt-1 block text-[15px] text-amber-50">${value}</b>
+        </div>
+      `).join('');
+      document.getElementById('ziweiPalaceGrid').innerHTML = chart.keyPalaces.map((item, index) => `
+        <div class="rounded-[22px] border border-amber-200/12 bg-white/[.035] p-4">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="text-[11px] uppercase tracking-[.18em] text-[#3ee6d0]/62">${roleLabels[index]}</p>
+              <h4 class="mt-1 text-[17px] font-semibold text-amber-50">${loc(item.palace.name)} · ${loc(item.palace.star)}</h4>
+            </div>
+            <span class="font-mono text-[14px] text-amber-100/72">${item.palace.score}</span>
+          </div>
+          <div class="dimension-bar mt-3"><span style="--v:${item.palace.score}%"></span></div>
+        </div>
+      `).join('');
+      document.getElementById('ziweiCycleList').innerHTML = chart.cycles.map(item => `
+        <div class="flex items-center justify-between rounded-2xl border border-white/8 bg-white/[.035] p-3">
+          <span class="text-[13px] subtle-text">${t('ziweiCyclePrefix')} ${item.range}</span>
+          <b class="text-[14px] text-amber-50">${loc(item.palaceValue) || item.palace} · ${loc(item.starValue) || item.star}</b>
+        </div>
+      `).join('');
+      document.getElementById('ziweiInsightText').textContent = t('ziweiInsightBody')({ ...chart, ...display });
+    }
+
+    function generateZiweiInsight() {
+      const dateInput = document.getElementById('birthDate');
+      const timeInput = document.getElementById('ziweiBirthTime');
+      const genderInput = document.getElementById('ziweiGender');
+      state.birthDate = dateInput.value || '1990-06-15';
+      dateInput.value = state.birthDate;
+      state.ziwei = calculateZiweiSnapshot({
+        birthDate: state.birthDate,
+        birthTime: timeInput.value || '12:00',
+        gender: genderInput.value || 'male'
+      });
+      renderZiweiInsight(state.ziwei);
+      if (isProductUnlocked('ziwei_pro')) revealZiweiInsight(false);
+      persistReadingHistory();
+      haptic('success');
+      showToast(t('generateZiwei'));
+      updateMainButton();
     }
 
     function renderDailyOracle(result) {
@@ -1868,6 +2326,7 @@
     }
 
     function routeTo(route, push = true) {
+      if (!supportedRoutes.includes(route) || !document.getElementById(route + 'View')) return;
       state.route = route;
       if (push && state.stack[state.stack.length - 1] !== route) state.stack.push(route);
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -1927,6 +2386,19 @@
       requestStarsUnlock('health', revealReport);
     }
 
+    function unlockZiweiReading() {
+      if (!state.ziwei) generateZiweiInsight();
+      requestStarsUnlock('ziwei_pro', () => revealZiweiInsight(true));
+    }
+
+    function revealZiweiInsight(withToast = true) {
+      if (!state.ziwei) generateZiweiInsight();
+      renderZiweiInsight(state.ziwei);
+      document.getElementById('ziweiLockedInsight').classList.add('hidden');
+      document.getElementById('ziweiUnlockedInsight').classList.remove('hidden');
+      if (withToast) haptic('success');
+    }
+
     function revealReport(shouldRoute = true) {
       state.unlocked = true;
       document.getElementById('lockedReport').classList.add('hidden');
@@ -1979,6 +2451,8 @@
       document.getElementById('unlockOracleBtn').addEventListener('click', unlockOracleReading);
       document.getElementById('unlockReportBtn').addEventListener('click', unlockReport);
       document.getElementById('unlockFromReportBtn').addEventListener('click', unlockReport);
+      document.getElementById('generateZiweiBtn').addEventListener('click', generateZiweiInsight);
+      document.getElementById('unlockZiweiBtn').addEventListener('click', unlockZiweiReading);
       document.getElementById('shareBtn').addEventListener('click', shareCard);
       document.getElementById('backBtn').addEventListener('click', goBack);
       document.getElementById('themePulse').addEventListener('click', cycleLanguage);
@@ -2025,6 +2499,12 @@
       initTelegramIdentity();
       if (state.unlocked) revealReport(false);
       applyI18n();
+      const initialRoute = new URLSearchParams(window.location.search).get('view');
+      if (supportedRoutes.includes(initialRoute) && initialRoute !== 'home') routeTo(initialRoute, false);
+      if (new URLSearchParams(window.location.search).get('demo') === 'ziwei') {
+        routeTo('ziwei', false);
+        setTimeout(generateZiweiInsight, 120);
+      }
     });
   </script>
 </body>

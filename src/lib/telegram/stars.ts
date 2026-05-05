@@ -37,6 +37,14 @@ const PRODUCTS: Record<TelegramStarsProductId, TelegramStarsProduct> = {
     amount: kairosPrices.health_report.stars,
     orderProduct: "telegram_stars_health_report",
   },
+  ziwei_pro: {
+    id: "ziwei_pro",
+    tier: "ziwei",
+    title: "Kairós Zi Wei Insight",
+    description: "Unlock a focused Purple Star palace insight inside Telegram.",
+    amount: kairosPrices.ziwei_pro.stars,
+    orderProduct: "telegram_stars_ziwei_pro",
+  },
 };
 
 export function getTelegramStarsProduct(id: TelegramStarsProductId) {
@@ -50,6 +58,7 @@ export function createTelegramStarsPayload() {
 export function productIdFromTier(tier: string): TelegramStarsProductId {
   if (tier === "master") return "fortune_master";
   if (tier === "health") return "health_report";
+  if (tier === "ziwei") return "ziwei_pro";
   return "fortune_pro";
 }
 

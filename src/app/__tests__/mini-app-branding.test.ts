@@ -84,6 +84,11 @@ describe("Mini App brand and entry experience", () => {
     const paywall = readSource("src/components/fortune/PaywallSection.tsx");
 
     expect(fortune).toContain("isTelegramMiniApp");
+    expect(fortune).toContain("authLoading");
+    expect(fortune).toContain("resolveWebUser");
+    expect(fortune).toContain("kairos_pending_checkout");
+    expect(fortune).toContain('searchParams.get("checkout")');
+    expect(fortune).toContain('setLoginRedirectPath(`/fortune?checkout=${tier}`)');
     expect(fortune).toContain("Mini App 解锁");
     expect(fortune).toContain("网页端支付");
     expect(fortune).toContain("formatStarsPrice");
@@ -91,6 +96,9 @@ describe("Mini App brand and entry experience", () => {
     expect(fortune).toContain("fortune_pro");
     expect(fortune).toContain("本地仅预览 Stars 支付界面");
     expect(fortune).toContain("PaywallSection");
+    expect(paywall).toContain("authLoading");
+    expect(paywall).toContain("loginRedirectPath");
+    expect(paywall).not.toContain("paid=pending");
     expect(paywall).toContain("Stars 解锁完整图谱");
     expect(paywall).toContain("formatUsdPrice");
   });

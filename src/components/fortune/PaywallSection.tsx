@@ -5,6 +5,8 @@ import { formatStarsPrice, formatUsdPrice } from "@/lib/pricing";
 
 export interface PaywallSectionProps {
   user: User | null;
+  authLoading?: boolean;
+  loginRedirectPath?: string;
   showLoginGate: boolean;
   showPaywall: boolean;
   setShowPaywall: (v: boolean) => void;
@@ -25,6 +27,8 @@ export interface PaywallSectionProps {
 
 export function PaywallSection({
   user,
+  authLoading = false,
+  loginRedirectPath = "/fortune?checkout=pro",
   showLoginGate,
   showPaywall,
   setShowPaywall,
@@ -45,7 +49,16 @@ export function PaywallSection({
   return (
     <div className="relative mt-4">
       {/* Login Gate Modal */}
-      {showLoginGate && !user && !isTelegramMiniApp && (
+      {showLoginGate && authLoading && !user && !isTelegramMiniApp && (
+        <div className="bg-white/[0.03] border border-amber-400/15 rounded-2xl p-6 space-y-3 animate-slideUp mb-4 text-center" style={{ animationDuration: "0.4s" }}>
+          <div className="mx-auto h-9 w-9 rounded-full border-2 border-amber-400/20 border-t-amber-400/70 animate-spin" />
+          <p className="text-amber-200/50 text-sm">
+            {isChinese ? "正在确认登录状态..." : "Checking sign-in status..."}
+          </p>
+        </div>
+      )}
+
+      {showLoginGate && !authLoading && !user && !isTelegramMiniApp && (
         <div className="bg-white/[0.03] border border-amber-400/15 rounded-2xl p-6 space-y-4 animate-slideUp mb-4" style={{ animationDuration: "0.4s" }}>
           <div className="text-center">
             <div className="text-3xl mb-2">👤</div>
@@ -57,7 +70,7 @@ export function PaywallSection({
             </p>
           </div>
           <a
-            href={`/login?redirect=${encodeURIComponent("/fortune?paid=pending")}`}
+            href={`/login?redirect=${encodeURIComponent(loginRedirectPath)}`}
             className="block w-full py-3 rounded-xl font-semibold text-sm text-center bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white hover:shadow-[0_0_30px_rgba(217,119,6,0.2)] transition-all"
           >
             {isChinese ? "登录 / 注册" : "Log In / Sign Up"}

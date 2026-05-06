@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, Suspense, useCallback } from "react";
+import { useState, useEffect, Suspense, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import type { User } from "@supabase/supabase-js";
 import { useLocale } from "@/lib/LocaleContext";
 import { useTheme } from "@/lib/ThemeContext";
 import { themeTokens } from "@/lib/theme-tokens";
@@ -25,6 +26,7 @@ import CelestialDatePicker from "@/components/CelestialDatePicker";
 import MysticalNameInput from "@/components/MysticalNameInput";
 import { generateBlueprint } from "@/lib/bazi-interpreter";
 import { formatStarsPrice, formatUsdPrice } from "@/lib/pricing";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { useToast } from "@/components/Toast";
 import { ElementBar } from "@/components/fortune/ElementBar";
@@ -62,13 +64,15 @@ function FortuneContent() {
   const { isChinese, t } = useLocale();
   const { theme } = useTheme();
   const tk = themeTokens[theme];
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
+  const checkoutResumeRef = useRef(false);
   const [isTelegramMiniApp, setIsTelegramMiniApp] = useState(false);
   const [mode, setMode] = useState<Mode>("bazi");
   const [step, setStep] = useState<Step>("input");
   const [, setIsSubscriber] = useState(false);
   const [showLoginGate, setShowLoginGate] = useState(false);
+  const [loginRedirectPath, setLoginRedirectPath] = useState("/fortune?checkout=pro");
   const [subLoading, setSubLoading] = useState(false);
 
   const [freeReadings, setFreeReadings] = useState(0);
@@ -143,6 +147,15 @@ function FortuneContent() {
   const [unlocked, setUnlocked] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const searchParams = useSearchParams();
+  const resolveWebUser = useCallback(async (): Promise<User | null> => {
+    if (user) return user;
+    try {
+      const { data } = await createClient().auth.getSession();
+      return data.session?.user ?? null;
+    } catch {
+      return null;
+    }
+  }, [user]);
 
   // Auto-fill from URL query parameter (from homepage quick entry)
   useEffect(() => {
@@ -271,13 +284,18 @@ function FortuneContent() {
       toast(isChinese ? "Telegram 内请使用 Stars 单次解锁" : "Use Telegram Stars for native checkout", "success");
       return;
     }
-    if (!user) { setShowLoginGate(true); return; }
+    const activeUser = await resolveWebUser();
+    if (!activeUser) {
+      setLoginRedirectPath(`/fortune?subscribe=${plan}`);
+      setShowLoginGate(true);
+      return;
+    }
     setSubLoading(true);
     try {
       const res = await fetch("/api/subscription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, email: user.email, plan }),
+        body: JSON.stringify({ userId: activeUser.id, email: activeUser.email, plan }),
       });
       const data = await res.json();
       if (data.url) {
@@ -304,7 +322,13 @@ function FortuneContent() {
       toast(message, "error");
       return;
     }
-    if (!user && !telegramInitData) { setShowLoginGate(true); return; }
+    const activeWebUser = telegramInitData ? null : await resolveWebUser();
+    if (!activeWebUser && !telegramInitData) {
+      sessionStorage.setItem("kairos_pending_checkout", tier);
+      setLoginRedirectPath(`/fortune?checkout=${tier}`);
+      setShowLoginGate(true);
+      return;
+    }
     setCheckoutLoading(true);
     setCheckoutError("");
     try {
@@ -351,7 +375,7 @@ function FortuneContent() {
         return;
       }
 
-      if (!user) {
+      if (!activeWebUser) {
         setShowLoginGate(true);
         setCheckoutLoading(false);
         return;
@@ -364,7 +388,7 @@ function FortuneContent() {
           chartId: chart?.solarDate || "",
           chartHash: chart ? getChartHash(chart) : "",
           userName,
-          userId: user.id,
+          userId: activeWebUser.id,
           tier,
         }),
       });
@@ -395,6 +419,39 @@ function FortuneContent() {
       setCheckoutLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (authLoading || !user || isTelegramMiniApp || checkoutResumeRef.current) return;
+    const checkoutParam = searchParams.get("checkout");
+    const pendingCheckout = sessionStorage.getItem("kairos_pending_checkout");
+    const tier = checkoutParam === "pro" || checkoutParam === "master"
+      ? checkoutParam
+      : pendingCheckout === "pro" || pendingCheckout === "master"
+        ? pendingCheckout
+        : null;
+
+    if (tier) {
+      checkoutResumeRef.current = true;
+      sessionStorage.removeItem("kairos_pending_checkout");
+      setShowLoginGate(false);
+      setShowPaywall(true);
+      window.setTimeout(() => {
+        void handleStripeCheckout(tier);
+      }, 0);
+      return;
+    }
+
+    const subscribeParam = searchParams.get("subscribe");
+    const plan = subscribeParam === "monthly" || subscribeParam === "yearly" ? subscribeParam : null;
+    if (plan) {
+      checkoutResumeRef.current = true;
+      setShowLoginGate(false);
+      setShowPaywall(true);
+      window.setTimeout(() => {
+        void handleSubscribe(plan);
+      }, 0);
+    }
+  }, [authLoading, user, isTelegramMiniApp, searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCalculate = () => {
     if (!birthDate) return;
@@ -1474,6 +1531,8 @@ function FortuneContent() {
                   {/* Unlock CTA */}
                   <PaywallSection
                     user={user}
+                    authLoading={authLoading}
+                    loginRedirectPath={loginRedirectPath}
                     showLoginGate={showLoginGate}
                     showPaywall={showPaywall}
                     setShowPaywall={setShowPaywall}
